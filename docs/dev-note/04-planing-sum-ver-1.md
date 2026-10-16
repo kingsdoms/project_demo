@@ -50,6 +50,16 @@ Mục tiêu là thêm chiều chiến thuật mà không sửa luật cờ.
 
 ## 4. Kiến trúc chung
 
+**Luồng tổng thể**
+App (vỏ)
+ ├── đọc danh sách game từ games/index.js
+ ├── hiện menu chọn game
+ └── khi chọn game: tạo room của game đó, rồi render Component của game
+
+games/chess (plugin)
+ └── index.js   ← cửa duy nhất, App chỉ import file này
+
+
 Phụ thuộc chỉ đi một chiều: `extensions` chỉ import từ `core`, còn `core` không biết gì về extensions, UI hay bot.
 
 ```

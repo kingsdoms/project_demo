@@ -1,0 +1,1 @@
+//giữ game và rules, dispatch, subscribe, restart, destroy

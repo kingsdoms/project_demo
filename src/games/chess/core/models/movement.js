@@ -1,0 +1,1 @@
+//hình học: quân đi và ăn được ô nào, chưa xét chiếu

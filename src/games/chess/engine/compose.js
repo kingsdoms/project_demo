@@ -1,0 +1,1 @@
+//buildRules: ghép luật gốc với extension

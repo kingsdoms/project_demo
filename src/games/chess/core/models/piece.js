@@ -1,0 +1,1 @@
+//quân: dữ liệu quân và bảng loại quân (PIECE_DEFS)
