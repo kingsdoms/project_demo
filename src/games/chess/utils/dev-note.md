@@ -1,0 +1,1 @@
+utils tương lai có thể chuyển ra dùng chung cho n games

@@ -1,6 +1,11 @@
 //quân: dữ liệu quân và bảng loại quân (PIECE_DEFS)
+import { Side } from "../constants/Side.js";
+import { PIECE_DEFS } from "../constants/PieceDefs.js";
+import { GameError } from "../utils/game-error.js";
+import { isStr, isInt } from "../utils/validation.js";
+
+
 export class Piece {
-    //
   constructor({ id, type, side, row, col, hasMoved = false, ext = {} }) {
     if (!id) throw new Error("Piece: thiếu id");
     if (!Object.hasOwn(PIECE_DEFS, type)) {
