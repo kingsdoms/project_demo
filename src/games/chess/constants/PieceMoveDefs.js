@@ -23,22 +23,22 @@ const P = (pattern) => Object.freeze(pattern);
 //
 // Ô đích được kiểm tra theo capture (xem CaptureMode).
 
-const ROOK_MOVES = Object.freeze([
+const ROOK_MOVES = P([
   P({ forward: 1, lateral: 0, steps: Infinity, capture: CaptureMode.ANY }),
   P({ forward: -1, lateral: 0, steps: Infinity, capture: CaptureMode.ANY }),
   P({ forward: 0, lateral: 1, steps: Infinity, capture: CaptureMode.ANY }),
   P({ forward: 0, lateral: -1, steps: Infinity, capture: CaptureMode.ANY }),
 ]);
 
-const BISHOP_MOVES = Object.freeze([
+const BISHOP_MOVES = P([
   P({ forward: 1, lateral: 1, steps: Infinity, capture: CaptureMode.ANY }),
   P({ forward: 1, lateral: -1, steps: Infinity, capture: CaptureMode.ANY }),
   P({ forward: -1, lateral: 1, steps: Infinity, capture: CaptureMode.ANY }),
   P({ forward: -1, lateral: -1, steps: Infinity, capture: CaptureMode.ANY }),
 ]);
 
-export const PIECE_MOVE_DEFS = Object.freeze({
-  [PieceType.PAWN]: Object.freeze([
+export const PIECE_MOVE_DEFS = P({
+  [PieceType.PAWN]: P([
     P({ forward: 1, lateral: 0, steps: 1, capture: CaptureMode.NEVER }),
     P({
       forward: 1,
@@ -52,7 +52,7 @@ export const PIECE_MOVE_DEFS = Object.freeze({
   ]),
 
   // Mã đi chữ L. Bước đơn không có ô ở giữa nên không cần jump.
-  [PieceType.KNIGHT]: Object.freeze([
+  [PieceType.KNIGHT]: P([
     P({ forward: 2, lateral: 1, steps: 1, capture: CaptureMode.ANY }),
     P({ forward: 2, lateral: -1, steps: 1, capture: CaptureMode.ANY }),
     P({ forward: -2, lateral: 1, steps: 1, capture: CaptureMode.ANY }),
@@ -67,11 +67,11 @@ export const PIECE_MOVE_DEFS = Object.freeze({
   [PieceType.BISHOP]: BISHOP_MOVES,
 
   // Hậu là xe cộng tượng
-  [PieceType.QUEEN]: Object.freeze([...ROOK_MOVES, ...BISHOP_MOVES]),
+  [PieceType.QUEEN]: P([...ROOK_MOVES, ...BISHOP_MOVES]),
 
   // Vua đi một ô theo 8 hướng. Nhập thành không khai báo ở đây
   // vì nó đổi hai quân và cần kiểm tra chiếu, nên nằm trong ChessRule.
-  [PieceType.KING]: Object.freeze([
+  [PieceType.KING]: P([
     P({ forward: 1, lateral: 0, steps: 1, capture: CaptureMode.ANY }),
     P({ forward: -1, lateral: 0, steps: 1, capture: CaptureMode.ANY }),
     P({ forward: 0, lateral: 1, steps: 1, capture: CaptureMode.ANY }),

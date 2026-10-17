@@ -3,10 +3,12 @@
  * @author tuanca
  */
 
-import { ActionType } from "../constants/ActionType.js";
-import { ErrorCode } from "../constants/ErrorCode.js";
-import { GameError } from "../utils/game-error.js";
-import { isStr, isInt } from "../utils/validation.js";
+import { ActionType } from "../../constants/ActionType.js";
+import { ErrorCode } from "../../constants/ErrorCode.js";
+import { PieceType } from "../../constants/PieceType.js";
+
+import { GameError } from "../../utils/GameError.js";
+import { isStr, isInt } from "../../utils/validation.js";
 
 export class Action {
   constructor(type, id, row = null, col = null, pieceType = null) {
@@ -28,8 +30,9 @@ export class Action {
     if (col !== null && !isInt(col))
       throw new GameError(ErrorCode.INVALID_POSITION, "Invalid col");
 
-    if (pieceType !== null && !isStr(pieceType))
-      throw new GameError(ErrorCode.INVALID_PIECE_TYPE, "Invalid piece type");
+    if (!hasKey(PieceType, pieceType))
+      throw new GameError(ErrorCode.INVALID_POSITION, "Invalid piece type");
+
   }
 
   static move(id, row, col) {

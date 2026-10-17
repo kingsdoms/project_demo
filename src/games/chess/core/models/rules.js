@@ -1,1 +1,0 @@
-//luật: nước hợp lệ, chiếu, nhập thành, bắt qua đường, kết 

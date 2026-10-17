@@ -3,10 +3,10 @@
  * @author tuanca
  */
 //quân: dữ liệu quân và bảng loại quân (PIECE_DEFS)
-import { Side } from "../constants/Side.js";
-import { PIECE_DEFS } from "../constants/PieceDefs.js";
-import { GameError } from "../utils/game-error.js";
-import { isStr, isInt, hasKey } from "../utils/validation.js";
+import { Side } from "../../constants/Side.js";
+import { PieceType } from "../../constants/PieceType.js";
+import { GameError } from "../../utils/game-error.js";
+import { isStr, isInt, hasKey } from "../../utils/validation.js";
 
 export class Piece {
   constructor({ id, type, side, row, col, hasMoved = false, ext = {} }) {
@@ -25,7 +25,7 @@ export class Piece {
     if (!isStr(id))
       throw new GameError(ErrorCode.INVALID_ID, "Invalid piece id");
 
-    if (!hasKey(PIECE_DEFS, type))
+    if (!hasKey(PieceType, type))
       throw new GameError(ErrorCode.INVALID_POSITION, "Invalid piece type");
 
     if (!hasKey(Side, side))
@@ -44,10 +44,6 @@ export class Piece {
   // Lưu lịch sử nước đi nếu cần undo
   // Board thay oldPiece bằng newPiece
 
-  with(patch) {
-    return new Piece({ ...this, ...patch });
-  }
-
   static from(data) {
     return data instanceof Piece ? data : new Piece(data);
   }
@@ -62,5 +58,9 @@ export class Piece {
       hasMoved: this.hasMoved,
       ext: { ...this.ext },
     };
+  }
+
+  with(patch) {
+    return new Piece({ ...this, ...patch });
   }
 }
