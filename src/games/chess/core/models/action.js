@@ -1,4 +1,7 @@
-//ý định đầu vào, chưa kiểm tra
+/**
+ * @file Action.js
+ * @author tuanca
+ */
 
 import { ActionType } from "../constants/ActionType.js";
 import { ErrorCode } from "../constants/ErrorCode.js";
@@ -13,6 +16,7 @@ export class Action {
     this.row = row;
     this.col = col;
     this.pieceType = pieceType;
+    Object.freeze(this);
   }
   #validate(id, row, col, pieceType) {
     if (!isStr(id))

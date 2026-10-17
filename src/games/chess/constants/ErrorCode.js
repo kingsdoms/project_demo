@@ -1,3 +1,7 @@
+/**
+ * @file ErrorCode.js
+ * @author tuanca
+ */
 export const ErrorCode = Object.freeze({
   BAD_ACTION: 'BAD_ACTION',
   GAME_OVER: 'GAME_OVER',

@@ -1,1 +1,0 @@
-//bản ghi nước đi đã hợp lệ

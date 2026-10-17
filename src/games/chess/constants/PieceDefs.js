@@ -1,6 +1,11 @@
-//name, value (điểm số khi mà bên kia ăn được)
-import { PieceType } from "../utils/PieceType.js";
+/**
+ * @file PieceDefs.js
+ * @author tuanca
+ */
 
+import { PieceType } from "./PieceType.js";
+
+//name, value (điểm số khi mà bên kia ăn được)
 export const PIECE_DEFS = Object.freeze({
   [PieceType.PAWN]: { name: "Tốt", value: 1 },
   [PieceType.KNIGHT]: { name: "Mã", value: 3 },

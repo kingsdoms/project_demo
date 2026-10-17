@@ -1,3 +1,7 @@
+/**
+ * @file PieceType.js
+ * @author tuanca
+ */
 export const PieceType = Object.freeze({
   PAWN: "PAWN",
   KNIGHT: "KNIGHT",
