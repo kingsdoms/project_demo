@@ -2,5 +2,109 @@
  * @file Board.js
  * @author tuanca
  */
+// Bàn cờ: kích thước và danh sách quân. Board chỉ biết hình học, không biết luật cờ.
+// Board bất biến: mọi thay đổi trả về Board mới, Board cũ không đổi.
+// Board chỉ đọc id, row, col của quân. Không lưu chỉ mục, mọi tra cứu là duyệt danh sách quân.
+ 
+export class Board {
+  #rows;
+  #cols;
+  #pieces;
+ 
+  constructor(rows, cols, pieces = []) {
+    if (!Number.isInteger(rows) || rows <= 0) throw new Error('rows phải là số nguyên dương');
+    if (!Number.isInteger(cols) || cols <= 0) throw new Error('cols phải là số nguyên dương');
+ 
+    for (let i = 0; i < pieces.length; i++) {
+      const p = pieces[i];
+      const inside = Number.isInteger(p.row) && Number.isInteger(p.col)
+        && p.row >= 0 && p.row < rows && p.col >= 0 && p.col < cols;
+      if (!inside) throw new Error(`Quân ${p.id} nằm ngoài bàn`);
+ 
+      for (let j = 0; j < i; j++) {
+        const q = pieces[j];
+        if (q.row === p.row && q.col === p.col) throw new Error(`Hai quân cùng ô (${p.row},${p.col})`);
+        if (q.id === p.id) throw new Error(`id trùng: ${p.id}`);
+      }
+    }
+ 
+    this.#rows = rows;
+    this.#cols = cols;
+    this.#pieces = Object.freeze([...pieces]);
+    Object.freeze(this);
+  }
+ 
+  get rows() { return this.#rows; }
+  get cols() { return this.#cols; }
+  get pieces() { return this.#pieces; }
+ 
+  inBounds(row, col) {
+    return Number.isInteger(row) && Number.isInteger(col)
+      && row >= 0 && row < this.#rows && col >= 0 && col < this.#cols;
+  }
+ 
+  // Quân ở ô đó, hoặc null nếu ô trống
+  pieceAt(row, col) {
+    return this.#pieces.find((p) => p.row === row && p.col === col) ?? null;
+  }
+ 
+  // Quân có id đó, hoặc null
+  pieceById(id) {
+    return this.#pieces.find((p) => p.id === id) ?? null;
+  }
+ 
+  // Các ô theo một hướng từ (row, col), không tính ô xuất phát.
+  // Dừng khi ra khỏi bàn, hoặc ngay sau ô có quân đầu tiên.
+  // Ô có quân được trả về kèm quân đó. Tầng luật quyết định ăn được hay bị chặn.
+  ray(row, col, dRow, dCol, maxSteps = Infinity) {
+    if (!this.inBounds(row, col)) {
+      throw new Error(`Ô xuất phát (${row},${col}) nằm ngoài bàn`);
+    }
+    if (!Number.isInteger(dRow) || !Number.isInteger(dCol) || (dRow === 0 && dCol === 0)) {
+      throw new Error('Hướng phải là cặp số nguyên khác (0,0)');
+    }
+    if (maxSteps !== Infinity && !(Number.isInteger(maxSteps) && maxSteps >= 1)) {
+      throw new Error('maxSteps phải là số nguyên từ 1 trở lên, hoặc Infinity');
+    }
+ 
+    const squares = [];
+    let r = row + dRow;
+    let c = col + dCol;
+    while (this.inBounds(r, c) && squares.length < maxSteps) {
+      const occupant = this.pieceAt(r, c);
+      squares.push({ row: r, col: c, occupant });
+      if (occupant !== null) break;
+      r += dRow;
+      c += dCol;
+    }
+    return squares;
+  }
+ 
+  // Trả về Board mới có thêm quân
+  add(piece) {
+    return new Board(this.#rows, this.#cols, [...this.#pieces, piece]);
+  }
+ 
+  // Trả về Board mới với quân cùng id được thay bằng piece.
+  // Nếu ô mới đang có quân khác thì constructor báo lỗi.
+  replace(piece) {
+    if (this.pieceById(piece.id) === null) throw new Error(`Không có quân ${piece.id} để thay`);
+    const next = this.#pieces.map((p) => (p.id === piece.id ? piece : p));
+    return new Board(this.#rows, this.#cols, next);
+  }
+ 
+  // Trả về Board mới không còn quân có id đó
+  remove(id) {
+    if (this.pieceById(id) === null) throw new Error(`Không có quân ${id} để xóa`);
+    return new Board(this.#rows, this.#cols, this.#pieces.filter((p) => p.id !== id));
+  }
+ 
+  // Trả về Board mới với thêm cột bên phải. Quân giữ nguyên vị trí.
+  expand(extraCols) {
+    if (!Number.isInteger(extraCols) || extraCols <= 0) {
+      throw new Error('extraCols phải là số nguyên dương');
+    }
+    return new Board(this.#rows, this.#cols + extraCols, this.#pieces);
+  }
+}
 
-//bàn: kích thước, danh sách quân, ô có nằm trong bàn 
