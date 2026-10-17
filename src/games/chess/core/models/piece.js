@@ -5,7 +5,7 @@
 //quân: dữ liệu quân và bảng loại quân (PIECE_DEFS)
 import { Side } from "../../constants/Side.js";
 import { PieceType } from "../../constants/PieceType.js";
-import { GameError } from "../../utils/game-error.js";
+import { GameError } from "../../utils/GameError.js";
 import { isStr, isInt, hasKey } from "../../utils/validation.js";
 
 export class Piece {
