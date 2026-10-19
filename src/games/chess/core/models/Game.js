@@ -59,4 +59,7 @@ export class Game {
   withPendingPromotion(pendingPromotion) {
     return new Game({ ...this, pendingPromotion });
   }
+  with(changes) {
+    return new Game({ ...this, ...changes });
+  }
 }

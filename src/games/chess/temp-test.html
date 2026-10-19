@@ -19,9 +19,39 @@
     // const piece = new Piece(PieceType.PAWN, Side.WHITE, 6, 0);
     // const board = new Board(8, 8, [piece]);
 
-    const board = Game.initialStandard();
+    // const board = Game.initialStandard();
 
-    console.log(board);
+    // console.log(board);
+    //////////////////////////////////ROOM TEST
+    import assert from "node:assert/strict";
+    import { Room } from "../core/engine/room.js";
+    import { Action } from "../core/models/Action.js";
+    import { Side } from "../core/constants/Side.js";
+
+    const fake = (game, action) => {
+      if (action.row === 99) throw new Error("nước sai");
+      return game.withTurn(game.turn === Side.WHITE ? Side.BLACK : Side.WHITE);
+    };
+
+    const room = new Room(fake);
+    let calls = 0;
+    room.subscribe(() => calls++);
+
+    const before = room.getState();
+    assert.throws(() => room.dispatch(Action.move("x", 99, 0)));
+    assert.strictEqual(room.getState(), before); // sai thì state không đổi
+    assert.equal(calls, 0);
+
+    room.dispatch(Action.move("x", 1, 1));
+    assert.notStrictEqual(room.getState(), before);
+    assert.equal(calls, 1);
+
+    room.restart();
+    assert.equal(room.getState().turn, Side.WHITE);
+
+    room.destroy();
+    assert.throws(() => room.dispatch(Action.move("x", 1, 1)));
+    console.log("room OK");
   </script>
   <!-- BOARD 8x8 (0-7)
 .   A   B   C   D   E   F   G   H
@@ -37,5 +67,4 @@
 /////////////////////////////
 bên trắng hàng 6 cột 0
 hàng cuối 7 - bên trắng 6 = vị trí lật lại bên đen 1
--->
-</html>
+--></html>
