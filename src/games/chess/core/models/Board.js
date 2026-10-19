@@ -21,6 +21,15 @@ export class Board {
     this.#pieces = Object.freeze([...pieces]);
     Object.freeze(this);
   }
+  get rows() {
+    return this.#rows;
+  }
+  get cols() {
+    return this.#cols;
+  }
+  get pieces() {
+    return this.#pieces;
+  }
 
   #validate(rows, cols, pieces) {
     if (!isInt(rows) || rows <= 0)
@@ -30,7 +39,7 @@ export class Board {
     //
     const occupied = new Set();
     for (const p of pieces) {
-      if (p.row > rows || p.col > cols)
+      if (p.row >= rows || p.col >= cols)
         throw new GameError(
           ErrorCode.INVALID_ARGUMENT,
           `Quân ${p.id} nằm ngoài bàn`,

@@ -2,8 +2,8 @@
  * @file gameRules.js
  * @author tuanca
  */
-import { RuleSet } from "./core/models/RuleSet.js";
-import { Rule } from "./core/models/Rule.js";
+import { RuleSet } from "../models/RuleSet.js";
+import { Rule } from "../models/Rule.js";
 export const gameRules = new RuleSet();
 
 // Chỉ bên đang tới lượt được đi quân của mình

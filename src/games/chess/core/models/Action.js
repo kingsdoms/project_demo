@@ -38,7 +38,6 @@ export class Action {
         break;
       default:
         throw new GameError(ErrorCode.INVALID_ARGUMENT, "Invalid action type");
-        break;
     }
   }
 

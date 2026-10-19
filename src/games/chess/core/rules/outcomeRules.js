@@ -3,8 +3,8 @@
  * @author tuanca
  */
 
-import { RuleSet } from "./core/models/RuleSet.js";
-import { Rule } from "./core/models/Rule.js";
+import { RuleSet } from "../models/RuleSet.js";
+import { Rule } from "../models/Rule.js";
 export const outcomeRules = new RuleSet();
 
 outcomeRules.add(

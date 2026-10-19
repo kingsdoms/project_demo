@@ -37,7 +37,16 @@ export class Piece {
   }
 
   static from(data) {
-    return data instanceof Piece ? data : new Piece(data);
+    return data instanceof Piece
+      ? data
+      : new Piece(
+          data.type,
+          data.side,
+          data.row,
+          data.col,
+          data.hasMoved,
+          data.ext,
+        );
   }
 
   to() {
@@ -58,6 +67,7 @@ export class Piece {
   // Lưu lịch sử nước đi nếu cần undo
   // Board thay oldPiece bằng newPiece
   with(patch) {
-    return new Piece({ ...this, ...patch });
+    const d = { ...this.to(), ...patch };
+    return new Piece(d.type, d.side, d.row, d.col, d.hasMoved, d.ext);
   }
 }
