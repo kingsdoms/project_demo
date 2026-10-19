@@ -3,9 +3,9 @@
  * @author tuanca
  */
 
-import { ActionType } from "../../constants/ActionType.js";
-import { ErrorCode } from "../../constants/ErrorCode.js";
-import { PieceType } from "../../constants/PieceType.js";
+import { ActionType } from "../constants/ActionType.js";
+import { ErrorCode } from "../constants/ErrorCode.js";
+import { PieceType } from "../constants/PieceType.js";
 
 import { GameError } from "../../utils/GameError.js";
 import { isStr, isInt } from "../../utils/validation.js";

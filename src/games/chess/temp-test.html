@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script type="module">
+    import { RuleSet } from "./core/models/RuleSet.js";
+    import { Rule } from "./core/models/Rule.js";
+    import { Piece } from "./core/models/Piece.js";
+    import { Board } from "./core/models/Board.js";
+    import { Side } from "./core/constants/Side.js";
+    import { PieceType } from "./core/constants/PieceType.js";
+
+    const piece = new Piece(PieceType.PAWN, Side.WHITE, 6, 0);
+    const board = new Board(8, 8, [piece]);
+
+    console.log(board);
+  </script>
+  <!-- BOARD 8x8 (0-7)
+.   A   B   C   D   E   F   G   H
+0   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+1   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+2   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+3   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+4   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+5   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+6   [P] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+7   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+
+/////////////////////////////
+bên trắng hàng 6 cột 0
+hàng cuối 7 - bên trắng 6 = vị trí lật lại bên đen 1
+-->
+</html>

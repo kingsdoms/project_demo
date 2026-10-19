@@ -5,13 +5,15 @@
 //quân: dữ liệu quân và bảng loại quân (PIECE_DEFS)
 import { Side } from "../constants/Side.js";
 import { PieceType } from "../constants/PieceType.js";
+
+import { ErrorCode } from "../constants/ErrorCode.js";
 import { GameError } from "../../utils/GameError.js";
-import { isStr, isInt, hasKey } from "../../utils/validation.js";
+import { isInt, hasKey } from "../../utils/validation.js";
 
 export class Piece {
-  constructor({ id, type, side, row, col, hasMoved = false, ext = {} }) {
-    this.#validate(id, type, side, row, col);
-    this.id = id;
+  constructor(type, side, row, col, hasMoved = false, ext = {}) {
+    this.#validate(type, side, row, col);
+    this.id = `${type}-${side}-${row}-${col}`;
     this.type = type;
     this.side = side;
     this.row = row;
@@ -21,20 +23,17 @@ export class Piece {
     Object.freeze(this);
   }
 
-  #validate(id, type, side, row, col) {
-    if (!isStr(id))
-      throw new GameError(ErrorCode.INVALID_ID, "Invalid piece id");
-
+  #validate(type, side, row, col) {
     if (!hasKey(PieceType, type))
       throw new GameError(ErrorCode.INVALID_POSITION, "Invalid piece type");
 
     if (!hasKey(Side, side))
       throw new GameError(ErrorCode.INVALID_POSITION, "Invalid side");
 
-    if (!isInt(row))
+    if (!isInt(row) || row < 0)
       throw new GameError(ErrorCode.INVALID_POSITION, "Invalid row");
 
-    if (!isInt(col))
+    if (!isInt(col) || col < 0)
       throw new GameError(ErrorCode.INVALID_POSITION, "Invalid col");
   }
 

@@ -15,7 +15,7 @@ const PROMOTE_TARGETS = Object.freeze([
   PieceType.KNIGHT,
 ]);
 
-//Tọa độ logic: Trắng luôn đi từ hàng 6 về hàng 0, Đen đi từ hàng 1 về hàng 7.
+//Tọa độ logic: Trắng luôn đi từ hàng 7 về hàng 0, Đen đi từ hàng 0 về hàng 7.
 const LAST_RANK = Object.freeze({
   [Side.WHITE]: 0,
   [Side.BLACK]: 7,
