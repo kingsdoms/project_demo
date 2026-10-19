@@ -1,0 +1,11 @@
+/* src/components/ScenePlaceholder/ScenePlaceholder.module.css */
+.root {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 8px;
+  color: var(--color-muted);
+}
+.title { margin: 0; color: var(--color-text); }

@@ -2,9 +2,10 @@
  * @file RuleSet.js
  * @author tuanca
  */
+
 export class RuleSet {
   #rules = new Map();
- 
+
   add(key, rule) {
     if (this.#rules.has(key)) {
       throw new Error(`Rule "${key}" đã tồn tại`);
@@ -12,7 +13,7 @@ export class RuleSet {
     this.#rules.set(key, rule);
     return this;
   }
- 
+
   get(key) {
     if (!this.#rules.has(key)) {
       throw new Error(`Không có rule "${key}"`);
@@ -20,8 +21,7 @@ export class RuleSet {
     return this.#rules.get(key);
   }
 
-   entries() {
+  entries() {
     return [...this.#rules.entries()];
   }
 }
- 

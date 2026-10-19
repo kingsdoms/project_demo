@@ -16,7 +16,7 @@ import {
 export class Game {
   constructor({
     board,
-    turn = Side.WHITE,
+    turn = Side.WHITE, // future có thể tung xúc xắc chọn bên đi trước
     enPassantTarget = null,
     pendingPromotion = null,
   }) {
@@ -33,7 +33,7 @@ export class Game {
     for (const [i, type] of BACK_RANK.entries()) {
       pieces.push(
         new Piece(type, Side.BLACK, 0, i),
-        new Piece(PieceType.PAWN, Side.BLACK, 0 + 1, i),
+        new Piece(PieceType.PAWN, Side.BLACK, 1, i),
         new Piece(PieceType.PAWN, Side.WHITE, STANDARD_ROWS - 2, i),
         new Piece(type, Side.WHITE, STANDARD_ROWS - 1, i),
       );

@@ -33,7 +33,7 @@ export class Room {
     if (typeof reduce !== 'function')
       throw new GameError(ErrorCode.INVALID_ARGUMENT, 'Room cần hàm reduce');
     this.#reduce = reduce;
-    this.#game = Game.createInitial();
+    this.#game = Game.initialStandard();
   }
 
   getState() {
@@ -50,7 +50,11 @@ export class Room {
     if (!(next instanceof Game))
       throw new GameError(ErrorCode.INVALID_ARGUMENT, 'reduce phải trả về Game');
 
+    // console.log("CURRENT>> ",this.#game);
+
     this.#game = next;
+    // console.log("NEXT>> ",next);
+    
     this.#notify();
   }
 
@@ -62,7 +66,7 @@ export class Room {
 
   restart() {
     this.#assertAlive();
-    this.#game = Game.createInitial();
+    this.#game = Game.initialStandard();
     this.#notify();
   }
 

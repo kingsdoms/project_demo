@@ -1,0 +1,8 @@
+/* src/layouts/GameLayout/GameLayout.module.css */
+.root { position: fixed; inset: 0; overflow: hidden; }
+.stage { position: absolute; inset: 0; }
+
+.topLeft,
+.topRight { position: absolute; top: var(--hud-gap); z-index: 10; }
+.topLeft { left: var(--hud-gap); }
+.topRight { right: var(--hud-gap); }

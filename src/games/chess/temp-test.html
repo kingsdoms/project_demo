@@ -13,7 +13,6 @@
     import { Board } from "./core/models/Board.js";
     import { Game } from "./core/models/Game.js";
 
-    import { Side } from "./core/constants/Side.js";
     import { PieceType } from "./core/constants/PieceType.js";
 
     // const piece = new Piece(PieceType.PAWN, Side.WHITE, 6, 0);
@@ -23,10 +22,9 @@
 
     // console.log(board);
     //////////////////////////////////ROOM TEST
-    import assert from "node:assert/strict";
-    import { Room } from "../core/engine/room.js";
-    import { Action } from "../core/models/Action.js";
-    import { Side } from "../core/constants/Side.js";
+    import { Room } from "./core/engine/room.js";
+    import { Action } from "./core/models/Action.js";
+    import { Side } from "./core/constants/Side.js";
 
     const fake = (game, action) => {
       if (action.row === 99) throw new Error("nước sai");
@@ -38,20 +36,16 @@
     room.subscribe(() => calls++);
 
     const before = room.getState();
-    assert.throws(() => room.dispatch(Action.move("x", 99, 0)));
-    assert.strictEqual(room.getState(), before); // sai thì state không đổi
-    assert.equal(calls, 0);
+    
+    room.dispatch(Action.move("ROOK-BLACK-0-0", 1, 1))
+    console.log(calls)
 
-    room.dispatch(Action.move("x", 1, 1));
-    assert.notStrictEqual(room.getState(), before);
-    assert.equal(calls, 1);
+    // room.restart();
+    // console.log(room.getState().turn)
 
-    room.restart();
-    assert.equal(room.getState().turn, Side.WHITE);
+    // room.destroy();
+    // room.dispatch(Action.move("x", 1, 1))
 
-    room.destroy();
-    assert.throws(() => room.dispatch(Action.move("x", 1, 1)));
-    console.log("room OK");
   </script>
   <!-- BOARD 8x8 (0-7)
 .   A   B   C   D   E   F   G   H
