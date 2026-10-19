@@ -11,11 +11,15 @@
     import { Rule } from "./core/models/Rule.js";
     import { Piece } from "./core/models/Piece.js";
     import { Board } from "./core/models/Board.js";
+    import { Game } from "./core/models/Game.js";
+
     import { Side } from "./core/constants/Side.js";
     import { PieceType } from "./core/constants/PieceType.js";
 
-    const piece = new Piece(PieceType.PAWN, Side.WHITE, 6, 0);
-    const board = new Board(8, 8, [piece]);
+    // const piece = new Piece(PieceType.PAWN, Side.WHITE, 6, 0);
+    // const board = new Board(8, 8, [piece]);
+
+    const board = Game.initialStandard();
 
     console.log(board);
   </script>

@@ -5,21 +5,10 @@
 import { RuleSet } from "../models/RuleSet.js";
 import { Rule } from "../models/Rule.js";
 import { PieceType } from "../constants/PieceType.js";
-import { Side } from "../constants/Side.js";
-
-// các quân được phép phong cấp
-const PROMOTE_TARGETS = Object.freeze([
-  PieceType.QUEEN,
-  PieceType.ROOK,
-  PieceType.BISHOP,
-  PieceType.KNIGHT,
-]);
-
-//Tọa độ logic: Trắng luôn đi từ hàng 7 về hàng 0, Đen đi từ hàng 0 về hàng 7.
-const LAST_RANK = Object.freeze({
-  [Side.WHITE]: 0,
-  [Side.BLACK]: 7,
-});
+import {
+  PROMOTION_RANK,
+  PROMOTION_TARGETS,
+} from "../constants/StandardDef.js";
 
 export const pieceRules = new RuleSet();
 
@@ -31,12 +20,12 @@ pieceRules.add(
     .setValueEqual("pieceType", PieceType.PAWN, "Chỉ tốt được phong cấp")
     .setCheck(
       ["piece"],
-      ({ piece }) => piece.row === LAST_RANK[piece.side],
+      ({ piece }) => piece.row === PROMOTION_RANK[piece.side],
       "Tốt chưa tới hàng cuối",
     )
     .setValueIn(
       "newPieceType",
-      PROMOTE_TARGETS,
+      PROMOTION_TARGETS,
       "Không được phong thành quân này",
     ),
 );

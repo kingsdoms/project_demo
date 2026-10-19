@@ -7,7 +7,7 @@
 // Board chỉ đọc id, row, col của quân. Không lưu chỉ mục, mọi tra cứu là duyệt danh sách quân.
 import { ErrorCode } from "../constants/ErrorCode.js";
 import { GameError } from "../../utils/GameError.js";
-import { isStr, isInt, hasKey } from "../../utils/validation.js";
+import { isInt } from "../../utils/validation.js";
 
 export class Board {
   #rows;
