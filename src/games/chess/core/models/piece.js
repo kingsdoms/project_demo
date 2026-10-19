@@ -3,8 +3,8 @@
  * @author tuanca
  */
 //quân: dữ liệu quân và bảng loại quân (PIECE_DEFS)
-import { Side } from "../../constants/Side.js";
-import { PieceType } from "../../constants/PieceType.js";
+import { Side } from "../constants/Side.js";
+import { PieceType } from "../constants/PieceType.js";
 import { GameError } from "../../utils/GameError.js";
 import { isStr, isInt, hasKey } from "../../utils/validation.js";
 
@@ -38,12 +38,6 @@ export class Piece {
       throw new GameError(ErrorCode.INVALID_POSITION, "Invalid col");
   }
 
-  // Trả về quân mới với các trường được thay đổi. dùng trong trường hợp muốn đi thử hoặc đi lại
-  // Board — trạng thái hiện tại
-  // Game tạo newPiece bằng with()
-  // Lưu lịch sử nước đi nếu cần undo
-  // Board thay oldPiece bằng newPiece
-
   static from(data) {
     return data instanceof Piece ? data : new Piece(data);
   }
@@ -60,6 +54,11 @@ export class Piece {
     };
   }
 
+  // Trả về quân mới với các trường được thay đổi. dùng trong trường hợp muốn đi thử hoặc đi lại
+  // Board — trạng thái hiện tại
+  // Game tạo newPiece bằng with()
+  // Lưu lịch sử nước đi nếu cần undo
+  // Board thay oldPiece bằng newPiece
   with(patch) {
     return new Piece({ ...this, ...patch });
   }

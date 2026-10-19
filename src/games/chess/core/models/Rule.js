@@ -4,7 +4,7 @@
  */
 
 import { GameError } from "../../utils/GameError.js";
-import { ErrorCode } from "../../constants/ErrorCode.js";
+import { ErrorCode } from "../constants/ErrorCode.js";
 // Một rule là danh sách ràng buộc. Các setter thêm ràng buộc và trả về chính rule để nối tiếp.
 // Mọi key truyền vào setter đều là bắt buộc. Thiếu key thì check và test throw "missing key" trước khi xét điều kiện.
 // Ràng buộc được giữ private. Các getter đọc lại cấu hình của từng field.

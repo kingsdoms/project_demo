@@ -3,11 +3,11 @@
 // Cần file constants/PieceType.js của bạn để chạy.
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { gameRules } from '../rules/gameRules.js';
-import { boardRules } from '../rules/boardRules.js';
-import { pieceRules, PROMOTE_TARGETS } from '../rules/pieceRules.js';
-import { outcomeRules } from '../rules/outcomeRules.js';
-import { PieceType } from '../constants/PieceType.js';
+import { gameRules } from '../core/rules/gameRules.js';
+import { boardRules } from '../core/rules/boardRules.js';
+import { pieceRules, PROMOTE_TARGETS } from '../core/rules/pieceRules.js';
+import { outcomeRules } from '../core/rules/outcomeRules.js';
+import { PieceType } from '../core/constants/PieceType.js';
 
 const ALL_KEYS = [
   'TURN', 'GAME_NOT_OVER', 'PROMOTION_PENDING',

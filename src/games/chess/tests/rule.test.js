@@ -2,8 +2,8 @@
 // Kiểm tra class Rule (các setter, check, test, getter) và RuleSet.
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { Rule } from '../core/Rule.js';
-import { RuleSet } from '../core/RuleSet.js';
+import { Rule } from '../core/models/Rule.js';
+import { RuleSet } from '../core/models/RuleSet.js';
 
 describe('Rule: setter', () => {
   it('setValueEqual đạt thì không throw, sai thì throw đúng thông báo', () => {
