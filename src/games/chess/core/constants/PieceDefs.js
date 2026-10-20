@@ -1,16 +1,17 @@
+// @ts-nocheck
 /**
  * @file PieceDefs.js
  * @author tuanca
  */
 
 import { PieceType } from "./PieceType.js";
-const P = (pattern) => Object.freeze(pattern);
 
+const P = (pattern) => Object.freeze(pattern);
 //value điểm khi bị bắt
 export const PIECE_DEFS = P({
   [PieceType.PAWN]: P({
     name: "Tốt",
-    value: 1, 
+    value: 1,
     canPromote: true,
     royal: false,
   }),

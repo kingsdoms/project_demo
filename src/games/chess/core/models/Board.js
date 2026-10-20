@@ -2,35 +2,40 @@
  * @file Board.js
  * @author tuanca
  */
-// Bàn cờ: kích thước và danh sách quân. Board chỉ biết hình học, không biết luật cờ.
-// Board bất biến: mọi thay đổi trả về Board mới, Board cũ không đổi.
-// Board chỉ đọc id, row, col của quân. Không lưu chỉ mục, mọi tra cứu là duyệt danh sách quân.
+
+import { Square } from "./Square.js";
 import { ErrorCode } from "../constants/ErrorCode.js";
 import { GameError } from "../../utils/GameError.js";
 import { isInt } from "../../utils/validation.js";
 
 export class Board {
-  #rows;
-  #cols;
-  #pieces;
-
+  /**
+   * Bàn cờ, quản lý kích thước và danh sách quân cờ.
+   *
+   * Board chỉ chịu trách nhiệm về cấu trúc và vị trí các quân trên bàn:
+   * - Lưu số hàng, số cột và danh sách quân cờ.
+   * - Tra cứu quân theo `id`, `row`, `col`; không tự kiểm tra luật đi quân.
+   * - Không lưu chỉ mục phụ; các thao tác tra cứu duyệt trực tiếp danh sách quân.
+   * - Bất biến: mọi thao tác làm thay đổi bàn cờ đều trả về một `Board` mới,
+   *   không sửa đổi `Board` hiện tại.
+   *
+   * @param {number} rows - Số hàng của bàn cờ.
+   * @param {number} cols - Số cột của bàn cờ.
+   * @param {import("./Piece.js").Piece[]} [pieces=[]] - Danh sách quân cờ ban đầu.
+   */
   constructor(rows, cols, pieces = []) {
     this.#validate(rows, cols, pieces);
-    this.#rows = rows;
-    this.#cols = cols;
-    this.#pieces = Object.freeze([...pieces]);
+    this.rows = rows;
+    this.cols = cols;
+    this.pieces = Object.freeze([...pieces]);
     Object.freeze(this);
   }
-  get rows() {
-    return this.#rows;
-  }
-  get cols() {
-    return this.#cols;
-  }
-  get pieces() {
-    return this.#pieces;
-  }
 
+  /**
+   * @param {number} rows
+   * @param {number} cols
+   * @param {import("./Piece.js").Piece[]} pieces
+   */
   #validate(rows, cols, pieces) {
     if (!isInt(rows) || rows <= 0)
       throw new GameError(ErrorCode.INVALID_ARGUMENT, "Invalid rows");
@@ -55,31 +60,53 @@ export class Board {
     }
   }
 
-  // Có nằm trong phạm vi của bàn
+  /**
+   * Kiểm tra tọa độ có nằm trong phạm vi bàn cờ không.
+   * @param {number} row
+   * @param {number} col
+   * @returns {boolean}
+   */
   inBounds(row, col) {
     return (
       isInt(row) &&
       isInt(col) &&
       row >= 0 &&
-      row < this.#rows &&
+      row < this.rows &&
       col >= 0 &&
-      col < this.#cols
+      col < this.cols
     );
   }
 
-  // Tìm quân theo vị trí, hoặc null
+  /**
+   * Tìm quân cờ tại tọa độ, trả về null nếu không có quân.
+   * @param {number} row
+   * @param {number} col
+   * @returns {import("./Piece.js").Piece | null}
+   */
   pieceAt(row, col) {
-    return this.#pieces.find((p) => p.row === row && p.col === col) ?? null;
+    return this.pieces.find((p) => p.row === row && p.col === col) ?? null;
   }
 
-  // Tìm quân có id đó, hoặc null
+  /**
+   * Tìm quân cờ theo ID, trả về null nếu không tìm thấy.
+   * @param {string} id
+   * @returns {import("./Piece.js").Piece | null}
+   */
   pieceById(id) {
-    return this.#pieces.find((p) => p.id === id) ?? null;
+    return this.pieces.find((p) => p.id === id) ?? null;
   }
 
-  // Các ô theo một hướng từ (row, col), không tính ô xuất phát.
-  // Dừng khi ra khỏi bàn, hoặc ngay sau ô có quân đầu tiên.
-  // Ô có quân được trả về kèm quân đó. Tầng luật quyết định ăn được hay bị chặn.
+  /**
+   * Duyệt các ô theo một hướng, không bao gồm ô xuất phát.
+   * Dừng khi ra ngoài bàn, vượt quá maxSteps hoặc gặp quân đầu tiên.
+   *
+   * @param {number} row
+   * @param {number} col
+   * @param {number} dRow
+   * @param {number} dCol
+   * @param {number} [maxSteps=Infinity]
+   * @returns {Square[]}
+   */
   ray(row, col, dRow, dCol, maxSteps = Infinity) {
     if (!this.inBounds(row, col))
       throw new GameError(
@@ -105,7 +132,7 @@ export class Board {
     let c = col + dCol;
     while (this.inBounds(r, c) && squares.length < maxSteps) {
       const occupant = this.pieceAt(r, c);
-      squares.push({ row: r, col: c, occupant });
+      squares.push(new Square(r, c, occupant));
       if (occupant !== null) break;
       r += dRow;
       c += dCol;
@@ -113,31 +140,46 @@ export class Board {
     return squares;
   }
 
-  // Trả về Board mới có thêm quân
+  /**
+   * Trả về Board mới có thêm quân cờ, không thay đổi Board hiện tại.
+   * @param {import("./Piece.js").Piece} piece
+   * @returns {Board}
+   */
   add(piece) {
-    return new Board(this.#rows, this.#cols, [...this.#pieces, piece]);
+    return new Board(this.rows, this.cols, [...this.pieces, piece]);
   }
 
-  // Trả về Board mới với quân cùng id được thay bằng piece.
-  // Nếu ô mới đang có quân khác thì constructor báo lỗi.
+  /**
+   * Trả về Board mới, thay quân cờ có cùng ID bằng piece.
+   * Ném lỗi nếu ô đích đang bị chiếm bởi quân cờ khác.
+   *
+   * @param {import("./Piece.js").Piece} piece
+   * @returns {Board}
+   */
   replace(piece) {
     if (this.pieceById(piece.id) === null)
       throw new GameError(
         ErrorCode.BAD_ACTION,
         `Không có quân ${piece.id} để thay`,
       );
-    const next = this.#pieces.map((p) => (p.id === piece.id ? piece : p));
-    return new Board(this.#rows, this.#cols, next);
+    const next = this.pieces.map((p) => (p.id === piece.id ? piece : p));
+    return new Board(this.rows, this.cols, next);
   }
 
-  // Trả về Board mới không còn quân có id đó
+  /**
+   * Trả về Board mới sau khi loại bỏ quân cờ có ID tương ứng.
+   * Không thay đổi Board hiện tại.
+   *
+   * @param {string} id
+   * @returns {Board}
+   */
   remove(id) {
     if (this.pieceById(id) === null)
       throw new GameError(ErrorCode.BAD_ACTION, `Không có quân ${id} để xóa`);
     return new Board(
-      this.#rows,
-      this.#cols,
-      this.#pieces.filter((p) => p.id !== id),
+      this.rows,
+      this.cols,
+      this.pieces.filter((p) => p.id !== id),
     );
   }
 }

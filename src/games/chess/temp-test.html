@@ -26,20 +26,6 @@
     import { Action } from "./core/models/Action.js";
     import { Side } from "./core/constants/Side.js";
 
-    const fake = (game, action) => {
-      if (action.row === 99) throw new Error("nước sai");
-      return game.withTurn(game.turn === Side.WHITE ? Side.BLACK : Side.WHITE);
-    };
-
-    const room = new Room(fake);
-    let calls = 0;
-    room.subscribe(() => calls++);
-
-    const before = room.getState();
-    
-    room.dispatch(Action.move("ROOK-BLACK-0-0", 1, 1))
-    console.log(calls)
-
     // room.restart();
     // console.log(room.getState().turn)
 

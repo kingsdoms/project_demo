@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @file ActionType.js
  * @author tuanca

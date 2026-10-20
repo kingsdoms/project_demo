@@ -14,11 +14,11 @@
 //   3. Gán state = next, báo cho các hàm đã subscribe
 //
 // State chỉ đổi qua dispatch và restart. Kết quả ván nằm trong game.result do reduce ghi.
-
 import { Game } from "../models/Game.js";
-import { Action } from "../models/Action.js";
 import { GameError } from "../../utils/GameError.js";
 import { ErrorCode } from "../constants/ErrorCode.js";
+
+import { reduce } from "./reduce.js";
 
 export class Room {
   #game;
@@ -26,9 +26,7 @@ export class Room {
   #listeners = new Set();
   #alive = true;
 
-  constructor(reduce) {
-    if (typeof reduce !== "function")
-      throw new GameError(ErrorCode.INVALID_ARGUMENT, "Room cần hàm reduce");
+  constructor() {
     this.#reduce = reduce;
     this.#game = Game.initialStandard();
   }
@@ -37,26 +35,29 @@ export class Room {
     return this.#game;
   }
 
+  /**
+ * Phân phối action để cập nhật trạng thái game.
+ *
+ * @param {import("../models/Action.js").Action} action - Hành động cần thực hiện.
+ */
   dispatch(action) {
     this.#assertAlive();
-    if (!(action instanceof Action))
-      throw new GameError(
-        ErrorCode.INVALID_ARGUMENT,
-        "action phải tạo bằng Action.move hoặc Action.promote",
-      );
-
     const next = this.#reduce(this.#game, action);
     if (!(next instanceof Game))
       throw new GameError(
         ErrorCode.INVALID_ARGUMENT,
         "reduce phải trả về Game",
       );
-
     this.#game = next;
     this.#notify();
   }
 
-  // Trả về hàm hủy đăng ký
+  /**
+ * Đăng ký hàm lắng nghe khi trạng thái game thay đổi.
+ *
+ * @param {() => void} fn - Hàm được gọi khi có cập nhật.
+ * @returns {() => void} Hàm dùng để hủy đăng ký lắng nghe.
+ */
   subscribe(fn) {
     this.#assertAlive();
     this.#listeners.add(fn);

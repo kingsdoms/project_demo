@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @file StandardDef.js
  * @author tuanca

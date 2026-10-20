@@ -10,6 +10,21 @@ import { GameError } from "../../utils/GameError.js";
 import { isStr, isInt, hasKey } from "../../utils/validation.js";
 
 export class Action {
+  /**
+   * Tạo một hành động trong game.
+   *
+   * `type` xác định loại hành động, `id` xác định quân cờ liên quan.
+   * `row` và `col` là tọa độ đích khi hành động cần di chuyển quân.
+   * `pieceType` là loại quân được chọn khi thực hiện phong cấp.
+   *
+   * Những tham số không áp dụng cho loại hành động tương ứng có thể để `null`.
+   *
+   * @param {string} type - Loại hành động.
+   * @param {string} id - ID quân cờ liên quan đến hành động.
+   * @param {number | null} [row=null] - Hàng đích, nếu có.
+   * @param {number | null} [col=null] - Cột đích, nếu có.
+   * @param {typeof PieceType[keyof typeof PieceType] | null} [pieceType=null] - Loại quân được chọn khi phong cấp.
+   */
   constructor(type, id, row = null, col = null, pieceType = null) {
     this.#validate(type, id, row, col, pieceType);
     this.type = type;
@@ -19,6 +34,14 @@ export class Action {
     this.pieceType = pieceType;
     Object.freeze(this);
   }
+
+  /**
+   * @param {string} type
+   * @param {string} id
+   * @param {number | null} [row=null]
+   * @param {number | null} [col=null]
+   * @param {typeof PieceType[keyof typeof PieceType] | null} [pieceType=null]
+   */
   #validate(type, id, row, col, pieceType) {
     if (!isStr(id))
       throw new GameError(ErrorCode.INVALID_ID, "Invalid piece id");
@@ -41,10 +64,19 @@ export class Action {
     }
   }
 
+  /**
+   * @param {string} id
+   * @param {number} row
+   * @param {number} col
+   */
   static move(id, row, col) {
     return new Action(ActionType.MOVE, id, row, col);
   }
 
+  /**
+   * @param {string} id
+   * @param {typeof PieceType[keyof typeof PieceType]} pieceType
+   */
   static promote(id, pieceType) {
     return new Action(ActionType.PROMOTE, id, null, null, pieceType);
   }

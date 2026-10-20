@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @file PieceType.js
  * @author tuanca

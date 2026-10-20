@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @file PieceMoveDefs.js
  * @author tuanca
@@ -6,7 +7,6 @@
 import { PieceType } from "./PieceType.js";
 import { CaptureMode } from "./CaptureMode.js";
 
-// Freeze từng pattern để object con không bị sửa sau khi load
 const P = (pattern) => Object.freeze(pattern);
 
 // Viết từ góc nhìn bên trắng: forward dương là tiến về phía đối phương.
@@ -22,6 +22,7 @@ const P = (pattern) => Object.freeze(pattern);
 // Mã chỉ có steps = 1 nên không có ô giữa để kiểm tra.
 //
 // Ô đích được kiểm tra theo capture (xem CaptureMode).
+
 
 const ROOK_MOVES = P([
   P({ forward: 1, lateral: 0, steps: Infinity, capture: CaptureMode.ANY }),
@@ -82,6 +83,7 @@ export const PIECE_MOVE_DEFS = P({
     P({ forward: -1, lateral: -1, steps: 1, capture: CaptureMode.ANY }),
   ]),
 });
+
 
 export function movesOf(piece) {
   return PIECE_MOVE_DEFS[piece.type];
