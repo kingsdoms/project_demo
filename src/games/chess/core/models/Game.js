@@ -16,14 +16,17 @@ import {
 export class Game {
   constructor({
     board,
-    turn = Side.WHITE, // future có thể tung xúc xắc chọn bên đi trước
+    turn = Side.WHITE,
     enPassantTarget = null,
     pendingPromotion = null,
+    result = null,
   }) {
     this.board = board;
     this.turn = turn;
     this.enPassantTarget = enPassantTarget;
     this.pendingPromotion = pendingPromotion;
+    this.result = result;
+
     Object.freeze(this);
   }
 

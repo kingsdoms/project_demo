@@ -8,8 +8,9 @@
 // Chỉ ném GameError khi dữ liệu không đủ để thực hiện, ví dụ nhập thành mà không có xe.
 // Đó là lỗi lập trình, không phải nước đi sai luật. Sai luật do reduce chặn từ trước.
 //
-// Quân đổi id mỗi khi đổi ô hoặc đổi loại (id gồm loại, phe, hàng, cột),
-// nên "đi một quân" là xóa quân cũ rồi thêm quân mới, không dùng Board.replace.
+// id của quân cố định từ lúc khởi tạo, không đổi khi đi hay phong cấp.
+// "Đi một quân" vẫn là xóa quân cũ rồi thêm quân mới (Board.remove + Board.add),
+// không dùng Board.replace, để không phụ thuộc cách Piece đặt id.
 
 import { GameError } from "../../utils/GameError.js";
 import { ErrorCode } from "../constants/ErrorCode.js";
@@ -18,7 +19,8 @@ import { PieceType } from "../constants/PieceType.js";
 import { Side } from "../constants/Side.js";
 import { PROMOTION_RANK } from "../constants/StandardDef.js";
 
-const opponent = (side) => (side === Side.WHITE ? Side.BLACK : Side.WHITE);
+// Phe đối diện. moveFacts dùng chung hàm này.
+export const opponent = (side) => (side === Side.WHITE ? Side.BLACK : Side.WHITE);
 
 const fail = (message) => new GameError(ErrorCode.BAD_ACTION, message);
 

@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Room test</title>
+<style>
+  :root {
+    --bg:#0e1217; --panel:#161b22; --panel2:#1c232c; --line:#2b3440;
+    --text:#d6dde6; --muted:#8793a2; --accent:#7aa2ff;
+    --ok:#3fb97a; --err:#f06262; --warn:#e6b450; --info:#6cb6ff;
+    --light:#ecebd0; --dark:#6f9150;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:12px; background:var(--bg); color:var(--text);
+         font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  h1 { font-size:15px; margin:0 0 8px; }
+  h3 { font-size:12px; margin:0 0 8px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+  h4 { font-size:12px; margin:12px 0 4px; color:var(--accent); }
+  button,input { font:inherit; color:inherit; }
+  button { background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:4px 10px; cursor:pointer; }
+  button:hover { border-color:var(--accent); }
+  button.danger:hover { border-color:var(--err); }
+  input[type=text], input[type=search] { background:#0b0f14; border:1px solid var(--line); border-radius:6px; padding:4px 8px; min-width:0; }
+  label { display:inline-flex; align-items:center; gap:4px; cursor:pointer; white-space:nowrap; }
+  pre { margin:0; padding:8px; background:#0b0f14; border:1px solid var(--line); border-radius:6px;
+        overflow:auto; max-height:260px; white-space:pre-wrap; word-break:break-word; line-height:1.35; }
+  pre.err { border-color:var(--err); color:#ffb4b4; }
+  small, .muted { color:var(--muted); }
+
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px; margin-bottom:12px; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .chip { background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:2px 10px; }
+  .chip.bad { border-color:var(--err); color:#ffb4b4; }
+  .chip.good { border-color:var(--ok); }
+  .btns, .form, .opts { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:8px; }
+
+  .layout { display:grid; grid-template-columns:minmax(340px,600px) minmax(0,1fr); gap:12px; align-items:start; }
+  @media (max-width:1000px) { .layout { grid-template-columns:1fr; } }
+
+  /* ---- Bàn cờ ---- */
+  .boardwrap { container-type:inline-size; width:100%; }
+  #board { display:grid; grid-template-columns:repeat(8,1fr); aspect-ratio:1; border:2px solid var(--line); border-radius:4px; overflow:hidden; user-select:none; }
+  .sq { position:relative; display:grid; place-items:center; cursor:pointer; }
+  .sq.light { background-color:var(--light); }
+  .sq.dark  { background-color:var(--dark); }
+  .sq.last  { background-image:linear-gradient(rgba(255,235,59,.32),rgba(255,235,59,.32)); }
+  .sq.sel   { background-image:linear-gradient(rgba(255,196,0,.62),rgba(255,196,0,.62)); }
+  .sq.hover { outline:3px solid var(--accent); outline-offset:-3px; }
+  .sq.flash { background-image:linear-gradient(rgba(240,98,98,.8),rgba(240,98,98,.8)); }
+  .pc { font-size:9.4cqw; line-height:1; pointer-events:none; }
+  .pc.w { color:#fff; text-shadow:0 0 1px #000,0 0 1px #000,0 0 2px #000,0 0 3px #000; }
+  .pc.b { color:#14161a; text-shadow:0 0 1px #fff,0 0 2px rgba(255,255,255,.6); }
+  .sq.legal::after { content:""; position:absolute; inset:0; margin:auto; width:28%; height:28%; border-radius:50%; background:rgba(20,30,40,.4); pointer-events:none; }
+  .sq.legal.cap::after { width:90%; height:90%; background:transparent; border:.8cqw solid rgba(240,98,98,.75); }
+  .rk, .fl { position:absolute; font-style:normal; font-size:2.3cqw; opacity:.7; color:#222; pointer-events:none; }
+  .rk { top:2px; left:3px; } .fl { bottom:1px; right:4px; }
+  @keyframes shake { 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
+  .sq.flash .pc { animation:shake .25s 2; }
+
+  /* ---- Nhật ký ---- */
+  .logtools { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:8px; }
+  #log { list-style:none; margin:0; padding:0; max-height:46vh; overflow:auto; border:1px solid var(--line); border-radius:6px; background:#0b0f14; }
+  .row { display:grid; grid-template-columns:44px 92px 62px minmax(0,1.2fr) minmax(0,1.5fr); gap:8px;
+         padding:3px 8px; border-left:3px solid transparent; cursor:pointer; border-bottom:1px solid #141a21; }
+  .row:hover { background:#121821; }
+  .row.sel { background:#1a2535; }
+  .row.child { padding-left:20px; }
+  .row > span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .row.s-error, .row.s-fail { border-left-color:var(--err); }
+  .row.s-pass, .row.s-ok { border-left-color:var(--ok); }
+  .row.s-pending { border-left-color:var(--warn); }
+  .row .id, .row .tm, .row .args { color:var(--muted); }
+  .badge { font-size:11px; padding:0 6px; border-radius:4px; background:var(--panel2); text-align:center; }
+  .k-mouse .badge { color:var(--info); } .k-call .badge { color:var(--accent); }
+  .k-callback .badge { color:var(--warn); } .k-check .badge { color:var(--ok); }
+  .st-ok,.st-pass { color:var(--ok); } .st-error,.st-fail { color:var(--err); }
+  .sep, .empty { padding:4px 8px; color:var(--muted); background:#10161d; font-size:11px; list-style:none; }
+  #detail { max-height:52vh; overflow:auto; }
+  .dh { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .dh button { margin-left:auto; }
+  .kv { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:2px 12px; margin:8px 0 0; }
+  .kv dt { color:var(--muted); font-size:11px; } .kv dd { margin:0 0 4px; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  details > summary { cursor:pointer; color:var(--muted); margin-top:10px; }
+  #autoList { list-style:none; margin:8px 0 0; padding:0; max-height:240px; overflow:auto; }
+  #autoList li { padding:1px 0; cursor:pointer; } #autoList .fail { color:#ffb4b4; }
+  #autoList .grp { color:var(--accent); margin-top:6px; cursor:default; }
+</style>
+</head>
+<body>
+  <h1>♞ Room test — giao diện thử nghiệm tương tác</h1>
+  <div id="chips" class="chips"></div>
+
+  <div class="layout">
+    <!-- ================= CỘT TRÁI ================= -->
+    <section>
+      <div class="panel">
+        <h3>Bàn cờ (click quân → click ô đích · chuột phải = bỏ chọn)</h3>
+        <div class="boardwrap"><div id="board"></div></div>
+        <div class="opts">
+          <label title="Click ô không hợp lệ vẫn gửi dispatch để xem engine từ chối"><input type="checkbox" id="opt-force"> Ép gửi dispatch kể cả nước sai</label>
+          <label><input type="checkbox" id="opt-flip"> Lật bàn cờ</label>
+        </div>
+        <div class="opts"><small>Ghi sự kiện chuột:</small>
+          <label><input type="checkbox" id="m-click" checked> click</label>
+          <label><input type="checkbox" id="m-dblclick" checked> dblclick</label>
+          <label><input type="checkbox" id="m-contextmenu" checked> contextmenu</label>
+          <label><input type="checkbox" id="m-mousedown"> mousedown</label>
+          <label><input type="checkbox" id="m-mouseup"> mouseup</label>
+          <label><input type="checkbox" id="m-hover"> hover</label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Gọi API trực tiếp</h3>
+        <div class="btns">
+          <button id="btn-state">getState()</button>
+          <button id="btn-restart">restart()</button>
+          <button id="btn-destroy" class="danger">destroy()</button>
+          <button id="btn-new">new Room()</button>
+          <button id="btn-sub">subscribe()</button>
+        </div>
+        <div class="form"><input id="in-move" type="text" placeholder="e2e4" size="7"><button id="btn-move">dispatch(Action.move) theo ô</button></div>
+        <div class="form"><input id="in-sq" type="text" placeholder="e2" size="4"><button id="btn-legal">getLegalMoves(quân ở ô)</button></div>
+        <div class="form">
+          <input id="raw-id" type="text" placeholder="pieceId" size="8">
+          <input id="raw-row" type="text" placeholder="row" size="3">
+          <input id="raw-col" type="text" placeholder="col" size="3">
+          <button id="btn-raw">dispatch thô (id/row/col bất kỳ)</button>
+        </div>
+        <div class="btns">
+          <button id="btn-auto">▶ Chạy test tự động (tuyến tính)</button>
+          <button id="btn-replay">⏪ Replay các nước đã đi</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Soi trạng thái</h3>
+        <small>Ô đang trỏ</small><pre id="hover" style="max-height:80px"></pre>
+        <h4>Quân đang chọn + kết quả getLegalMoves</h4><pre id="selInfo"></pre>
+        <h4>Sự kiện chuột gần nhất</h4><pre id="mouseInfo"></pre>
+        <h4>Bàn cờ dạng chữ (hoa = trắng, thường = đen)</h4><pre id="boardText"></pre>
+        <details id="stateDetails"><summary>State JSON đầy đủ</summary><pre id="stateJson"></pre></details>
+      </div>
+
+      <div class="panel">
+        <h3>Kết quả test tự động</h3>
+        <div id="autoSummary" class="muted">Chưa chạy.</div>
+        <ul id="autoList"></ul>
+      </div>
+    </section>
+
+    <!-- ================= CỘT PHẢI ================= -->
+    <section>
+      <div class="panel">
+        <h3>Lịch sử sự kiện <small id="logCount"></small></h3>
+        <div class="logtools">
+          <label><input type="checkbox" class="kind" value="mouse" checked> chuột</label>
+          <label><input type="checkbox" class="kind" value="call" checked> gọi hàm</label>
+          <label><input type="checkbox" class="kind" value="callback" checked> callback</label>
+          <label><input type="checkbox" class="kind" value="check" checked> check</label>
+          <label><input type="checkbox" class="kind" value="info" checked> ghi chú</label>
+          <label><input type="checkbox" id="onlyBad"> chỉ lỗi/fail</label>
+          <label><input type="checkbox" id="follow" checked> tự chọn dòng mới nhất</label>
+          <input id="q" type="search" placeholder="lọc theo chữ…" size="14">
+          <button id="btn-export">Export JSON</button>
+          <button id="btn-clear" class="danger">Xóa lịch sử</button>
+        </div>
+        <ul id="log"></ul>
+      </div>
+      <div class="panel">
+        <h3>Chi tiết sự kiện đang chọn</h3>
+        <div id="detail"></div>
+      </div>
+    </section>
+  </div>
+
+<script type="module">
+  import { Room } from "./core/engine/room.js";
+  import { reduce } from "./core/engine/reduce.js";
+  import { getLegalMoves } from "./core/engine/moveFacts.js";
+  import { Action } from "./core/models/Action.js";
+  import { Side } from "./core/constants/Side.js";
+  import { PieceType } from "./core/constants/PieceType.js";
+
+  /* =====================================================================
+   * 1. Tiện ích
+   * ===================================================================== */
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  const pad = (n, l = 2) => String(n).padStart(l, "0");
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const clock = (iso) => { const d = new Date(iso); return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`; };
+
+  const FILES = "abcdefgh";
+  // "e2" → { row: 6, col: 4 }. Hàng 0 là phía đen, hàng 7 là phía trắng.
+  const sq = (n) => ({ row: 8 - Number(n[1]), col: n.charCodeAt(0) - 97 });
+  const sqName = ({ row, col }) => `${FILES[col]}${8 - row}`;
+  const isSquareText = (s) => /^[a-h][1-8]$/.test(s);
+  const sameSq = (a, b) => !!a && !!b && a.row === b.row && a.col === b.col;
+
+  const enumName = (E, v) => Object.entries(E).find(([, x]) => x === v)?.[0] ?? String(v);
+  const sideName = (s) => enumName(Side, s);
+  const typeName = (t) => enumName(PieceType, t);
+
+  const LETTER = {
+    [PieceType.PAWN]: "p", [PieceType.KNIGHT]: "n", [PieceType.BISHOP]: "b",
+    [PieceType.ROOK]: "r", [PieceType.QUEEN]: "q", [PieceType.KING]: "k",
+  };
+  const GLYPH = {
+    [PieceType.PAWN]: "♟", [PieceType.KNIGHT]: "♞", [PieceType.BISHOP]: "♝",
+    [PieceType.ROOK]: "♜", [PieceType.QUEEN]: "♛", [PieceType.KING]: "♚",
+  };
+
+  function boardToText(game) {
+    const { board } = game;
+    const lines = [];
+    for (let row = 0; row < board.rows; row++) {
+      const cells = [];
+      for (let col = 0; col < board.cols; col++) {
+        const p = board.pieceAt(row, col);
+        const letter = p === null ? "." : LETTER[p.type];
+        cells.push(p !== null && p.side === Side.WHITE ? letter.toUpperCase() : letter);
+      }
+      lines.push(`${8 - row}  ${cells.join(" ")}`);
+    }
+    lines.push("   A B C D E F G H");
+    return lines.join("\n");
+  }
+
+  // JSON.stringify an toàn: không vỡ khi gặp vòng lặp, Error, Map, Set, function…
+  function safeStringify(v, space) {
+    const stack = [];
+    return JSON.stringify(v, function (key, val) {
+      if (val instanceof Error) val = { name: val.name, message: val.message, stack: val.stack };
+      else if (val instanceof Map) val = { __map: [...val] };
+      else if (val instanceof Set) val = { __set: [...val] };
+      else if (typeof val === "function") return `[Function ${val.name || "anonymous"}]`;
+      else if (typeof val === "bigint" || typeof val === "symbol") return String(val);
+      if (val !== null && typeof val === "object") {
+        while (stack.length && stack[stack.length - 1] !== this) stack.pop();
+        if (stack.includes(val)) return "[Circular]";
+        stack.push(val);
+      }
+      return val;
+    }, space);
+  }
+
+  // Mỗi object state được đánh số để biết state có bị thay object hay không
+  const stateIds = new WeakMap();
+  let nextStateId = 1;
+  const stateId = (s) => {
+    if (!s || typeof s !== "object") return null;
+    if (!stateIds.has(s)) stateIds.set(s, nextStateId++);
+    return stateIds.get(s);
+  };
+  const isState = (v) => !!v && typeof v === "object" && !!v.board && !!v.board.pieces && "turn" in v;
+
+  function summarize(state) {
+    if (!isState(state)) return null;
+    return {
+      stateId: stateId(state),
+      turn: sideName(state.turn),
+      result: snap(state.result) ?? null,
+      pieces: state.board.pieces.length,
+      board: boardToText(state),
+    };
+  }
+
+  // Chuyển giá trị bất kỳ thành dữ liệu thuần (lưu được vào localStorage)
+  function snap(v) {
+    if (v === undefined) return undefined;
+    if (isState(v)) return { __state: true, ...summarize(v) };
+    let s;
+    try { s = safeStringify(v); } catch (err) { return `[không serialize được: ${err.message}]`; }
+    if (s === undefined) return undefined;
+    if (s.length > 4000) return { __truncated: true, length: s.length, preview: s.slice(0, 4000) };
+    return JSON.parse(s);
+  }
+
+  function describePiece(p, square) {
+    if (!p) return null;
+    const plain = snap(p);
+    return { ...(typeof plain === "object" ? plain : { value: plain }),
+             _side: sideName(p.side), _type: typeName(p.type), ...(square ? { _square: sqName(square) } : {}) };
+  }
+
+  const showMoves = (v) => snap(Array.isArray(v) ? { count: v.length, squares: v.map(sqName), raw: v } : v);
+
+  function peekState(r) { try { return r?.getState(); } catch { return undefined; } }
+
+  /* =====================================================================
+   * 2. Lịch sử sự kiện (lưu localStorage)
+   * ===================================================================== */
+  const STORE_KEY = "room-test-history-v1";
+  const MAX_ENTRIES = 600;
+  const VIEW_LIMIT = 300;
+  const SESSION = Date.now();
+  const callStack = [];   // id của sự kiện đang chạy → để gắn "parent"
+
+  function loadHistory() {
+    try {
+      const a = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
+      return Array.isArray(a) ? a.map((e) => (e.status === "pending" ? { ...e, status: "error", result: "(bị ngắt giữa chừng)" } : e)) : [];
+    } catch { return []; }
+  }
+  let events = loadHistory();
+  let nextId = events.reduce((m, e) => Math.max(m, e.id || 0), 0) + 1;
+
+  let saveTimer = 0;
+  const saveSoon = () => { clearTimeout(saveTimer); saveTimer = setTimeout(saveNow, 400); };
+  function saveNow() {
+    for (let keep = events.length; keep > 0; keep = Math.floor(keep / 2)) {
+      try { localStorage.setItem(STORE_KEY, safeStringify(events.slice(-keep))); return; } catch { /* quota → giảm bớt */ }
+    }
+  }
+  const touch = () => { saveSoon(); scheduleLog(); };
+
+  function begin(kind, label, data = {}) {
+    const e = {
+      id: nextId++, session: SESSION, time: new Date().toISOString(), t: Math.round(performance.now()),
+      kind, label, status: "ok", source: "ui", parent: callStack.at(-1) ?? null, ...data,
+    };
+    events.push(e);
+    if (events.length > MAX_ENTRIES) events.splice(0, events.length - MAX_ENTRIES);
+    touch();
+    return e;
+  }
+  const note = (text, status = "info", data = {}) => begin("info", text, { status, ...data });
+
+  /**
+   * Bọc mọi lời gọi hàm cần test: ghi tên hàm, tham số, kết quả/lỗi, thời gian chạy,
+   * state trước/sau và state có bị thay object hay không.
+   */
+  function trace(fn, args, run, { source = "ui", target = () => room, show = snap } = {}) {
+    const before = peekState(target());
+    const e = begin("call", fn, { fn, source, args: snap(args), status: "pending", before: summarize(before) });
+    callStack.push(e.id);
+    const t = performance.now();
+    let value, error = null;
+    try { value = run(); } catch (err) { error = err; }
+    const ms = Math.round((performance.now() - t) * 1000) / 1000;
+    callStack.pop();
+    const after = peekState(target());
+    let shown; try { shown = error ? undefined : show(value); } catch { shown = snap(value); }
+    Object.assign(e, {
+      ms, status: error ? "error" : "ok", result: shown,
+      error: error ? snap(error) : null, after: summarize(after),
+      sameState: before !== undefined && before === after,
+    });
+    touch();
+    return { ok: !error, value, error, entry: e };
+  }
+
+  /* =====================================================================
+   * 3. Trạng thái giao diện
+   * ===================================================================== */
+  let room = null, unsub = null, subCalls = 0, destroyed = false;
+  let lastState = null;
+  let selected = null;      // { id, side, square, piece, legal[], error }
+  let lastMove = null, flashSq = null, flashTimer = 0;
+  let hoverSq = null, lastMouse = null;
+  let moveLog = [];         // dùng cho replay: { from, to, ok }
+  let replaying = false;
+  let selectedId = null, lastSig = "", logRaf = 0;
+
+  const boardEl = $("board");
+
+  function curState() {
+    const s = peekState(room);
+    if (s) lastState = s;
+    return lastState;
+  }
+
+  /* =====================================================================
+   * 4. Các thao tác có gọi vào engine
+   * ===================================================================== */
+  function newRoom(source = "ui") {
+    trace("new Room(reduce)", { reducer: "reduce" }, () => { room = new Room(reduce); return room; },
+          { source, show: () => snap("[Room instance]") });
+    destroyed = false; unsub = null; subCalls = 0;
+    selected = null; lastMove = null; moveLog = []; lastState = null;
+    subscribe();
+    updateAll();
+  }
+
+  function subscribe() {
+    if (unsub) return note("Đã subscribe rồi — hãy gọi off() trước", "error");
+    const r = trace("room.subscribe", { listener: "<function>" }, () => room.subscribe((...cb) => {
+      subCalls++;
+      begin("callback", `listener được gọi (lần ${subCalls})`, {
+        source: "callback", args: cb.length ? snap(cb) : [], after: summarize(peekState(room)),
+      });
+      renderChips();
+    }));
+    if (r.ok) unsub = r.value;
+  }
+
+  function unsubscribe() {
+    const f = unsub;
+    trace("unsubscribe()  // hàm off do subscribe trả về", [], () => f());
+    unsub = null;
+  }
+
+  function doRestart(source = "ui") {
+    const r = trace("room.restart", [], () => room.restart(), { source });
+    selected = null; lastMove = null; moveLog = [];
+    updateAll();
+    return r;
+  }
+
+  function doDestroy() {
+    const r = trace("room.destroy", [], () => room.destroy());
+    if (r.ok) destroyed = true;
+    selected = null;
+    updateAll();
+  }
+
+  function selectPiece(piece, row, col) {
+    const st = curState();
+    const from = { row, col };
+    const r = trace("getLegalMoves",
+      { state: `#${stateId(st)}`, piece: describePiece(piece, from) },
+      () => getLegalMoves(st, piece), { show: showMoves });
+    const legal = r.ok && Array.isArray(r.value) ? r.value : [];
+    selected = { id: piece.id, side: piece.side, square: from, piece: describePiece(piece, from), legal,
+                 error: r.error ? r.error.message : null };
+    return `chọn ${sideName(piece.side)} ${typeName(piece.type)} @ ${sqName(from)} → getLegalMoves trả ${legal.length} nước`
+         + (r.error ? ` (LỖI: ${r.error.message})` : "");
+  }
+
+  function doMove(piece, from, to, source = "ui") {
+    const squares = `${sqName(from)}→${sqName(to)}`;
+    const a = trace("Action.move", { pieceId: piece.id, row: to.row, col: to.col, squares },
+                    () => Action.move(piece.id, to.row, to.col), { source });
+    if (!a.ok) { flash(to); return { ok: false, error: a.error }; }
+    const d = trace("room.dispatch", { action: a.value, squares }, () => room.dispatch(a.value), { source });
+    moveLog.push({ from, to, ok: d.ok });
+    if (d.ok) { lastMove = { from, to }; selected = null; } else flash(to);
+    return d;
+  }
+
+  function flash(s) {
+    flashSq = s;
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(() => {
+      flashSq = null;
+      boardEl.querySelector(".sq.flash")?.classList.remove("flash");
+    }, 700);
+  }
+
+  function consoleMove(text) {
+    text = text.trim().toLowerCase();
+    if (!/^[a-h][1-8][a-h][1-8]$/.test(text)) return note(`"${text}" sai định dạng (cần dạng e2e4)`, "error");
+    const from = sq(text.slice(0, 2)), to = sq(text.slice(2, 4));
+    const piece = curState()?.board.pieceAt(from.row, from.col);
+    if (!piece) return note(`Không có quân ở ${text.slice(0, 2)} → không gọi dispatch`, "error");
+    doMove(piece, from, to, "console");
+    updateAll();
+  }
+
+  function consoleLegal(text) {
+    text = text.trim().toLowerCase();
+    if (!isSquareText(text)) return note(`"${text}" không phải ô hợp lệ (vd e2)`, "error");
+    const s = sq(text);
+    const piece = curState()?.board.pieceAt(s.row, s.col);
+    if (!piece) return note(`Ô ${text} trống → không có quân để gọi getLegalMoves`, "error");
+    selectPiece(piece, s.row, s.col);
+    updateAll();
+  }
+
+  function findSquareById(st, id) {
+    for (let r = 0; r < st.board.rows; r++)
+      for (let c = 0; c < st.board.cols; c++)
+        if (st.board.pieceAt(r, c)?.id === id) return { row: r, col: c };
+    return null;
+  }
+
+  function rawDispatch() {
+    const parse = (v) => (/^-?\d+$/.test(v.trim()) ? Number(v) : v.trim());
+    const id = parse($("raw-id").value), row = Number($("raw-row").value), col = Number($("raw-col").value);
+    const from = curState() ? findSquareById(curState(), id) : null;
+    const a = trace("Action.move", { pieceId: id, row, col }, () => Action.move(id, row, col), { source: "console" });
+    if (a.ok) {
+      const d = trace("room.dispatch", { action: a.value, note: "dispatch thô" }, () => room.dispatch(a.value), { source: "console" });
+      if (from) moveLog.push({ from, to: { row, col }, ok: d.ok });
+      if (d.ok) { selected = null; if (from) lastMove = { from, to: { row, col } }; }
+    }
+    updateAll();
+  }
+
+  async function replay() {
+    if (replaying) return;
+    const seq = moveLog.map((m) => ({ ...m }));
+    if (!seq.length) return note("Chưa có thao tác nào để replay (hãy đi vài nước trước)", "error");
+    replaying = true;
+    const head = begin("info", `▶ Replay ${seq.length} thao tác dispatch`, { source: "replay" });
+    let mismatch = 0;
+    try {
+      doRestart("replay");
+      for (const m of seq) {
+        await sleep(400);
+        const piece = curState()?.board.pieceAt(m.from.row, m.from.col);
+        if (!piece) { mismatch++; note(`Replay: không có quân ở ${sqName(m.from)}`, "error", { source: "replay" }); continue; }
+        const d = doMove(piece, m.from, m.to, "replay");
+        if (d.ok !== m.ok) mismatch++;
+        updateAll();
+      }
+    } finally { replaying = false; }
+    head.result = mismatch ? `${mismatch} thao tác cho kết quả KHÁC lần đầu` : "mọi kết quả giống lần đầu (tất định)";
+    head.status = mismatch ? "error" : "ok";
+    touch(); updateAll();
+  }
+
+  /* =====================================================================
+   * 5. Sự kiện chuột trên bàn cờ
+   * ===================================================================== */
+  const squareOf = (ev) => {
+    const el = ev.target.closest?.(".sq");
+    return el ? { row: +el.dataset.row, col: +el.dataset.col } : null;
+  };
+
+  function mouseData(ev, s) {
+    const rect = boardEl.getBoundingClientRect();
+    const piece = s ? curState()?.board.pieceAt(s.row, s.col) : null;
+    return {
+      event: ev.type, button: ev.button, buttons: ev.buttons, detail: ev.detail,
+      client: { x: ev.clientX, y: ev.clientY },
+      inBoard: { x: Math.round(ev.clientX - rect.left), y: Math.round(ev.clientY - rect.top) },
+      modifiers: { shift: ev.shiftKey, ctrl: ev.ctrlKey, alt: ev.altKey, meta: ev.metaKey },
+      isTrusted: ev.isTrusted,
+      square: s ? { name: sqName(s), row: s.row, col: s.col } : null,
+      piece: describePiece(piece, s),
+    };
+  }
+
+  function handleClick(row, col) {
+    if (replaying) return "bỏ qua: đang replay";
+    const st = curState();
+    if (!st) return "bỏ qua: chưa có state";
+    const piece = st.board.pieceAt(row, col);
+    const target = { row, col };
+
+    if (selected) {
+      if (sameSq(selected.square, target)) { selected = null; return "bỏ chọn (click lại đúng quân đang chọn)"; }
+      const isLegal = selected.legal.some((m) => sameSq(m, target));
+      const sameSide = piece && piece.side === selected.side;
+      if (isLegal) {
+        const d = doMove(st.board.pieceAt(selected.square.row, selected.square.col) ?? { id: selected.id },
+                         selected.square, target);
+        return d.ok ? `dispatch thành công ${sqName(selected.square ?? target)}` : `dispatch BỊ TỪ CHỐI: ${d.error?.message}`;
+      }
+      if (document.getElementById("opt-force").checked && !sameSide) {
+        const from = selected.square;
+        const d = doMove({ id: selected.id }, from, target);
+        return d.ok ? "ép dispatch: engine CHẤP NHẬN (!)" : `ép dispatch: engine từ chối → ${d.error?.message}`;
+      }
+      if (piece) return selectPiece(piece, row, col);
+      selected = null;
+      return "ô đích không nằm trong getLegalMoves → bỏ chọn, KHÔNG gọi dispatch";
+    }
+    if (piece) return selectPiece(piece, row, col);
+    return "ô trống, không có gì để chọn";
+  }
+
+  function onMouse(ev, type) {
+    const s = squareOf(ev);
+    lastMouse = mouseData(ev, s);
+    if (type === "contextmenu") ev.preventDefault();
+    renderHover();
+
+    const me = $("m-" + type)?.checked
+      ? begin("mouse", `${type}${s ? " @ " + sqName(s) : ""}`, { source: "mouse", args: lastMouse })
+      : null;
+    if (me) callStack.push(me.id);
+    let outcome = null;
+    try {
+      if (type === "click" && s) outcome = handleClick(s.row, s.col);
+      else if (type === "contextmenu") outcome = selected ? ((selected = null), "bỏ chọn quân (chuột phải)") : "không có quân đang chọn";
+    } catch (err) {
+      outcome = `LỖI trong handler: ${err.message}`;
+      console.error(err);
+    } finally { if (me) callStack.pop(); }
+    if (me) { me.result = outcome ?? "(chỉ ghi nhận sự kiện)"; touch(); }
+    if (type === "click" || type === "contextmenu") updateAll();
+  }
+
+  for (const type of ["click", "dblclick", "contextmenu", "mousedown", "mouseup"])
+    boardEl.addEventListener(type, (ev) => onMouse(ev, type));
+
+  boardEl.addEventListener("mouseover", (ev) => {
+    const s = squareOf(ev);
+    if (!s || sameSq(hoverSq, s)) return;
+    hoverSq = s;
+    lastMouse = mouseData(ev, s);
+    paintHover(); renderHover();
+    if ($("m-hover").checked)
+      begin("mouse", `hover @ ${sqName(s)}`, { source: "mouse", args: lastMouse, result: "(chỉ ghi nhận sự kiện)" });
+  });
+  boardEl.addEventListener("mouseleave", () => { hoverSq = null; paintHover(); renderHover(); });
+
+  /* =====================================================================
+   * 6. Vẽ giao diện
+   * ===================================================================== */
+  function paintHover() {
+    boardEl.querySelector(".sq.hover")?.classList.remove("hover");
+    if (hoverSq) boardEl.querySelector(`.sq[data-row="${hoverSq.row}"][data-col="${hoverSq.col}"]`)?.classList.add("hover");
+  }
+
+  function renderBoard() {
+    const st = curState();
+    const order = [0, 1, 2, 3, 4, 5, 6, 7];
+    if ($("opt-flip").checked) order.reverse();
+    let html = "";
+    for (let ri = 0; ri < 8; ri++) {
+      for (let ci = 0; ci < 8; ci++) {
+        const row = order[ri], col = order[ci], cell = { row, col };
+        const piece = st ? st.board.pieceAt(row, col) : null;
+        const cls = ["sq", (row + col) % 2 ? "dark" : "light"];
+        if (lastMove && (sameSq(lastMove.from, cell) || sameSq(lastMove.to, cell))) cls.push("last");
+        if (selected && sameSq(selected.square, cell)) cls.push("sel");
+        if (selected?.legal.some((m) => sameSq(m, cell))) cls.push("legal", ...(piece ? ["cap"] : []));
+        if (sameSq(flashSq, cell)) cls.push("flash");
+        html += `<div class="${cls.join(" ")}" data-row="${row}" data-col="${col}" title="${sqName(cell)}">`
+          + (piece ? `<span class="pc ${piece.side === Side.WHITE ? "w" : "b"}">${GLYPH[piece.type] ?? "?"}\uFE0E</span>` : "")
+          + (ci === 0 ? `<i class="rk">${8 - row}</i>` : "")
+          + (ri === 7 ? `<i class="fl">${FILES[col]}</i>` : "")
+          + `</div>`;
+      }
+    }
+    boardEl.innerHTML = html;
+    paintHover();
+  }
+
+  function renderChips() {
+    const st = curState();
+    const chip = (k, v, cls = "") => `<span class="chip ${cls}">${k}: <b>${esc(v)}</b></span>`;
+    $("chips").innerHTML = [
+      chip("Room", destroyed ? "đã destroy()" : "đang chạy", destroyed ? "bad" : "good"),
+      chip("State", st ? `#${stateId(st)}` : "—"),
+      chip("Lượt", st ? sideName(st.turn) : "—"),
+      chip("Kết quả", st?.result ? safeStringify(st.result) : "chưa có", st?.result ? "bad" : ""),
+      chip("Số quân", st ? st.board.pieces.length : "—"),
+      chip("Subscribe", unsub ? `on · ${subCalls} lần gọi` : `off · ${subCalls} lần gọi`, unsub ? "good" : ""),
+      chip("Lịch sử", `${events.length} sự kiện`),
+    ].join("");
+  }
+
+  function renderInspector() {
+    const st = curState();
+    $("selInfo").textContent = selected
+      ? safeStringify({ piece: selected.piece, getLegalMoves: selected.legal.map(sqName),
+                        raw: selected.legal, error: selected.error }, 2)
+      : "(chưa chọn quân)";
+    $("boardText").textContent = st ? boardToText(st) : "(không có state)";
+    $("stateJson").textContent = $("stateDetails").open && st ? safeStringify(st, 2) : "(mở mục này để xem)";
+    $("btn-sub").textContent = unsub ? "off() — hủy subscribe" : "subscribe()";
+  }
+  $("stateDetails").addEventListener("toggle", renderInspector);
+
+  function renderHover() {
+    const st = curState();
+    const piece = hoverSq && st ? st.board.pieceAt(hoverSq.row, hoverSq.col) : null;
+    $("hover").textContent = hoverSq
+      ? `${sqName(hoverSq)}  (row ${hoverSq.row}, col ${hoverSq.col})\n` + (piece ? safeStringify(describePiece(piece, hoverSq)) : "ô trống")
+      : "—";
+    $("mouseInfo").textContent = lastMouse ? safeStringify(lastMouse, 2) : "(chưa có sự kiện chuột)";
+  }
+
+  function updateAll() { curState(); renderChips(); renderBoard(); renderInspector(); renderHover(); }
+
+  /* ---- Nhật ký ---- */
+  const brief = (v, n) => {
+    if (v === undefined) return "undefined";
+    if (v && v.__state) return `state #${v.stateId} (lượt ${v.turn}, ${v.pieces} quân)`;
+    const s = typeof v === "string" ? v : safeStringify(v);
+    return s.length > n ? s.slice(0, n - 1) + "…" : s;
+  };
+
+  function mainText(e) {
+    return e.kind === "call"
+      ? `<b>${esc(e.fn)}</b><span class="args">(${esc(brief(e.args ?? "", 90))})</span>`
+      : esc(e.label);
+  }
+  function resText(e) {
+    switch (e.kind) {
+      case "call": {
+        if (e.status === "pending") return "…";
+        const ids = e.before && e.after ? ` · #${e.before.stateId}${e.before.stateId === e.after.stateId ? " = " : " → "}#${e.after.stateId}` : "";
+        const body = e.status === "error" ? `✖ ${esc(e.error?.message ?? "lỗi")}` : `→ ${esc(brief(e.result, 70))}`;
+        return `${body}${ids} · ${e.ms}ms`;
+      }
+      case "mouse": return `→ ${esc(e.result ?? "")}`;
+      case "callback": return `state #${e.after?.stateId ?? "?"}`;
+      case "check": return e.status === "pass" ? "✅ PASS" : "❌ FAIL";
+      default: return "";
+    }
+  }
+  function rowHtml(e) {
+    const cls = ["row", `k-${e.kind}`, `s-${e.status}`];
+    if (e.id === selectedId) cls.push("sel");
+    if (e.parent) cls.push("child");
+    return `<li class="${cls.join(" ")}" data-id="${e.id}">`
+      + `<span class="id">#${e.id}</span><span class="tm">${clock(e.time)}</span><span class="badge">${e.kind}</span>`
+      + `<span class="main">${mainText(e)}</span><span class="res">${resText(e)}</span></li>`;
+  }
+
+  function visibleEntries() {
+    const kinds = new Set([...document.querySelectorAll(".kind:checked")].map((x) => x.value));
+    const q = $("q").value.trim().toLowerCase();
+    const onlyBad = $("onlyBad").checked;
+    return events.filter((e) => {
+      if (!kinds.has(e.kind)) return false;
+      if (onlyBad && e.status !== "error" && e.status !== "fail") return false;
+      if (q) {
+        const hay = `${e.label} ${e.fn ?? ""} ${e.source} ${safeStringify(e.args) ?? ""} ${safeStringify(e.result) ?? ""}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+
+  const scheduleLog = () => { if (!logRaf) logRaf = requestAnimationFrame(() => { logRaf = 0; renderLog(); }); };
+
+  function renderLog() {
+    const list = $("log");
+    const follow = $("follow").checked;
+    const nearBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 40;
+    const all = visibleEntries();
+    const shown = all.slice(-VIEW_LIMIT);
+    if (follow && shown.length) selectedId = shown.at(-1).id;
+    let html = "", prev = null;
+    for (const e of shown) {
+      if (e.session !== prev) {
+        html += `<li class="sep">── phiên ${new Date(e.session).toLocaleString("vi-VN")}${e.session === SESSION ? " (hiện tại)" : " (đã lưu)"} ──</li>`;
+        prev = e.session;
+      }
+      html += rowHtml(e);
+    }
+    list.innerHTML = html || `<li class="empty">Chưa có sự kiện nào</li>`;
+    $("logCount").textContent = `— hiển thị ${shown.length}/${all.length} · lưu ${events.length}`;
+    if (follow || nearBottom) list.scrollTop = list.scrollHeight;
+    renderChips();
+    renderDetail();
+  }
+
+  function selectEntry(id) {
+    selectedId = id;
+    $("follow").checked = false;
+    lastSig = "";
+    renderLog();
+    $("log").querySelector(".row.sel")?.scrollIntoView({ block: "nearest" });
+  }
+
+  const jsonText = (v) => (v === undefined ? "undefined" : typeof v === "string" ? v : JSON.stringify(v, null, 2));
+  function pre(v) {
+    if (v && v.__state) {
+      const { board, ...rest } = v;
+      return `<pre>${esc(jsonText(rest))}</pre><pre style="margin-top:4px">${esc(board)}</pre>`;
+    }
+    return `<pre>${esc(jsonText(v))}</pre>`;
+  }
+  const kv = (k, v) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`;
+  const stateBox = (title, s) => s
+    ? `<div><small>${title}: state #${s.stateId} · lượt ${esc(s.turn)} · ${s.pieces} quân · kết quả ${esc(s.result ? JSON.stringify(s.result) : "chưa có")}</small><pre>${esc(s.board)}</pre></div>`
+    : `<div><small>${title}: (không có state)</small></div>`;
+
+  function renderDetail() {
+    const box = $("detail");
+    const e = events.find((x) => x.id === selectedId);
+    if (!e) { box.innerHTML = `<p class="muted">Chọn một dòng trong lịch sử để xem chi tiết đầy đủ.</p>`; lastSig = ""; return; }
+    const sig = [e.id, e.status, e.ms ?? "", e.result === undefined ? 0 : 1].join("|");
+    if (sig === lastSig) return;
+    lastSig = sig;
+
+    const d = new Date(e.time);
+    const p = [];
+    p.push(`<div class="dh"><b>#${e.id} · ${esc(e.fn || e.label)}</b><span class="badge st-${e.status}">${e.status}</span><button data-copy>Copy JSON</button></div>`);
+    p.push(`<dl class="kv">${kv("loại", e.kind)}${kv("nguồn", e.source)}${kv("thời điểm", d.toLocaleString("vi-VN") + "." + pad(d.getMilliseconds(), 3))}`
+      + `${kv("ms từ khi load trang", e.t)}${e.ms !== undefined ? kv("thời gian chạy", e.ms + " ms") : ""}`
+      + `${e.parent ? kv("do sự kiện", "#" + e.parent) : ""}${e.sameState !== undefined ? kv("state giữ nguyên object?", e.sameState ? "CÓ (===)" : "không (object mới)") : ""}</dl>`);
+    if (e.args !== undefined) p.push(`<h4>${e.kind === "mouse" ? "Thông số sự kiện chuột" : "Tham số truyền vào"}</h4>${pre(e.args)}`);
+    if (e.status !== "pending" && (e.result !== undefined || e.kind === "call"))
+      p.push(`<h4>${e.kind === "mouse" ? "Giao diện đã xử lý" : "Giá trị trả về"}</h4>${pre(e.result)}`);
+    if (e.error) p.push(`<h4>Lỗi ném ra</h4><pre class="err">${esc(e.error.name)}: ${esc(e.error.message)}\n${esc(e.error.stack ?? "")}</pre>`);
+    if (e.before || e.after) p.push(`<h4>State trước → sau</h4><div class="cols">${stateBox("Trước", e.before)}${stateBox("Sau", e.after)}</div>`);
+    p.push(`<details><summary>JSON gốc của sự kiện</summary>${pre(e)}</details>`);
+    box.innerHTML = p.join("");
+  }
+
+  $("log").addEventListener("click", (ev) => {
+    const li = ev.target.closest("li[data-id]");
+    if (li) selectEntry(+li.dataset.id);
+  });
+  $("detail").addEventListener("click", (ev) => {
+    if (!ev.target.matches("[data-copy]")) return;
+    const e = events.find((x) => x.id === selectedId);
+    navigator.clipboard?.writeText(JSON.stringify(e, null, 2)).then(() => { ev.target.textContent = "Đã copy ✓"; });
+  });
+  for (const el of document.querySelectorAll(".kind, #onlyBad, #q, #follow")) {
+    el.addEventListener("input", () => { lastSig = ""; scheduleLog(); });
+  }
+
+  /* =====================================================================
+   * 7. Test tự động (bộ test tuyến tính cũ, chạy trên Room riêng)
+   * ===================================================================== */
+  function renderTestResults(results) {
+    const checks = results.filter((r) => "pass" in r);
+    const failed = checks.filter((r) => !r.pass).length;
+    $("autoSummary").innerHTML = checks.length
+      ? (failed === 0 ? `<b class="st-ok">TẤT CẢ ${checks.length} KIỂM TRA ĐỀU PASS</b>` : `<b class="st-error">${failed}/${checks.length} KIỂM TRA THẤT BẠI</b>`)
+      : "Chưa chạy.";
+    $("autoList").innerHTML = results.map((r) => r.group
+      ? `<li class="grp">${esc(r.group)}</li>`
+      : `<li class="${r.pass ? "pass" : "fail"}" data-id="${r.id}">${r.pass ? "✅" : "❌"} ${esc(r.label)}</li>`).join("");
+  }
+  $("autoList").addEventListener("click", (ev) => {
+    const li = ev.target.closest("li[data-id]");
+    if (li) selectEntry(+li.dataset.id);
+  });
+
+  function runAutoTests() {
+    const SRC = "auto-test";
+    let r = null, calls = 0, lastSeen = null;
+    const results = [];
+    const T = (fn, args, run, opts = {}) => trace(fn, args, run, { source: SRC, target: () => r, ...opts });
+    const S = () => { try { return (lastSeen = r.getState()); } catch { return lastSeen; } };
+    const at = (state, s) => state.board.pieceAt(sq(s).row, sq(s).col);
+    const group = (title) => { results.push({ group: title }); begin("info", title, { source: SRC }); };
+    const check = (label, cond) => {
+      const e = begin("check", label, { source: SRC, status: cond ? "pass" : "fail" });
+      results.push({ label, pass: !!cond, id: e.id });
+    };
+    const tmove = (text) => {
+      const from = sq(text.slice(0, 2)), to = sq(text.slice(2, 4));
+      const piece = S()?.board.pieceAt(from.row, from.col);
+      if (!piece) { note(`Không có quân ở ${text.slice(0, 2)}`, "error", { source: SRC }); return { ok: false }; }
+      const a = T("Action.move", { pieceId: piece.id, row: to.row, col: to.col, squares: text }, () => Action.move(piece.id, to.row, to.col));
+      return T("room.dispatch", { action: a.value, squares: text }, () => r.dispatch(a.value));
+    };
+
+    const head = begin("info", "▶ Bắt đầu bộ test tuyến tính (Room riêng, không ảnh hưởng bàn cờ ở trên)", { source: SRC });
+    try {
+      group("1. Khởi tạo");
+      T("new Room(reduce)", { reducer: "reduce" }, () => (r = new Room(reduce)), { show: () => snap("[Room instance]") });
+      const off = T("room.subscribe", { listener: "<function>" }, () => r.subscribe((...cb) => {
+        calls++;
+        begin("callback", `listener (auto-test) lần ${calls}`, { source: SRC, args: snap(cb), after: summarize(peekState(r)) });
+      })).value;
+      const start = T("room.getState", [], () => r.getState()).value;
+      check("có 32 quân", start.board.pieces.length === 32);
+      check("trắng đi trước", start.turn === Side.WHITE);
+      check("chưa có kết quả", start.result === null);
+      const e2 = at(start, "e2");
+      const e2Moves = (T("getLegalMoves", { state: `#${stateId(start)}`, piece: describePiece(e2, sq("e2")) },
+                         () => getLegalMoves(start, e2), { show: showMoves }).value ?? []).map(sqName).sort();
+      check("tốt e2 có đúng 2 nước (e3, e4)", e2Moves.join() === "e3,e4");
+
+      group("2. Đi 7 nước: e4 e5 Nf3 Nc6 Bc4 Nf6 O-O");
+      const okAll = ["e2e4", "e7e5", "g1f3", "b8c6", "f1c4", "g8f6", "e1g1"].map(tmove);
+      check("cả 7 nước đều được chấp nhận", okAll.every((x) => x.ok));
+      const state = S();
+      check("subscribe được gọi 7 lần", calls === 7);
+      check("tới lượt đen", state.turn === Side.BLACK);
+      check("vua trắng ở g1, xe ở f1 (đã nhập thành)",
+        at(state, "g1")?.type === PieceType.KING && at(state, "f1")?.type === PieceType.ROOK);
+      check("id quân không đổi sau khi đi", e2.id === at(state, "e4")?.id);
+
+      group("3. Nước sai: state phải giữ nguyên");
+      const before = S(), callsBefore = calls;
+      for (const [m, why] of [["a2a3", "quân trắng khi tới lượt đen"], ["a8a5", "xe đen bị tốt a7 chặn"], ["e5e3", "tốt đi 2 ô khi đã đi rồi"]])
+        check(`${m} bị từ chối (${why})`, !tmove(m).ok);
+      check("state giữ nguyên đúng object cũ", S() === before);
+      check("subscribe không bị gọi thêm", calls === callsBefore);
+
+      group("4. Hủy đăng ký");
+      T("unsubscribe()", [], () => off());
+      tmove("d7d6");
+      check("sau khi hủy đăng ký, subscribe không được gọi nữa", calls === callsBefore);
+
+      group("5. Restart và chiếu hết (Fool's Mate)");
+      T("room.restart", [], () => r.restart());
+      check("restart về thế ban đầu", S().board.pieces.length === 32 && S().turn === Side.WHITE);
+      for (const m of ["f2f3", "e7e5", "g2g4", "d8h4"]) tmove(m);
+      const { result } = S();
+      check("chiếu hết, đen thắng", result?.type === "checkmate" && result.winner === Side.BLACK);
+      check("hết ván thì không nhận nước nào nữa", !tmove("a2a3").ok);
+
+      group("6. Destroy");
+      T("room.destroy", [], () => r.destroy());
+      check("sau destroy, dispatch bị từ chối", !tmove("e2e4").ok);
+    } catch (err) {
+      check(`bộ test ném lỗi ngoài dự kiến: ${err.message}`, false);
+      console.error(err);
+    }
+    const failed = results.filter((x) => x.pass === false).length;
+    head.status = failed ? "error" : "ok";
+    head.result = failed ? `${failed} KIỂM TRA THẤT BẠI` : "TẤT CẢ ĐỀU PASS";
+    touch();
+    document.title = failed === 0 ? "✅ Room test" : "❌ Room test";
+    renderTestResults(results);
+  }
+
+  /* =====================================================================
+   * 8. Nối nút bấm
+   * ===================================================================== */
+  $("btn-state").onclick   = () => { trace("room.getState", [], () => room.getState()); updateAll(); };
+  $("btn-restart").onclick = () => doRestart();
+  $("btn-destroy").onclick = doDestroy;
+  $("btn-new").onclick     = () => newRoom();
+  $("btn-sub").onclick     = () => { unsub ? unsubscribe() : subscribe(); updateAll(); };
+  $("btn-move").onclick    = () => consoleMove($("in-move").value);
+  $("btn-legal").onclick   = () => consoleLegal($("in-sq").value);
+  $("btn-raw").onclick     = rawDispatch;
+  $("btn-auto").onclick    = runAutoTests;
+  $("btn-replay").onclick  = replay;
+  $("opt-flip").addEventListener("change", renderBoard);
+  for (const [inp, btn] of [["in-move", "btn-move"], ["in-sq", "btn-legal"], ["raw-col", "btn-raw"]])
+    $(inp).addEventListener("keydown", (ev) => { if (ev.key === "Enter") $(btn).click(); });
+
+  $("btn-export").onclick = () => {
+    const blob = new Blob([JSON.stringify(events, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `room-test-history-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+  $("btn-clear").onclick = () => {
+    events = []; selectedId = null; lastSig = "";
+    localStorage.removeItem(STORE_KEY);
+    scheduleLog();
+  };
+
+  /* =====================================================================
+   * 9. Khởi động
+   * ===================================================================== */
+  newRoom();
+  renderTestResults([]);
+  scheduleLog();
+
+  // Tiện gõ thử trong DevTools console: t.room, t.events, t.trace(...)
+  window.t = { get room() { return room; }, get events() { return events; }, trace, snap, getLegalMoves, Action, Side, PieceType, sq, sqName };
+</script>
+</body>
+</html>
