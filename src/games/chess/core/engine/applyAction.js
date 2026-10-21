@@ -15,6 +15,7 @@ import { PROMOTION_RANK } from "../constants/StandardDef.js";
  * @typedef {import("../models/Board.js").Board} Board
  *
  */
+
 /**
  * Áp dụng một nước đi lên game và trả về trạng thái game mới.
  * Nhận tọa độ đích thay vì Action để `moveFacts` có thể thử nước đi
@@ -53,31 +54,18 @@ export function applyMove(game, piece, row, col, kind = MoveKind.NORMAL) {
  * các điều kiện này do rule `PROMOTE` đảm nhiệm.
  *
  * @param {Game} game - Trạng thái game hiện tại.
+ * @param {Piece} piece
  * @param {typeof PieceType[keyof typeof PieceType]} pieceType - Loại quân được chọn để phong cấp.
  * @returns {Game} Trạng thái game sau khi hoàn tất phong cấp.
  */
-export function applyPromotion(game, pieceType) {
-  const id = game.pendingPromotion;
-  if (id === null)
-    throw new GameError(
-      ErrorCode.BAD_ACTION,
-      "Không có tốt nào đang chờ phong cấp",
-    );
-
-  const pawn = game.board.pieceById(id);
-  if (pawn === null)
-    throw new GameError(
-      ErrorCode.BAD_ACTION,
-      `Không tìm thấy quân ${id} đang chờ phong cấp`,
-    );
-
-  const promoted = pawn.with({ type: pieceType });
-  const board = game.board.remove(id).add(promoted);
+export function applyPromotion(game, piece, pieceType) {
+  const promoted = piece.with({ type: pieceType });
+  const board = game.board.remove(piece.id).add(promoted);
 
   return game.with({
     board,
     pendingPromotion: null,
-    turn: OPPONENT[pawn.side],
+    turn: OPPONENT[piece.side],
   });
 }
 
@@ -187,6 +175,7 @@ function applyEnPassant(game, pawn, row, col) {
 
   return finish(game, board, pawn.side, null, null);
 }
+
 /**
  * Hoàn tất nước đi bằng cách cập nhật các trạng thái chung của game.
  * Chưa đổi lượt nếu game đang chờ phong cấp.

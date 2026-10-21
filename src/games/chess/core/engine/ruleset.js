@@ -1,5 +1,5 @@
 /**
- * @file Game.js
+ * @file ruleset.js
  * @author tuanca
  */
 //buildRules: ghép luật gốc với extension
@@ -9,16 +9,15 @@ import { boardRules } from "../rules/boardRules.js";
 import { gameRules } from "../rules/gameRules.js";
 import { outcomeRules } from "../rules/outcomeRules.js";
 import { pieceRules } from "../rules/pieceRules.js";
-
 import { MoveKind } from "../constants/MoveKind.js";
-
-const COMMON_RULES = ["GAME.NOT_OVER", "GAME.PROMOTION_PENDING", "GAME.TURN"];
 
 export const ruleSet = new RuleSet();
 boardRules(ruleSet);
 gameRules(ruleSet);
 outcomeRules(ruleSet);
 pieceRules(ruleSet);
+
+const COMMON_RULES = ["GAME.NOT_OVER", "GAME.PROMOTION_PENDING", "GAME.TURN"];
 
 export const RULES_BY_KIND = Object.freeze({
   [MoveKind.NORMAL]: [...COMMON_RULES, "BOARD.INSIDE", "BOARD.PATTERN", "BOARD.NOT_ALLY_TARGET", "BOARD.NOT_SELF_CHECK"],

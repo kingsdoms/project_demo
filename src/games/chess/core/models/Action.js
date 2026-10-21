@@ -38,23 +38,20 @@ export class Action {
   /**
    * @param {string} type
    * @param {string} id
-   * @param {number | null} [row=null]
-   * @param {number | null} [col=null]
+   * @param {number | null} row
+   * @param {number | null} col
    * @param {typeof PieceType[keyof typeof PieceType] | null} [pieceType=null]
    */
   #validate(type, id, row, col, pieceType) {
-    if (!isStr(id))
-      throw new GameError(ErrorCode.INVALID_ID, "Invalid piece id");
-
     switch (type) {
       case ActionType.MOVE:
+        if (!isStr(id))
+          throw new GameError(ErrorCode.INVALID_ID, "Invalid piece id");
         if (!isInt(row))
           throw new GameError(ErrorCode.INVALID_POSITION, "Invalid row");
-
         if (!isInt(col))
           throw new GameError(ErrorCode.INVALID_POSITION, "Invalid col");
         break;
-
       case ActionType.PROMOTE:
         if (!hasKey(PieceType, pieceType))
           throw new GameError(ErrorCode.INVALID_ARGUMENT, "Invalid piece type");
@@ -74,10 +71,9 @@ export class Action {
   }
 
   /**
-   * @param {string} id
    * @param {typeof PieceType[keyof typeof PieceType]} pieceType
    */
-  static promote(id, pieceType) {
-    return new Action(ActionType.PROMOTE, id, null, null, pieceType);
+  static promote(pieceType) {
+    return new Action(ActionType.PROMOTE, "", null, null, pieceType);
   }
 }

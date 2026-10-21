@@ -3,23 +3,30 @@
  * @author tuanca
  */
 
-// Giữ state (Game hiện tại), nhận action, báo cho người đăng ký.
-// Room không biết luật cờ: luật nằm trong hàm reduce(game, action) được truyền vào từ ngoài.
-//
-// room.dispatch(action)
-//   1. Kiểm tra room còn sống và action đúng kiểu Action
-//   2. next = reduce(game hiện tại, action)
-//      reduce ném GameError nếu sai luật, khi đó dòng gán state bên dưới không chạy
-//      nên state giữ nguyên và không ai được báo
-//   3. Gán state = next, báo cho các hàm đã subscribe
-//
-// State chỉ đổi qua dispatch và restart. Kết quả ván nằm trong game.result do reduce ghi.
 import { Game } from "../models/Game.js";
 import { GameError } from "../../utils/GameError.js";
 import { ErrorCode } from "../constants/ErrorCode.js";
-
 import { reduce } from "./reduce.js";
 
+/**
+ * Quản lý state của ván cờ hiện tại, nhận action và thông báo cho các subscriber
+ * khi state thay đổi.
+ *
+ * Room không trực tiếp xử lý luật cờ vua. Luật được thực thi bởi hàm
+ * reduce(game, action) được truyền từ bên ngoài.
+ *
+ * Luồng xử lý của room.dispatch(action):
+ * 1. Kiểm tra room còn hoạt động và action đúng kiểu Action.
+ * 2. Gọi reduce(game hiện tại, action) để tính state tiếp theo.
+ *    - Nếu action hợp lệ, reduce trả về game mới.
+ *    - Nếu action vi phạm luật, reduce ném GameError.
+ *      Khi đó state không bị thay đổi và subscriber không được thông báo.
+ * 3. Cập nhật state bằng game mới và thông báo cho tất cả subscriber
+ *    đã đăng ký.
+ *
+ * State chỉ được thay đổi thông qua dispatch và restart.
+ * Kết quả ván cờ được lưu trong game.result và do reduce cập nhật.
+ */
 export class Room {
   #game;
   #reduce;
@@ -36,10 +43,10 @@ export class Room {
   }
 
   /**
- * Phân phối action để cập nhật trạng thái game.
- *
- * @param {import("../models/Action.js").Action} action - Hành động cần thực hiện.
- */
+   * Phân phối action để cập nhật trạng thái game.
+   *
+   * @param {import("../models/Action.js").Action} action - Hành động cần thực hiện.
+   */
   dispatch(action) {
     this.#assertAlive();
     const next = this.#reduce(this.#game, action);
@@ -53,11 +60,11 @@ export class Room {
   }
 
   /**
- * Đăng ký hàm lắng nghe khi trạng thái game thay đổi.
- *
- * @param {() => void} fn - Hàm được gọi khi có cập nhật.
- * @returns {() => void} Hàm dùng để hủy đăng ký lắng nghe.
- */
+   * Đăng ký hàm lắng nghe khi trạng thái game thay đổi.
+   *
+   * @param {() => void} fn - Hàm được gọi khi có cập nhật.
+   * @returns {() => void} Hàm dùng để hủy đăng ký lắng nghe.
+   */
   subscribe(fn) {
     this.#assertAlive();
     this.#listeners.add(fn);
@@ -74,9 +81,17 @@ export class Room {
     this.#alive = false;
     this.#listeners.clear();
   }
-
-  // Một listener ném lỗi không được làm dispatch thất bại (state đã đổi rồi)
-  // và không được chặn các listener còn lại.
+  
+  /**
+   * Thông báo cho tất cả listener đã đăng ký khi state thay đổi.
+   *
+   * Nếu một listener ném lỗi:
+   * - Không làm dispatch thất bại vì state đã được cập nhật trước đó.
+   * - Không ngăn các listener còn lại tiếp tục nhận thông báo.
+   *
+   * Mỗi listener được xử lý độc lập để lỗi của một listener
+   * không ảnh hưởng đến các listener khác.
+   */
   #notify() {
     for (const fn of [...this.#listeners]) {
       try {
