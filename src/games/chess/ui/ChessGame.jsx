@@ -16,8 +16,8 @@ const ANIM_MS = 220; // khớp với transition của .piece
 const BOT_DELAY_MS = 500;
 
 export default function ChessGame({ engine, humanSide = Side.WHITE, chooseBotAction }) {
-  const { reduce, getLegalMoves, isInCheck } = engine;
-  const { room, game } = useRoom(reduce);
+  const { getLegalMoves, isInCheck } = engine;
+  const { room, game } = useRoom();
 
   const [view, setView] = useState(() => {
     const a = assignKeys([], game.board.pieces, new Map(), 0);
@@ -119,7 +119,7 @@ export default function ChessGame({ engine, humanSide = Side.WHITE, chooseBotAct
           {showPromotion && (
             <PromotionDialog
               side={game.turn}
-              onPick={(type) => play(Action.promote(game.pendingPromotion, type))}
+              onPick={(type) => play(Action.promote(type))}
             />
           )}
         </div>

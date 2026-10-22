@@ -22,20 +22,20 @@ export const otherSide = (side) => (side === Side.WHITE ? Side.BLACK : Side.WHIT
 export const squareName = (row, col, rows) =>
   `${String.fromCharCode(97 + col)}${rows - row}`;
 
+import { OutcomeType } from "../core/constants/OutcomeType.js";
+
 const RESULT_LABEL = {
-  checkmate: "Chiếu hết",
-  stalemate: "Hòa do hết nước đi",
-  insufficientMaterial: "Hòa do thiếu quân",
+  [OutcomeType.CHECKMATE]: "Chiếu hết",
+  [OutcomeType.STALEMATE]: "Hòa do hết nước đi",
+  [OutcomeType.INSUFFICIENT_MATERIAL]: "Hòa do thiếu quân",
 };
 
-// Chấp nhận result là chuỗi ("checkmate") hoặc object ({ type, winner }).
-// Chiếu hết mà không ghi winner thì suy ra: bên đang tới lượt là bên thua.
+// result có dạng { type, winner } (Game.result). Chiếu hết mà không ghi winner thì suy ra:
+// bên đang tới lượt là bên bị chiếu hết, tức bên thua.
 export function describeResult(result, turn) {
-  const isObj = typeof result === "object" && result !== null;
-  const kind = isObj ? (result.type ?? result.kind ?? result.reason) : result;
+  const kind = result?.type;
   const winner =
-    (isObj ? result.winner : null) ??
-    (kind === "checkmate" ? otherSide(turn) : null);
+    result?.winner ?? (kind === OutcomeType.CHECKMATE ? otherSide(turn) : null);
   const base = RESULT_LABEL[kind] ?? "Ván đã kết thúc";
   return winner ? `${base}, ${sideName(winner)} thắng` : base;
 }
