@@ -1032,17 +1032,17 @@
     </div>
 
     <script type="module">
-      import { Room } from "./core/engine/room.js";
-      import { reduce } from "./core/engine/reduce.js";
-      import { Action } from "./core/models/Action.js";
-      import { Side } from "./core/constants/Side.js";
-      import { PieceType } from "./core/constants/PieceType.js";
+      import { Room } from "../core/engine/room.js";
+      import { reduce } from "../core/engine/reduce.js";
+      import { Action } from "../core/models/Action.js";
+      import { Side } from "../core/constants/Side.js";
+      import { PieceType } from "../core/constants/PieceType.js";
 
       /* =====================================================================
        * 0. CẤU HÌNH — sửa ở đây nếu đường dẫn / tên khác
        * ===================================================================== */
       // Các file hàm mới: lần lượt thử từng thư mục cho tới khi import được
-      const ENGINE_DIRS = ["./core/engine/", "./core/rules/", "./core/"];
+      const ENGINE_DIRS = ["../core/engine/", "../core/rules/", "../core/"];
       const ENGINE_FILES = [
         "applyMoves.js",
         "legalMoves.js",
@@ -1051,24 +1051,24 @@
         "squaresMoves.js",
       ];
       const MOVEKIND_DIRS = [
-        "./core/constants/",
-        "./core/models/",
-        "./core/engine/",
+        "../core/constants/",
+        "../core/models/",
+        "../core/engine/",
       ]; // tìm MoveKind.js (không bắt buộc)
 
       // Các module khác được quét để liệt kê trong tab "Gọi hàm"
       const SCAN_PATHS = [
-        "./core/engine/room.js",
-        "./core/engine/reduce.js",
-        "./core/models/Action.js",
-        "./core/models/Board.js",
-        "./core/models/Game.js",
-        "./core/models/piece.js",
-        "./core/models/Rule.js",
-        "./core/models/RuleSet.js",
-        "./core/models/Square.js",
-        "./core/constants/Side.js",
-        "./core/constants/PieceType.js",
+        "../core/engine/room.js",
+        "../core/engine/reduce.js",
+        "../core/models/Action.js",
+        "../core/models/Board.js",
+        "../core/models/Game.js",
+        "../core/models/piece.js",
+        "../core/models/Rule.js",
+        "../core/models/RuleSet.js",
+        "../core/models/Square.js",
+        "../core/constants/Side.js",
+        "../core/constants/PieceType.js",
       ];
 
       // Nếu engine có cờ riêng báo "đang chờ phong cấp", điền vào đây. Ví dụ: (st) => st.pendingPromotion
@@ -2978,7 +2978,7 @@
           if (r.ns) scanModule(r.path, r.ns);
           else
             apiCatalog.push({
-              path: `./core/engine/${file}`,
+              path: `../core/engine/${file}`,
               error: r.tried.join("\n"),
             });
         }
@@ -3007,7 +3007,7 @@
         sel.innerHTML = [...groups]
           .map(
             ([g, items]) =>
-              `<optgroup label="${esc(g.replace("./core/", ""))}">${items.map(([id, t]) => `<option value="${esc(id)}">${esc(t.label)}</option>`).join("")}</optgroup>`,
+              `<optgroup label="${esc(g.replace("../core/", ""))}">${items.map(([id, t]) => `<option value="${esc(id)}">${esc(t.label)}</option>`).join("")}</optgroup>`,
           )
           .join("");
         if (keep && targets.has(keep)) sel.value = keep;
@@ -3084,7 +3084,7 @@
         let html = `<details class="mod" open><summary>room (instance hiện tại) <small>· ${roomMembers.length} thành viên public</small></summary>${roomRows || `<div class="muted">(không có)</div>`}</details>`;
 
         for (const c of apiCatalog) {
-          const name = c.path.replace("./core/", "");
+          const name = c.path.replace("../core/", "");
           if (c.error) {
             html += `<details class="mod"><summary>${esc(name)} <span class="st-error">✖ không import được</span></summary><pre class="err">${esc(c.error)}</pre></details>`;
             continue;
