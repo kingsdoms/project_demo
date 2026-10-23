@@ -1,5 +1,5 @@
 /**
- * @file moveInput.js
+ * @file buildMoves.js
  * @author tuanca
  */
 
@@ -15,8 +15,8 @@ import {
   isAttacked,
   isInCheck,
   movementSquares,
-} from "./squares.js";
-import { applyMove } from "./applyAction.js";
+} from "./squaresMoves.js";
+import { applyMove } from "./applyMoves.js";
 
 /**
  * @typedef {import("../models/Piece.js").Piece} Piece
@@ -165,10 +165,12 @@ export function buildMoveInput(game, piece, row, col, kind) {
       blockedByPromotion: () => game.pendingPromotion !== null,
     }),
   };
+  
   if (kind === MoveKind.CASTLE)
     Object.assign(input, castleFacts(game, piece, col));
   if (kind === MoveKind.EN_PASSANT)
     Object.assign(input, passantFacts(game, piece, row, col));
+  console.log(input);
   return input;
 }
 

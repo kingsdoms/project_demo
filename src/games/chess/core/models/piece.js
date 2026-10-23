@@ -7,15 +7,15 @@ import { PieceType } from "../constants/PieceType.js";
 import { ErrorCode } from "../constants/ErrorCode.js";
 import { GameError } from "../../utils/GameError.js";
 import { isInt, hasKey } from "../../utils/validation.js";
-
+/**
+ * Đại diện cho một quân cờ trên bàn cờ.
+ *
+ * Piece lưu loại quân, bên sở hữu, vị trí hiện tại và thông tin
+ * quân đã di chuyển hay chưa. Không tự kiểm tra luật đi quân;
+ * việc xác định nước đi hợp lệ thuộc về hệ thống luật của game.
+ */
 export class Piece {
   /**
-   * Đại diện cho một quân cờ trên bàn cờ.
-   *
-   * Piece lưu loại quân, bên sở hữu, vị trí hiện tại và thông tin
-   * quân đã di chuyển hay chưa. Không tự kiểm tra luật đi quân;
-   * việc xác định nước đi hợp lệ thuộc về hệ thống luật của game.
-   *
    * @param {object} options
    * @param {typeof PieceType[keyof typeof PieceType]} options.type
    * @param {typeof Side[keyof typeof Side]} options.side

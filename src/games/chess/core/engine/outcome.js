@@ -12,7 +12,7 @@ import { PieceType } from "../constants/PieceType.js";
 import { OPPONENT, Side } from "../constants/Side.js";
 import { hasLegalMove } from "./legalMoves.js";
 import { ruleSet } from "./ruleset.js";
-import { isInCheck } from "./squares.js";
+import { isInCheck } from "./squaresMoves.js";
 
 /**
  * @typedef {import("../models/Piece.js").Piece} Piece

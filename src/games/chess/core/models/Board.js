@@ -3,22 +3,22 @@
  * @author tuanca
  */
 
-import { Square } from "./Square.js";
+import { Square } from "./Square.js"; // tạm thời chưa dùng
 import { ErrorCode } from "../constants/ErrorCode.js";
 import { GameError } from "../../utils/GameError.js";
 import { isInt } from "../../utils/validation.js";
-
+/**
+ * Bàn cờ, quản lý kích thước và danh sách quân cờ.
+ *
+ * Board chỉ chịu trách nhiệm về cấu trúc và vị trí các quân trên bàn:
+ * - Lưu số hàng, số cột và danh sách quân cờ.
+ * - Tra cứu quân theo `id`, `row`, `col`; không tự kiểm tra luật đi quân.
+ * - Không lưu chỉ mục phụ; các thao tác tra cứu duyệt trực tiếp danh sách quân.
+ * - Bất biến: mọi thao tác làm thay đổi bàn cờ đều trả về một `Board` mới,
+ *   không sửa đổi `Board` hiện tại.
+ */
 export class Board {
   /**
-   * Bàn cờ, quản lý kích thước và danh sách quân cờ.
-   *
-   * Board chỉ chịu trách nhiệm về cấu trúc và vị trí các quân trên bàn:
-   * - Lưu số hàng, số cột và danh sách quân cờ.
-   * - Tra cứu quân theo `id`, `row`, `col`; không tự kiểm tra luật đi quân.
-   * - Không lưu chỉ mục phụ; các thao tác tra cứu duyệt trực tiếp danh sách quân.
-   * - Bất biến: mọi thao tác làm thay đổi bàn cờ đều trả về một `Board` mới,
-   *   không sửa đổi `Board` hiện tại.
-   *
    * @param {number} rows - Số hàng của bàn cờ.
    * @param {number} cols - Số cột của bàn cờ.
    * @param {import("./Piece.js").Piece[]} [pieces=[]] - Danh sách quân cờ ban đầu.
@@ -28,6 +28,7 @@ export class Board {
     this.rows = rows;
     this.cols = cols;
     this.pieces = Object.freeze([...pieces]);
+    // this.squares = [][]Square;
     Object.freeze(this);
   }
 
@@ -100,18 +101,18 @@ export class Board {
    * Duyệt các ô theo một hướng, không bao gồm ô xuất phát.
    * Dừng khi ra ngoài bàn, vượt quá maxSteps hoặc gặp quân đầu tiên.
    *
-   * @param {number} row
-   * @param {number} col
+   * @param {number} sRow
+   * @param {number} sCol
    * @param {number} dRow
    * @param {number} dCol
    * @param {number} [maxSteps=Infinity]
-   * @returns {Square[]}
+   * @returns {{ row: number, col: number, piece: import("./Piece.js").Piece | null }[]}
    */
-  ray(row, col, dRow, dCol, maxSteps = Infinity) {
-    if (!this.inBounds(row, col))
+  ray(sRow, sCol, dRow, dCol, maxSteps = Infinity) {
+    if (!this.inBounds(sRow, sCol))
       throw new GameError(
         ErrorCode.INVALID_POSITION,
-        `Ô xuất phát (${row},${col}) nằm ngoài bàn`,
+        `Ô xuất phát (${sRow},${sCol}) nằm ngoài bàn`,
       );
     //
     if (!isInt(dRow) || !isInt(dCol) || (dRow === 0 && dCol === 0))
@@ -127,17 +128,17 @@ export class Board {
       );
     }
 
-    const squares = [];
-    let r = row + dRow;
-    let c = col + dCol;
-    while (this.inBounds(r, c) && squares.length < maxSteps) {
-      const occupant = this.pieceAt(r, c);
-      squares.push(new Square(r, c, occupant));
-      if (occupant !== null) break;
-      r += dRow;
-      c += dCol;
+    const out = [];
+    let row = sRow + dRow;
+    let col = sCol + dCol;
+    while (this.inBounds(row, col) && out.length < maxSteps) {
+      const piece = this.pieceAt(row, col);
+      out.push({ row, col, piece });
+      if (piece !== null) break;
+      row += dRow;
+      col += dCol;
     }
-    return squares;
+    return out;
   }
 
   /**

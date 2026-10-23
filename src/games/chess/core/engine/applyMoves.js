@@ -1,5 +1,5 @@
 /**
- * @file applyAction.js
+ * @file applyMoves.js
  * @author tuanca
  */
 import { GameError } from "../../utils/GameError.js";

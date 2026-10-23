@@ -1,0 +1,5 @@
+legalMove
+- getLegalMoves
+
+squaresMOve
+- movementSquares

@@ -9,15 +9,16 @@ import { PieceType } from "../constants/PieceType.js";
 import { GameError } from "../../utils/GameError.js";
 import { isStr, isInt, hasKey } from "../../utils/validation.js";
 
+/**
+ * Tạo một hành động trong game.
+ *
+ * `type` xác định loại hành động, `id` xác định quân cờ liên quan.
+ * `row` và `col` là tọa độ đích khi hành động cần di chuyển quân.
+ * `pieceType` là loại quân được chọn khi thực hiện phong cấp.
+ *
+ */
 export class Action {
   /**
-   * Tạo một hành động trong game.
-   *
-   * `type` xác định loại hành động, `id` xác định quân cờ liên quan.
-   * `row` và `col` là tọa độ đích khi hành động cần di chuyển quân.
-   * `pieceType` là loại quân được chọn khi thực hiện phong cấp.
-   *
-   * Những tham số không áp dụng cho loại hành động tương ứng có thể để `null`.
    *
    * @param {string} type - Loại hành động.
    * @param {string} id - ID quân cờ liên quan đến hành động.

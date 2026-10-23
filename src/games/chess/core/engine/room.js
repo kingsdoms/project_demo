@@ -50,11 +50,6 @@ export class Room {
   dispatch(action) {
     this.#assertAlive();
     const next = this.#reduce(this.#game, action);
-    if (!(next instanceof Game))
-      throw new GameError(
-        ErrorCode.INVALID_ARGUMENT,
-        "reduce phải trả về Game",
-      );
     this.#game = next;
     this.#notify();
   }

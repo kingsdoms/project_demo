@@ -6,14 +6,14 @@
 import { GameError } from "../../utils/GameError.js";
 import { ActionType } from "../constants/ActionType.js";
 import { ErrorCode } from "../constants/ErrorCode.js";
-import { applyMove, applyPromotion } from "./applyAction.js";
+import { applyMove, applyPromotion } from "./applyMoves.js";
 import { PROMOTE_RULES, RULES_BY_KIND, ruleSet } from "./ruleset.js";
 
 import {
   buildMoveInput,
   buildPromoteInput,
   classifyMove,
-} from "./moveInput.js";
+} from "./buildMoves.js";
 import { evaluateOutcome } from "./outcome.js";
 
 /**

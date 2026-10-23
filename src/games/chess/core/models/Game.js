@@ -12,15 +12,15 @@ import {
   STANDARD_ROWS,
   STANDARD_COLS,
 } from "../constants/StandardDef.js";
-
+/**
+ * Trạng thái hiện tại của một ván cờ.
+ *
+ * Game quản lý bàn cờ và các thông tin điều khiển ván đấu như lượt đi,
+ * mục tiêu bắt tốt qua đường, trạng thái chờ phong cấp và kết quả ván.
+ * Các thay đổi trạng thái nên tạo ra một Game mới thay vì sửa đổi Game cũ.
+ */
 export class Game {
   /**
-   * Trạng thái hiện tại của một ván cờ.
-   *
-   * Game quản lý bàn cờ và các thông tin điều khiển ván đấu như lượt đi,
-   * mục tiêu bắt tốt qua đường, trạng thái chờ phong cấp và kết quả ván.
-   * Các thay đổi trạng thái nên tạo ra một Game mới thay vì sửa đổi Game cũ.
-   * 
    * @param {object} options
    * @param {Board} options.board
    * @param {typeof Side[keyof typeof Side]} [options.turn=Side.WHITE]

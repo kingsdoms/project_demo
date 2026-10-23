@@ -8,28 +8,15 @@
 
 import { MoveKind } from "../constants/MoveKind.js";
 import { PieceType } from "../constants/PieceType.js";
-import { buildMoveInput, classifyMove } from "./moveInput.js";
-import { RULES_BY_KIND, ruleSet } from "./ruleset.js";
-import { movementSquares } from "./squares.js";
+import { buildMoveInput, classifyMove } from "./buildMoves.js";
+import { RULES_BY_KIND, passes } from "./ruleset.js";
+import { movementSquares } from "./squaresMoves.js";
 
 /**
  * @typedef {import("../models/Piece.js").Piece} Piece
  * @typedef {import("../models/Game.js").Game} Game
  * @typedef {import("../models/Board.js").Board} Board
  */
-
-/**
- * Kiểm tra tất cả rule được chỉ định đều đạt yêu cầu với dữ liệu đầu vào.
- *
- * Dừng ngay khi có rule không đạt. Nếu một key không tồn tại trong `ruleSet`,
- * việc gọi `test()` sẽ gây lỗi; cần bảo đảm các rule đã được đăng ký đầy đủ.
- *
- * @param {string[]} keys - Danh sách key của các rule cần kiểm tra.
- * @param {Record<string, unknown>} input - Dữ liệu đầu vào cho các rule.
- * @returns {boolean} `true` nếu tất cả rule đều đạt, ngược lại là `false`.
- */
-const passes = (keys, input) =>
-  keys.every((key) => ruleSet.get(key).test(input));
 
 /**
  * Tạo danh sách các ô đích ứng viên cho một quân cờ.
@@ -48,13 +35,7 @@ function candidateSquares(game, piece) {
   const seen = new Set();
   /** @type {{ row: number, col: number }[]} */
   const out = [];
-  /**
-   * Thêm ô vào danh sách nếu ô nằm trong bàn và chưa được thêm.
-   *
-   * @param {number} row
-   * @param {number} col
-   * @returns {void}
-   */
+  // @ts-ignore
   const add = (row, col) => {
     const key = `${row},${col}`;
     if (seen.has(key) || !board.inBounds(row, col)) return;
@@ -63,6 +44,7 @@ function candidateSquares(game, piece) {
   };
 
   for (const sq of movementSquares(board, piece)) add(sq.row, sq.col);
+
   if (piece.type === PieceType.KING) {
     add(piece.row, piece.col - 2);
     add(piece.row, piece.col + 2);

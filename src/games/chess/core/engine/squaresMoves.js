@@ -1,5 +1,5 @@
 /**
- * @file squares.js
+ * @file squaresMoves.js
  * @author tuanca
  */
 
@@ -80,7 +80,7 @@ function patternSquares(board, piece, forAttack) {
           : [];
 
     for (const sq of reached) {
-      const occupied = sq.occupant !== null;
+      const occupied = sq.piece !== null;
       const ok =
         forAttack ||
         m.capture === CaptureMode.ANY ||

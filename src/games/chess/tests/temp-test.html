@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
-  <body></body>
+  <body style="background-color: black;"></body>
   <script type="module">
     import { RuleSet } from "./core/models/RuleSet.js";
     import { Rule } from "./core/models/Rule.js";
@@ -18,9 +18,9 @@
     // const piece = new Piece(PieceType.PAWN, Side.WHITE, 6, 0);
     // const board = new Board(8, 8, [piece]);
 
-    // const board = Game.initialStandard();
+    const board = Game.initialStandard();
 
-    // console.log(board);
+    console.log(board);
     //////////////////////////////////ROOM TEST
     import { Room } from "./core/engine/room.js";
     import { Action } from "./core/models/Action.js";

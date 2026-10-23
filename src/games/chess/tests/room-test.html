@@ -1044,11 +1044,11 @@
       // Các file hàm mới: lần lượt thử từng thư mục cho tới khi import được
       const ENGINE_DIRS = ["./core/engine/", "./core/rules/", "./core/"];
       const ENGINE_FILES = [
-        "applyAction.js",
+        "applyMoves.js",
         "legalMoves.js",
-        "moveInput.js",
+        "buildMoves.js",
         "outcome.js",
-        "squares.js",
+        "squaresMoves.js",
       ];
       const MOVEKIND_DIRS = [
         "./core/constants/",
@@ -1075,19 +1075,19 @@
       const CUSTOM_PENDING = null;
 
       const FN_FILES = {
-        "applyAction.js":
+        "applyMoves.js":
           "Áp dụng hành động lên game: thực hiện nước đi và hoàn tất phong cấp.",
         "legalMoves.js": "Tính các nước đi hợp lệ của một quân và của cả ván.",
-        "moveInput.js":
+        "buildMoves.js":
           "Phân loại nước đi và dựng input chuẩn để đưa vào bước áp dụng.",
         "outcome.js": "Đánh giá kết quả ván cờ (tiếp tục, chiếu hết, hòa…).",
-        "squares.js":
+        "squaresMoves.js":
           "Tiện ích cấp thấp về ô: quân đi tới / tấn công những ô nào, ô bị tấn công, vua, chiếu.",
       };
 
       const FN_CATALOG = [
         {
-          file: "applyAction.js",
+          file: "applyMoves.js",
           name: "applyMove",
           sig: "(game, piece, row, col, kind = MoveKind.NORMAL)",
           effect: "write",
@@ -1096,7 +1096,7 @@
           example: '["$state","@e2",4,4]',
         },
         {
-          file: "applyAction.js",
+          file: "applyMoves.js",
           name: "applyPromotion",
           sig: "(game, pieceType)",
           effect: "write",
@@ -1132,7 +1132,7 @@
           example: '["$state"]',
         },
         {
-          file: "moveInput.js",
+          file: "buildMoves.js",
           name: "classifyMove",
           sig: "(game, piece, row, col)",
           effect: "read",
@@ -1141,7 +1141,7 @@
           example: '["$state","@e2",4,4]',
         },
         {
-          file: "moveInput.js",
+          file: "buildMoves.js",
           name: "buildMoveInput",
           sig: "(game, piece, row, col, kind)",
           effect: "read",
@@ -1150,7 +1150,7 @@
           example: '["$state","@e2",4,4,"$MoveKind.NORMAL"]',
         },
         {
-          file: "moveInput.js",
+          file: "buildMoves.js",
           name: "buildPromoteInput",
           sig: "(game, piece, action)",
           effect: "read",
@@ -1169,7 +1169,7 @@
           example: '["$state"]',
         },
         {
-          file: "squares.js",
+          file: "squaresMoves.js",
           name: "movementSquares",
           sig: "(board, piece)",
           effect: "read",
@@ -1178,7 +1178,7 @@
           example: '["$board","@e2"]',
         },
         {
-          file: "squares.js",
+          file: "squaresMoves.js",
           name: "isAttacked",
           sig: "(board, row, col, bySide)",
           effect: "read",
@@ -1187,7 +1187,7 @@
           example: '["$board",4,4,"$Side.BLACK"]',
         },
         {
-          file: "squares.js",
+          file: "squaresMoves.js",
           name: "hasSquare",
           sig: "(squares, row, col)",
           effect: "read",
@@ -1197,7 +1197,7 @@
           note: "gọi movementSquares hoặc attackSquares trước để $ret là danh sách ô.",
         },
         {
-          file: "squares.js",
+          file: "squaresMoves.js",
           name: "attackSquares",
           sig: "(board, piece)",
           effect: "read",
@@ -1206,7 +1206,7 @@
           example: '["$board","@e2"]',
         },
         {
-          file: "squares.js",
+          file: "squaresMoves.js",
           name: "findKing",
           sig: "(board, side)",
           effect: "read",
@@ -1215,7 +1215,7 @@
           example: '["$board","$Side.WHITE"]',
         },
         {
-          file: "squares.js",
+          file: "squaresMoves.js",
           name: "isInCheck",
           sig: "(board, side)",
           effect: "read",
