@@ -17,3 +17,10 @@ export const SIDE_SIGN = Object.freeze({
   [Side.WHITE]: 1,
   [Side.BLACK]: -1,
 });
+
+
+export function randomSide() {
+  return Math.random() < 0.5
+    ? Side.WHITE
+    : Side.BLACK;
+}

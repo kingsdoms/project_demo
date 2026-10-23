@@ -2,43 +2,100 @@
  * @file index.js
  * @author tuanca
  */
-
+// API chính
 // Cửa duy nhất của plugin cờ vua: App chỉ import file này.
 // core/, bot/, ui/ không import ngược lại file này.
-
-import { createElement } from "react";
-import { Room } from "./core/engine/room.js";
-import { getLegalMoves } from "./core/engine/legalMoves.js";
-import { isInCheck } from "./core/engine/squaresMoves.js";
-import { chooseBotAction } from "./bot/simpleBot.js";
-// import ChessGame from "./ui/ChessGame.jsx";
-
 // Mỗi lần gọi tạo một room mới, độc lập với các room khác.
 // Nút "bắt đầu" gọi hàm này, nút "ván mới" gọi room.restart().
-export function createRoom() {
-  return new Room();
-}
+import { Room } from "./core/engine/room.js";
+import { Side, randomSide, OPPONENT } from "./core/constants/Side.js";
+import { createController } from "./controller/createController.js";
 
-// Các hàm đọc luật mà UI cần. Khai báo ở cấp module để tham chiếu ổn định
-// (ChessGame dùng getLegalMoves làm dependency của useMemo).
-// squares.isInCheck nhận (board, side) còn UI gọi theo (game, side), nên bọc lại ở đây.
-// const engine = Object.freeze({
-//   getLegalMoves,
-//   isInCheck: (game, side) => isInCheck(game.board, side),
-// });
-
-// // Component sẵn dùng: App chỉ cần render <ChessScreen />.
-// // Dùng createElement vì file .js không chứa JSX.
-// export function ChessScreen(props) {
-//   return createElement(ChessGame, { engine, chooseBotAction, ...props });
-// }
-
-// Mô tả game để App liệt kê trong menu.
-export const chess = Object.freeze({
-  id: "chess",
-  name: "Cờ vua",
-  createRoom,
-  // Component: ChessScreen,
+export const GameMode = Object.freeze({
+  VS_BOT: "VS_BOT", // human x bot
+  BOT: "BOT", // bot x bot
+  LOCAL: "LOCAL", // human x human
+  ONLINE: "ONLINE", // human x human
 });
 
-export default chess;
+//
+
+/**
+ * DEV NOTE
+ * Luôn để quân Trắng đi trước, còn random bên sẽ quyết định người chơi nào được cầm quân Trắng
+ * VS_BOT: random bên của người chơi; nếu người chơi là WHITE thì bot cầm BLACK, và ngược lại.
+ * LOCAL: hai người chơi cùng máy, mặc định một người cầm Trắng và người còn lại cầm Đen
+ * ONLINE: server random bên sau khi ghép được hai người, rồi gán bên còn lại cho đối thủ.
+ *
+ */
+
+export default {
+  id: "chess",
+  title: "Cờ vua",
+  /**
+   * Nút "Bắt đầu" gọi hàm này. Trả controller, App không thấy room hay bot.
+   * Nút "Ván mới" gọi controller.actions.restart().
+   *
+   * @param {object} [options]
+   * @param {GameMode[keyof typeof GameMode]} [options.mode=GameMode.VS_BOT]
+   * @param {number} [options.botDelay=400]
+   */
+  create(options = {}) {
+    const { mode = GameMode.VS_BOT, botDelay = 400 } = options;
+
+
+
+    let humanSides = [];
+    let botSides = [];
+
+    switch (mode) {
+      case GameMode.VS_BOT: {
+        const humanSide = randomSide();
+
+        humanSides = [humanSide];
+        botSides = [OPPONENT[humanSide]];
+        break;
+      }
+
+      case GameMode.BOT: {
+        botSides = Object.values(Side);
+        break;
+      }
+
+      case GameMode.LOCAL: {
+        humanSides = Object.values(Side);
+        break;
+      }
+
+      case GameMode.ONLINE: {
+        throw new Error("ONLINE mode requires a matched room from the server.");
+      }
+
+      default:
+        throw new Error(`Unsupported game mode: ${mode}`);
+    }
+    
+    const room = new Room();
+    let bot = null;
+
+    const controller = createController({
+      room,
+      humanSides,
+      dispose: () => {
+        bot?.stop();
+        room.destroy();
+      },
+    });
+
+    if (botSides.length > 0) {
+      bot = attachBot(room, {
+        sides: botSides,
+        delay: botDelay,
+      });
+    }
+
+    return controller;
+  },
+
+  loadUI: () => import("./ui/index.js"), // lazy
+};

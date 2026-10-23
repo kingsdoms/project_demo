@@ -59,7 +59,7 @@ function hasInsufficientMaterial(board) {
  * Trả về `null` nếu ván đấu vẫn có thể tiếp tục.
  *
  * @param {Game} game - Trạng thái ván cờ cần đánh giá.
- * @returns {{ type: typeof OutcomeType[keyof typeof OutcomeType], winner: typeof Side[keyof typeof Side] | null } | null}
+ * @returns {{ type: OutcomeType[keyof typeof OutcomeType], winner: typeof Side[keyof typeof Side] | null } | null}
  * Kết quả ván đấu nếu đã kết thúc, hoặc `null` nếu ván vẫn tiếp tục.
  */
 export function evaluateOutcome(game) {

@@ -1,5 +1,0 @@
-legalMove
-- getLegalMoves
-
-squaresMOve
-- movementSquares
