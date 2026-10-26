@@ -148,6 +148,5 @@ export function createController({ room, sides, dispose = () => {} }) {
       errorListeners.clear();
       dispose();
     },
-    enums: Object.freeze({ Side, PieceType }),
   });
 }

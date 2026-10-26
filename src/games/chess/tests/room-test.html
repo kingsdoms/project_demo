@@ -22,16 +22,28 @@
         --sq-dark: #3a3a3a;
         color-scheme: dark;
       }
-      * { box-sizing: border-box; }
-      [hidden] { display: none !important; }
+      * {
+        box-sizing: border-box;
+      }
+      [hidden] {
+        display: none !important;
+      }
       body {
         margin: 0;
         padding: 12px;
         background: var(--bg);
         color: var(--text);
-        font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font:
+          13px/1.5 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Consolas,
+          monospace;
       }
-      h1 { font-size: 16px; margin: 0 0 10px; }
+      h1 {
+        font-size: 16px;
+        margin: 0 0 10px;
+      }
       h2 {
         font-size: 12px;
         margin: 0 0 8px;
@@ -40,8 +52,17 @@
         letter-spacing: 0.06em;
         font-weight: 600;
       }
-      h4 { font-size: 12px; margin: 14px 0 4px; }
-      button, input, select, textarea { font: inherit; color: inherit; }
+      h4 {
+        font-size: 12px;
+        margin: 14px 0 4px;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
       button {
         background: var(--panel2);
         border: 1px solid var(--line);
@@ -49,21 +70,46 @@
         padding: 3px 10px;
         cursor: pointer;
       }
-      button:hover { border-color: var(--accent); }
-      button:disabled { opacity: 0.5; cursor: wait; }
-      button.danger:hover { border-color: var(--err); color: var(--err); }
-      button.hot { border-color: var(--warn); color: var(--warn); }
-      button.primary { border-color: var(--accent); color: var(--accent); }
-      #promo-pick button.off { opacity: 0.45; }
-      input[type="text"], input[type="search"], select, textarea {
+      button:hover {
+        border-color: var(--accent);
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+      button.danger:hover {
+        border-color: var(--err);
+        color: var(--err);
+      }
+      button.hot {
+        border-color: var(--warn);
+        color: var(--warn);
+      }
+      button.primary {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      #promo-pick button.off {
+        opacity: 0.45;
+      }
+      input[type="text"],
+      input[type="search"],
+      select,
+      textarea {
         background: var(--code);
         border: 1px solid var(--line);
         border-radius: 6px;
         padding: 3px 8px;
         min-width: 0;
       }
-      input[type="checkbox"], input[type="range"] { accent-color: var(--accent); }
-      textarea { width: 100%; resize: vertical; }
+      input[type="checkbox"],
+      input[type="range"] {
+        accent-color: var(--accent);
+      }
+      textarea {
+        width: 100%;
+        resize: vertical;
+      }
       label {
         display: inline-flex;
         align-items: center;
@@ -83,11 +129,27 @@
         word-break: break-word;
         line-height: 1.4;
       }
-      pre.err { border-color: var(--err); color: #fecaca; }
-      small, .muted, .hint { color: var(--muted); }
-      .hint { margin: 6px 0 0; font-size: 12px; }
-      a { color: var(--accent); }
-      code { background: #1c1c20; padding: 0 4px; border-radius: 4px; }
+      pre.err {
+        border-color: var(--err);
+        color: #fecaca;
+      }
+      small,
+      .muted,
+      .hint {
+        color: var(--muted);
+      }
+      .hint {
+        margin: 6px 0 0;
+        font-size: 12px;
+      }
+      a {
+        color: var(--accent);
+      }
+      code {
+        background: #1c1c20;
+        padding: 0 4px;
+        border-radius: 4px;
+      }
 
       .banner {
         border: 1px solid var(--err);
@@ -112,8 +174,12 @@
         flex-wrap: wrap;
         margin-bottom: 8px;
       }
-      .cardhead h2 { margin: 0; }
-      .btns, .form, .opts {
+      .cardhead h2 {
+        margin: 0;
+      }
+      .btns,
+      .form,
+      .opts {
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
@@ -122,16 +188,25 @@
       }
       .layout {
         display: grid;
-        grid-template-columns: max(440px, calc(var(--cell) * 8 + 56px)) minmax(0, 1fr);
+        grid-template-columns: max(440px, calc(var(--cell) * 8 + 56px)) minmax(
+            0,
+            1fr
+          );
         gap: 12px;
         align-items: start;
       }
       @media (max-width: 1100px) {
-        .layout { grid-template-columns: minmax(0, 1fr); }
+        .layout {
+          grid-template-columns: minmax(0, 1fr);
+        }
       }
 
       /* ---------- Thanh trạng thái ---------- */
-      .stat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+      .stat {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+      }
       .stat .s {
         border: 1px solid var(--line);
         border-radius: 6px;
@@ -151,9 +226,17 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      .stat .good { border-color: var(--ok); }
-      .stat .bad { border-color: var(--err); color: var(--err); }
-      .stat .wait { border-color: var(--warn); color: var(--warn); }
+      .stat .good {
+        border-color: var(--ok);
+      }
+      .stat .bad {
+        border-color: var(--err);
+        color: var(--err);
+      }
+      .stat .wait {
+        border-color: var(--warn);
+        color: var(--warn);
+      }
 
       /* ---------- Bàn cờ test ---------- */
       .boardframe {
@@ -163,9 +246,16 @@
         width: max-content;
         margin: 4px auto 0;
       }
-      #ranks { display: grid; grid-template-rows: repeat(8, var(--cell)); }
-      #files { display: grid; grid-template-columns: repeat(8, var(--cell)); }
-      #ranks span, #files span {
+      #ranks {
+        display: grid;
+        grid-template-rows: repeat(8, var(--cell));
+      }
+      #files {
+        display: grid;
+        grid-template-columns: repeat(8, var(--cell));
+      }
+      #ranks span,
+      #files span {
         display: grid;
         place-items: center;
         color: var(--muted);
@@ -189,8 +279,12 @@
         overflow: hidden;
         cursor: pointer;
       }
-      .sq.light { background: var(--sq-light); }
-      .sq.dark { background: var(--sq-dark); }
+      .sq.light {
+        background: var(--sq-light);
+      }
+      .sq.dark {
+        background: var(--sq-dark);
+      }
       .lb {
         position: absolute;
         left: 3px;
@@ -200,8 +294,12 @@
         line-height: 1;
         pointer-events: none;
       }
-      .light .lb { color: #666; }
-      .dark .lb { color: #aaa; }
+      .light .lb {
+        color: #666;
+      }
+      .dark .lb {
+        color: #aaa;
+      }
       .tg {
         position: absolute;
         right: 2px;
@@ -229,8 +327,16 @@
         line-height: 1;
         pointer-events: none;
       }
-      .pc.w { background: #fff; color: #000; border-color: #000; }
-      .pc.b { background: #000; color: #fff; border-color: #fff; }
+      .pc.w {
+        background: #fff;
+        color: #000;
+        border-color: #000;
+      }
+      .pc.b {
+        background: #000;
+        color: #fff;
+        border-color: #fff;
+      }
       .pcs {
         display: inline-grid;
         place-items: center;
@@ -242,15 +348,32 @@
         font-size: 11px;
         margin-right: 6px;
       }
-      .pcs.w { background: #fff; color: #000; border-color: #000; }
-      .sq.last { box-shadow: inset 0 0 0 3px #2563eb; }
-      .sq.pend { box-shadow: inset 0 0 0 4px #a855f7; }
-      .sq.sel { box-shadow: inset 0 0 0 4px #f59e0b; }
-      .sq.chk {
-        box-shadow: inset 0 0 0 4px #dc2626, inset 0 0 18px 6px rgba(220, 38, 38, 0.55);
+      .pcs.w {
+        background: #fff;
+        color: #000;
+        border-color: #000;
       }
-      .sq.flash { box-shadow: inset 0 0 0 5px #dc2626; }
-      .sq.hover { outline: 3px solid #2563eb; outline-offset: -3px; }
+      .sq.last {
+        box-shadow: inset 0 0 0 3px #2563eb;
+      }
+      .sq.pend {
+        box-shadow: inset 0 0 0 4px #a855f7;
+      }
+      .sq.sel {
+        box-shadow: inset 0 0 0 4px #f59e0b;
+      }
+      .sq.chk {
+        box-shadow:
+          inset 0 0 0 4px #dc2626,
+          inset 0 0 18px 6px rgba(220, 38, 38, 0.55);
+      }
+      .sq.flash {
+        box-shadow: inset 0 0 0 5px #dc2626;
+      }
+      .sq.hover {
+        outline: 3px solid #2563eb;
+        outline-offset: -3px;
+      }
       .sq.legal::after {
         content: "";
         position: absolute;
@@ -271,12 +394,27 @@
         box-shadow: 0 0 0 1px #fff;
       }
       @keyframes shake {
-        25% { transform: translateX(-3px); }
-        75% { transform: translateX(3px); }
+        25% {
+          transform: translateX(-3px);
+        }
+        75% {
+          transform: translateX(3px);
+        }
       }
-      .sq.flash .pc { animation: shake 0.25s 2; }
-      .hoverline { margin-top: 6px; text-align: center; color: var(--muted); min-height: 20px; }
-      details > summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
+      .sq.flash .pc {
+        animation: shake 0.25s 2;
+      }
+      .hoverline {
+        margin-top: 6px;
+        text-align: center;
+        color: var(--muted);
+        min-height: 20px;
+      }
+      details > summary {
+        cursor: pointer;
+        color: var(--muted);
+        margin-top: 8px;
+      }
 
       /* ---------- UI thật ---------- */
       #ui-host {
@@ -304,11 +442,23 @@
         background: none;
         padding: 6px 14px;
       }
-      .tabs button.on { border-bottom-color: var(--accent); font-weight: 700; }
-      .tabs .count { color: var(--muted); font-weight: 400; }
+      .tabs button.on {
+        border-bottom-color: var(--accent);
+        font-weight: 700;
+      }
+      .tabs .count {
+        color: var(--muted);
+        font-weight: 400;
+      }
 
       /* ---------- Nhật ký ---------- */
-      .logtools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+      .logtools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 8px;
+      }
       #logbox {
         max-height: 42vh;
         overflow: auto;
@@ -316,8 +466,13 @@
         border-radius: 6px;
         background: var(--code);
       }
-      #log { list-style: none; margin: 0; padding: 0; }
-      .loghead, .row {
+      #log {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .loghead,
+      .row {
         display: grid;
         grid-template-columns: 48px 96px 72px minmax(0, 1.3fr) minmax(0, 1.4fr);
         gap: 8px;
@@ -332,16 +487,45 @@
         color: var(--muted);
         font-size: 11px;
       }
-      .row { border-left: 3px solid transparent; border-bottom: 1px solid #18181b; cursor: pointer; }
-      .row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .row .main { padding-left: calc(var(--d, 0) * 14px); }
-      .row.child .main::before { content: "└ "; color: var(--muted); }
-      .row .id, .row .tm, .row .args { color: var(--muted); }
-      .row:hover { background: #1a1a1e; }
-      .row.s-error, .row.s-fail { border-left-color: var(--err); background: #2a1214; }
-      .row.s-pass { border-left-color: var(--ok); }
-      .row.s-pending { border-left-color: var(--warn); }
-      .row.sel { background: #14284a; }
+      .row {
+        border-left: 3px solid transparent;
+        border-bottom: 1px solid #18181b;
+        cursor: pointer;
+      }
+      .row > span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .row .main {
+        padding-left: calc(var(--d, 0) * 14px);
+      }
+      .row.child .main::before {
+        content: "└ ";
+        color: var(--muted);
+      }
+      .row .id,
+      .row .tm,
+      .row .args {
+        color: var(--muted);
+      }
+      .row:hover {
+        background: #1a1a1e;
+      }
+      .row.s-error,
+      .row.s-fail {
+        border-left-color: var(--err);
+        background: #2a1214;
+      }
+      .row.s-pass {
+        border-left-color: var(--ok);
+      }
+      .row.s-pending {
+        border-left-color: var(--warn);
+      }
+      .row.sel {
+        background: #14284a;
+      }
       .badge {
         display: inline-block;
         font-size: 11px;
@@ -351,23 +535,50 @@
         border: 1px solid var(--line);
         text-align: center;
       }
-      .k-mouse .badge { color: #7dd3fc; }
-      .k-call .badge { color: #c4b5fd; }
-      .k-callback .badge { color: var(--warn); }
-      .k-check .badge { color: var(--ok); }
-      .st-ok, .st-pass { color: var(--ok); }
-      .st-error, .st-fail { color: var(--err); }
-      .st-pending { color: var(--warn); }
-      .sep, .empty {
+      .k-mouse .badge {
+        color: #7dd3fc;
+      }
+      .k-call .badge {
+        color: #c4b5fd;
+      }
+      .k-callback .badge {
+        color: var(--warn);
+      }
+      .k-check .badge {
+        color: var(--ok);
+      }
+      .st-ok,
+      .st-pass {
+        color: var(--ok);
+      }
+      .st-error,
+      .st-fail {
+        color: var(--err);
+      }
+      .st-pending {
+        color: var(--warn);
+      }
+      .sep,
+      .empty {
         list-style: none;
         padding: 3px 8px;
         color: var(--muted);
         background: #0f0f11;
         font-size: 11px;
       }
-      #detail { max-height: 56vh; overflow: auto; }
-      .dh { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-      .dh button { margin-left: auto; }
+      #detail {
+        max-height: 56vh;
+        overflow: auto;
+      }
+      .dh {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .dh button {
+        margin-left: auto;
+      }
       .flow {
         margin-top: 8px;
         padding: 6px 8px;
@@ -375,18 +586,32 @@
         border: 1px solid var(--line);
         border-radius: 6px;
       }
-      .flow small { display: inline-block; min-width: 62px; }
+      .flow small {
+        display: inline-block;
+        min-width: 62px;
+      }
       .kv {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
         gap: 2px 12px;
         margin: 8px 0 0;
       }
-      .kv dt { color: var(--muted); font-size: 11px; }
-      .kv dd { margin: 0 0 4px; }
-      .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .kv dt {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .kv dd {
+        margin: 0 0 4px;
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
       @media (max-width: 1300px) {
-        .cols { grid-template-columns: 1fr; }
+        .cols {
+          grid-template-columns: 1fr;
+        }
       }
 
       /* ---------- Controller API ---------- */
@@ -397,15 +622,43 @@
         margin: 8px 0;
         background: var(--panel2);
       }
-      .fn .fh { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
-      .fn .sig { color: var(--accent); }
-      .fn p { margin: 6px 0; }
-      .fn .meta { color: var(--muted); font-size: 12px; }
-      .fn .meta small { display: inline-block; min-width: 118px; }
-      .fn .live { margin-left: auto; font-size: 11px; }
-      .eff { font-size: 11px; padding: 0 6px; border-radius: 4px; border: 1px solid var(--line); }
-      .eff.w { color: var(--warn); border-color: var(--warn); }
-      .eff.r { color: var(--ok); }
+      .fn .fh {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: baseline;
+      }
+      .fn .sig {
+        color: var(--accent);
+      }
+      .fn p {
+        margin: 6px 0;
+      }
+      .fn .meta {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .fn .meta small {
+        display: inline-block;
+        min-width: 118px;
+      }
+      .fn .live {
+        margin-left: auto;
+        font-size: 11px;
+      }
+      .eff {
+        font-size: 11px;
+        padding: 0 6px;
+        border-radius: 4px;
+        border: 1px solid var(--line);
+      }
+      .eff.w {
+        color: var(--warn);
+        border-color: var(--warn);
+      }
+      .eff.r {
+        color: var(--ok);
+      }
       .mod {
         border: 1px solid var(--line);
         border-radius: 6px;
@@ -413,16 +666,37 @@
         padding: 4px 10px;
         background: var(--panel2);
       }
-      .mem { padding: 1px 0 1px 8px; }
-      .mem.pick { cursor: pointer; }
-      .mem.pick:hover { background: #14284a; }
-      .tag { display: inline-block; min-width: 68px; font-size: 11px; color: var(--muted); }
-      #api-sig { margin: 6px 0; font-weight: 700; }
+      .mem {
+        padding: 1px 0 1px 8px;
+      }
+      .mem.pick {
+        cursor: pointer;
+      }
+      .mem.pick:hover {
+        background: #14284a;
+      }
+      .tag {
+        display: inline-block;
+        min-width: 68px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      #api-sig {
+        margin: 6px 0;
+        font-weight: 700;
+      }
 
       /* ---------- Bảng ---------- */
-      .scroll { max-height: 300px; overflow: auto; }
-      table { border-collapse: collapse; width: 100%; }
-      th, td {
+      .scroll {
+        max-height: 300px;
+        overflow: auto;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
         border-bottom: 1px solid var(--line);
         padding: 2px 8px;
         text-align: left;
@@ -436,10 +710,26 @@
         font-weight: 400;
         font-size: 11px;
       }
-      #autoList { list-style: none; margin: 8px 0 0; padding: 0; max-height: 50vh; overflow: auto; }
-      #autoList li { padding: 1px 0; cursor: pointer; }
-      #autoList .fail { color: var(--err); }
-      #autoList .grp { color: var(--accent); margin-top: 6px; cursor: default; font-weight: 700; }
+      #autoList {
+        list-style: none;
+        margin: 8px 0 0;
+        padding: 0;
+        max-height: 50vh;
+        overflow: auto;
+      }
+      #autoList li {
+        padding: 1px 0;
+        cursor: pointer;
+      }
+      #autoList .fail {
+        color: var(--err);
+      }
+      #autoList .grp {
+        color: var(--accent);
+        margin-top: 6px;
+        cursor: default;
+        font-weight: 700;
+      }
     </style>
   </head>
   <body>
@@ -459,8 +749,12 @@
 
         <div class="card">
           <div class="cardhead">
-            <h2>Bàn cờ <small id="view-src">(vẽ từ controller.getView())</small></h2>
-            <button id="btn-ui" class="primary">Chuyển sang UI thật (ui/) ▶</button>
+            <h2>
+              Bàn cờ <small id="view-src">(vẽ từ controller.getView())</small>
+            </h2>
+            <button id="btn-ui" class="primary">
+              Chuyển sang UI thật (ui/) ▶
+            </button>
           </div>
 
           <!-- Chế độ mặc định: bàn cờ test -->
@@ -499,10 +793,20 @@
             <details>
               <summary>Sự kiện chuột cần ghi vào nhật ký</summary>
               <div class="opts">
-                <label><input type="checkbox" id="m-click" checked /> click</label>
-                <label><input type="checkbox" id="m-dblclick" checked /> dblclick</label>
-                <label><input type="checkbox" id="m-contextmenu" checked /> contextmenu</label>
-                <label><input type="checkbox" id="m-mousedown" /> mousedown</label>
+                <label
+                  ><input type="checkbox" id="m-click" checked /> click</label
+                >
+                <label
+                  ><input type="checkbox" id="m-dblclick" checked />
+                  dblclick</label
+                >
+                <label
+                  ><input type="checkbox" id="m-contextmenu" checked />
+                  contextmenu</label
+                >
+                <label
+                  ><input type="checkbox" id="m-mousedown" /> mousedown</label
+                >
                 <label><input type="checkbox" id="m-mouseup" /> mouseup</label>
                 <label><input type="checkbox" id="m-hover" /> hover</label>
               </div>
@@ -512,16 +816,19 @@
           <!-- Chế độ UI thật: component từ ui/ được mount vào #ui-host -->
           <div id="ui-wrap" hidden>
             <div class="opts" style="margin-top: 0">
-              <label title="Bọc controller đưa cho UI để mọi lời gọi actions.* / destroy từ UI thật hiện trong Nhật ký"
-                ><input type="checkbox" id="opt-wrap" checked /> ghi log mọi lời gọi của UI thật</label
+              <label
+                title="Bọc controller đưa cho UI để mọi lời gọi actions.* / destroy từ UI thật hiện trong Nhật ký"
+                ><input type="checkbox" id="opt-wrap" checked /> ghi log mọi lời
+                gọi của UI thật</label
               >
               <span id="ui-status" class="muted"></span>
             </div>
             <div id="ui-host"></div>
             <p class="hint">
               HTML gọi <code>controller.loadUI()</code> (chưa có thì
-              <code>plugin.loadUI()</code>) rồi <code>mount(container, controller)</code>.
-              Các nút bên dưới (phong cấp, restart...) vẫn đi qua cùng controller.
+              <code>plugin.loadUI()</code>) rồi
+              <code>mount(container, controller)</code>. Các nút bên dưới (phong
+              cấp, restart...) vẫn đi qua cùng controller.
             </p>
           </div>
         </div>
@@ -560,7 +867,9 @@
           <div class="btns" style="margin-top: 0">
             <button id="btn-state">controller.getView()</button>
             <button id="btn-restart">actions.restart()</button>
-            <button id="btn-destroy" class="danger">controller.destroy()</button>
+            <button id="btn-destroy" class="danger">
+              controller.destroy()
+            </button>
             <button id="btn-sub">subscribe()</button>
           </div>
           <div class="form">
@@ -568,12 +877,17 @@
             <button id="btn-new">plugin.create() → controller mới</button>
           </div>
           <div class="form">
-            <input id="in-move" type="text" placeholder="e2e4" size="6" /><button id="btn-move">
+            <input
+              id="in-move"
+              type="text"
+              placeholder="e2e4"
+              size="6" /><button id="btn-move">
               đi nước (2 lần clickSquare)
             </button>
           </div>
           <div class="form">
-            <input id="in-sq" type="text" placeholder="e2" size="4" /><button id="btn-legal">
+            <input id="in-sq" type="text" placeholder="e2" size="4" /><button
+              id="btn-legal">
               bấm ô → xem view.targets
             </button>
           </div>
@@ -581,8 +895,8 @@
             <button id="btn-replay">⏪ Replay các nước đã đi</button>
           </div>
           <p class="hint">
-            Replay phát lại các nước đi và các lần chọn quân phong cấp đã gửi
-            từ giao diện (qua controller).
+            Replay phát lại các nước đi và các lần chọn quân phong cấp đã gửi từ
+            giao diện (qua controller).
           </p>
         </div>
       </section>
@@ -604,14 +918,36 @@
           <div class="card">
             <h2>Lịch sử sự kiện — <span id="logCount"></span></h2>
             <div class="logtools">
-              <label><input type="checkbox" class="kind" value="mouse" checked /> chuột</label>
-              <label><input type="checkbox" class="kind" value="call" checked /> gọi hàm</label>
-              <label><input type="checkbox" class="kind" value="callback" checked /> callback</label>
-              <label><input type="checkbox" class="kind" value="check" checked /> check</label>
-              <label><input type="checkbox" class="kind" value="info" checked /> ghi chú</label>
+              <label
+                ><input type="checkbox" class="kind" value="mouse" checked />
+                chuột</label
+              >
+              <label
+                ><input type="checkbox" class="kind" value="call" checked /> gọi
+                hàm</label
+              >
+              <label
+                ><input type="checkbox" class="kind" value="callback" checked />
+                callback</label
+              >
+              <label
+                ><input type="checkbox" class="kind" value="check" checked />
+                check</label
+              >
+              <label
+                ><input type="checkbox" class="kind" value="info" checked /> ghi
+                chú</label
+              >
               <label><input type="checkbox" id="onlyBad" /> chỉ lỗi</label>
-              <label><input type="checkbox" id="follow" checked /> theo dòng mới nhất</label>
-              <input id="q" type="search" placeholder="lọc theo chữ…" size="14" />
+              <label
+                ><input type="checkbox" id="follow" checked /> theo dòng mới
+                nhất</label
+              >
+              <input
+                id="q"
+                type="search"
+                placeholder="lọc theo chữ…"
+                size="14" />
               <button id="btn-export">Export JSON</button>
               <button id="btn-clear" class="danger">Xóa</button>
             </div>
@@ -638,12 +974,16 @@
           <div class="card">
             <h2>Controller API · plugin (index.js) · actions</h2>
             <div class="form" style="margin-top: 0">
-              <input id="fn-q" type="search" placeholder="lọc theo tên / mô tả…" size="26" />
+              <input
+                id="fn-q"
+                type="search"
+                placeholder="lọc theo tên / mô tả…"
+                size="26" />
             </div>
             <p class="hint">
               Danh sách hàm UI cần, đối chiếu với controller thật. ❌ bắt buộc
-              thì UI hỏng; ⚪ là hàm UI muốn có (mục 9 tab Trạng thái), thiếu thì
-              UI dùng cách tạm.
+              thì UI hỏng; ⚪ là hàm UI muốn có (mục 9 tab Trạng thái), thiếu
+              thì UI dùng cách tạm.
             </p>
             <div id="fn-sum"></div>
             <div id="fn-list"></div>
@@ -669,10 +1009,10 @@
               <code>"$ret"</code> kết quả lần gọi trước ·
               <code>"$sel.id"</code> / <code>"$sel.row"</code> /
               <code>"$sel.col"</code> quân đang chọn ·
-              <code>"$Side.WHITE"</code> · <code>"$PieceType.QUEEN"</code>
-              (lấy từ enums hoặc suy ra) · <code>"$GameMode.LOCAL"</code> ·
-              <code>"@e2"</code> quân ở ô e2 (theo view) · <code>"@e2.id"</code>
-              id quân đó.<br />
+              <code>"$Side.WHITE"</code> · <code>"$PieceType.QUEEN"</code> (lấy
+              từ enums hoặc suy ra) · <code>"$GameMode.LOCAL"</code> ·
+              <code>"@e2"</code> quân ở ô e2 (theo view) ·
+              <code>"@e2.id"</code> id quân đó.<br />
               Hàm cần callback (<code>subscribe</code>, <code>onError</code>)
               hãy dùng nút ở cột trái. <code>plugin.create</code> tạo thêm một
               controller phụ, không thay controller chính.
@@ -696,7 +1036,9 @@
             <pre id="selInfo"></pre>
           </div>
           <div class="card">
-            <h2>2 · Các giá trị suy ra từ view <small>(không ghi log)</small></h2>
+            <h2>
+              2 · Các giá trị suy ra từ view <small>(không ghi log)</small>
+            </h2>
             <div class="scroll" id="probes"></div>
           </div>
           <div class="card">
@@ -726,9 +1068,9 @@
             <div class="scroll" id="ctlDeps"></div>
             <p class="hint">
               HTML không import engine nên không soi được
-              <code>game.*</code> hay <code>board.*</code>. Các thứ đó được
-              kiểm gián tiếp bằng test tự động (chọn quân, phong cấp, bắt tốt
-              qua đường, VS_BOT).
+              <code>game.*</code> hay <code>board.*</code>. Các thứ đó được kiểm
+              gián tiếp bằng test tự động (chọn quân, phong cấp, bắt tốt qua
+              đường, VS_BOT).
             </p>
           </div>
           <div class="card">
@@ -750,12 +1092,14 @@
             </div>
             <p class="hint">
               Mỗi nhóm dùng controller riêng tạo bằng
-              <code>plugin.create()</code>, không phá bàn cờ đang chơi. Mọi
-              thao tác đều qua <code>clickSquare</code> / <code>promote</code>
-              / <code>restart</code>. Click một kết quả để nhảy tới dòng log
-              của nó.
+              <code>plugin.create()</code>, không phá bàn cờ đang chơi. Mọi thao
+              tác đều qua <code>clickSquare</code> / <code>promote</code> /
+              <code>restart</code>. Click một kết quả để nhảy tới dòng log của
+              nó.
             </p>
-            <div id="autoSummary" class="muted" style="margin-top: 8px">Chưa chạy.</div>
+            <div id="autoSummary" class="muted" style="margin-top: 8px">
+              Chưa chạy.
+            </div>
             <ul id="autoList"></ul>
           </div>
         </div>
@@ -776,18 +1120,28 @@
         plugin = mod.default ?? null;
         GameMode = mod.GameMode ?? null;
         if (!plugin || typeof plugin.create !== "function")
-          throw new Error("../index.js: export default phải là object có create()");
+          throw new Error(
+            "../index.js: export default phải là object có create()",
+          );
       } catch (err) {
         pluginError = err;
         plugin = null;
       }
-      const GM = GameMode ?? { LOCAL: "LOCAL", VS_BOT: "VS_BOT", BOT: "BOT", ONLINE: "ONLINE" };
+      const GM = GameMode ?? {
+        LOCAL: "LOCAL",
+        VS_BOT: "VS_BOT",
+        BOT: "BOT",
+        ONLINE: "ONLINE",
+      };
 
       // Cách HTML thử gọi UI sau khi nạp xong ui/index.js. Sửa ở đây nếu ui/ dùng quy ước khác.
       // Mỗi dòng: [nhãn, (module) => [hàm, this]]
       const UI_MOUNTERS = [
         ["mount(container, controller)", (m) => [m.mount, m]],
-        ["default.mount(container, controller)", (m) => [m.default?.mount, m.default]],
+        [
+          "default.mount(container, controller)",
+          (m) => [m.default?.mount, m.default],
+        ],
         ["render(container, controller)", (m) => [m.render, m]],
         [
           "default(container, controller)",
@@ -802,20 +1156,46 @@
       ];
 
       const PROMO_NAMES = ["QUEEN", "ROOK", "BISHOP", "KNIGHT"];
-      const LETTER = { PAWN: "p", KNIGHT: "n", BISHOP: "b", ROOK: "r", QUEEN: "q", KING: "k" };
+      const LETTER = {
+        PAWN: "p",
+        KNIGHT: "n",
+        BISHOP: "b",
+        ROOK: "r",
+        QUEEN: "q",
+        KING: "k",
+      };
 
       // Thế dựng sẵn để test phong cấp (mỗi nước theo dạng "ô-đi ô-đến")
       const SCENARIOS = {
         white: {
           title: "Trắng sắp phong cấp",
           final: "a7b8",
-          setup: ["a2a4", "b7b5", "a4b5", "a7a6", "b5a6", "g8f6", "a6a7", "e7e6"],
+          setup: [
+            "a2a4",
+            "b7b5",
+            "a4b5",
+            "a7a6",
+            "b5a6",
+            "g8f6",
+            "a6a7",
+            "e7e6",
+          ],
           hint: "8 nước: a4 b5 axb5 a6 bxa6 Nf6 a7 e6, rồi bấm tốt a7 ăn mã b8 (a7→b8).",
         },
         black: {
           title: "Đen sắp phong cấp",
           final: "a2b1",
-          setup: ["h2h3", "a7a5", "b2b4", "a5b4", "a2a3", "b4a3", "h3h4", "a3a2", "h4h5"],
+          setup: [
+            "h2h3",
+            "a7a5",
+            "b2b4",
+            "a5b4",
+            "a2a3",
+            "b4a3",
+            "h3h4",
+            "a3a2",
+            "h4h5",
+          ],
           hint: "9 nước: h3 a5 b4 axb4 a3 bxa3 h4 a2 h5, rồi bấm tốt a2 ăn mã b1 (a2→b1).",
         },
       };
@@ -827,7 +1207,14 @@
       const esc = (s) =>
         String(s).replace(
           /[&<>"']/g,
-          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
         );
       const pad = (n, l = 2) => String(n).padStart(l, "0");
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -892,10 +1279,12 @@
         uiErr = null;
 
       const V = () => safe(() => (ctl ? ctl.getView() : null), null);
-      const peekView = (c) => safe(() => (c ? c.getView() : undefined), undefined);
+      const peekView = (c) =>
+        safe(() => (c ? c.getView() : undefined), undefined);
       const hasCtl = (name) => typeof ctl?.[name] === "function";
       const hasAction = (name) => typeof ctl?.actions?.[name] === "function";
-      const pieceAtV = (v, row, col) => v?.pieces.find((p) => p.row === row && p.col === col) ?? null;
+      const pieceAtV = (v, row, col) =>
+        v?.pieces.find((p) => p.row === row && p.col === col) ?? null;
       const pieceById = (v, id) => v?.pieces.find((p) => p.id === id) ?? null;
 
       /* ---------- Side / PieceType: lấy từ enums hoặc suy ra từ thế ban đầu ---------- */
@@ -914,10 +1303,24 @@
       function buildLegend(v) {
         const e = ctl?.enums ?? v?.enums;
         if (e?.Side && e?.PieceType)
-          return makeLegend(e.Side, e.PieceType, "controller.enums / view.enums");
-        if (!v || !Array.isArray(v.pieces) || v.pieces.length !== 32) return null;
+          return makeLegend(
+            e.Side,
+            e.PieceType,
+            "controller.enums / view.enums",
+          );
+        if (!v || !Array.isArray(v.pieces) || v.pieces.length !== 32)
+          return null;
         const at = (r, c) => pieceAtV(v, r, c);
-        const back = ["ROOK", "KNIGHT", "BISHOP", "QUEEN", "KING", "BISHOP", "KNIGHT", "ROOK"];
+        const back = [
+          "ROOK",
+          "KNIGHT",
+          "BISHOP",
+          "QUEEN",
+          "KING",
+          "BISHOP",
+          "KNIGHT",
+          "ROOK",
+        ];
         const w = at(7, 4),
           b = at(0, 4);
         if (!w || !b || w.side === b.side) return null;
@@ -926,7 +1329,8 @@
         for (let c = 0; c < 8; c++)
           for (const r of [7, 0]) {
             const p = at(r, c);
-            if (!p || (PT[back[c]] !== undefined && PT[back[c]] !== p.type)) return null;
+            if (!p || (PT[back[c]] !== undefined && PT[back[c]] !== p.type))
+              return null;
             PT[back[c]] = p.type;
           }
         const pw = at(6, 0);
@@ -944,14 +1348,22 @@
       const kindName = (v) => String(v);
       const resultText = (r) =>
         r && typeof r === "object"
-          ? safeStringify({ ...r, ...(r.winner !== undefined ? { winner: sideName(r.winner) } : {}) })
+          ? safeStringify({
+              ...r,
+              ...(r.winner !== undefined ? { winner: sideName(r.winner) } : {}),
+            })
           : String(r);
 
       function boardToText(v) {
         const g = Array.from({ length: v.rows }, () => Array(v.cols).fill("."));
         for (const p of v.pieces) if (g[p.row]) g[p.row][p.col] = pieceChar(p);
         const lines = g.map((r, i) => `${v.rows - i}  ${r.join(" ")}`);
-        lines.push("   " + [...Array(v.cols).keys()].map((c) => (FILES[c] ?? "?").toUpperCase()).join(" "));
+        lines.push(
+          "   " +
+            [...Array(v.cols).keys()]
+              .map((c) => (FILES[c] ?? "?").toUpperCase())
+              .join(" "),
+        );
         return lines.join("\n");
       }
 
@@ -961,14 +1373,19 @@
         return JSON.stringify(
           v,
           function (key, val) {
-            if (val instanceof Error) val = { name: val.name, message: val.message, stack: val.stack };
+            if (val instanceof Error)
+              val = { name: val.name, message: val.message, stack: val.stack };
             else if (val instanceof Map) val = { __map: [...val] };
             else if (val instanceof Set) val = { __set: [...val] };
-            else if (typeof val === "function") return `[Function ${val.name || "anonymous"}]`;
-            else if (typeof val === "bigint" || typeof val === "symbol") return String(val);
-            else if (summarizeViews && isView(val)) val = { __view: true, ...summarize(val) };
+            else if (typeof val === "function")
+              return `[Function ${val.name || "anonymous"}]`;
+            else if (typeof val === "bigint" || typeof val === "symbol")
+              return String(val);
+            else if (summarizeViews && isView(val))
+              val = { __view: true, ...summarize(val) };
             if (val !== null && typeof val === "object") {
-              while (stack.length && stack[stack.length - 1] !== this) stack.pop();
+              while (stack.length && stack[stack.length - 1] !== this)
+                stack.pop();
               if (stack.includes(val)) return "[Circular]";
               stack.push(val);
             }
@@ -987,7 +1404,11 @@
         return viewIds.get(v);
       }
       const isView = (v) =>
-        !!v && typeof v === "object" && Array.isArray(v.pieces) && "turn" in v && "targets" in v;
+        !!v &&
+        typeof v === "object" &&
+        Array.isArray(v.pieces) &&
+        "turn" in v &&
+        "targets" in v;
 
       function summarize(v) {
         if (!isView(v)) return null;
@@ -996,7 +1417,8 @@
           turn: sideName(v.turn),
           result: snap(v.result) ?? null,
           pieces: v.pieces.length,
-          selected: v.selectedId == null ? null : sqName(pieceById(v, v.selectedId)),
+          selected:
+            v.selectedId == null ? null : sqName(pieceById(v, v.selectedId)),
           canAct: v.canAct,
           board: boardToText(v),
         };
@@ -1005,7 +1427,8 @@
       // Chuyển giá trị bất kỳ thành dữ liệu thuần (lưu được vào localStorage)
       function snap(v) {
         if (v === undefined) return undefined;
-        if (typeof v === "function") return `[Function ${v.name || "anonymous"}]`;
+        if (typeof v === "function")
+          return `[Function ${v.name || "anonymous"}]`;
         if (isView(v)) return { __view: true, ...summarize(v) };
         let s;
         try {
@@ -1014,18 +1437,33 @@
           return `[không serialize được: ${err.message}]`;
         }
         if (s === undefined) return undefined;
-        if (s === "{}" && v && typeof v === "object" && v.constructor && v.constructor !== Object)
+        if (
+          s === "{}" &&
+          v &&
+          typeof v === "object" &&
+          v.constructor &&
+          v.constructor !== Object
+        )
           return `[${v.constructor.name} instance]`;
         if (s.length > 4000)
-          return { __truncated: true, length: s.length, preview: s.slice(0, 4000) };
+          return {
+            __truncated: true,
+            length: s.length,
+            preview: s.slice(0, 4000),
+          };
         return JSON.parse(s);
       }
 
       const jsonText = (v) =>
-        v === undefined ? "undefined" : typeof v === "string" ? v : JSON.stringify(v, null, 2);
+        v === undefined
+          ? "undefined"
+          : typeof v === "string"
+            ? v
+            : JSON.stringify(v, null, 2);
       function brief(v, n) {
         if (v === undefined) return "undefined";
-        if (v && v.__view) return `view #${v.viewId} (lượt ${v.turn}, ${v.pieces} quân)`;
+        if (v && v.__view)
+          return `view #${v.viewId} (lượt ${v.turn}, ${v.pieces} quân)`;
         let s = typeof v === "string" ? v : safeStringify(v);
         if (s === undefined) s = String(v);
         return s.length > n ? s.slice(0, n - 1) + "…" : s;
@@ -1033,7 +1471,10 @@
 
       function withSquare(v, pos = v) {
         const p = snap(v);
-        const base = p && typeof p === "object" && !Array.isArray(p) ? { ...p } : { value: p };
+        const base =
+          p && typeof p === "object" && !Array.isArray(p)
+            ? { ...p }
+            : { value: p };
         if ("square" in base) base.squareRaw = base.square;
         return { ...base, square: sqName(pos), row: pos?.row, col: pos?.col };
       }
@@ -1046,7 +1487,9 @@
       }
       const listPieces = (v) =>
         v
-          ? [...v.pieces].sort((a, b) => a.row - b.row || a.col - b.col).map((p) => describePiece(p))
+          ? [...v.pieces]
+              .sort((a, b) => a.row - b.row || a.col - b.col)
+              .map((p) => describePiece(p))
           : [];
 
       const viewBrief = (v) =>
@@ -1054,7 +1497,10 @@
           ? null
           : {
               turn: sideName(v.turn),
-              selected: v.selectedId == null ? null : sqName(pieceById(v, v.selectedId)),
+              selected:
+                v.selectedId == null
+                  ? null
+                  : sqName(pieceById(v, v.selectedId)),
               targets: v.targets.map((m) => sqName(m)).join(" ") || "—",
               checkedKing: v.checkedKing ? sqName(v.checkedKing) : null,
               promotion: v.promotion ? sqName(v.promotion) : null,
@@ -1069,10 +1515,14 @@
         try {
           const src = Function.prototype.toString.call(fn);
           const m =
-            src.match(/^(?:async\s+)?(?:function\b\s*\*?\s*[\w$]*\s*)?[\w$#]*\s*\(([^)]*)\)/) ||
-            src.match(/^(?:async\s+)?([\w$]+)\s*=>/);
+            src.match(
+              /^(?:async\s+)?(?:function\b\s*\*?\s*[\w$]*\s*)?[\w$#]*\s*\(([^)]*)\)/,
+            ) || src.match(/^(?:async\s+)?([\w$]+)\s*=>/);
           if (!m) return `…${fn.length} tham số`;
-          return m[1].replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ").trim();
+          return m[1]
+            .replace(/\/\*[\s\S]*?\*\//g, "")
+            .replace(/\s+/g, " ")
+            .trim();
         } catch {
           return `…${fn.length} tham số`;
         }
@@ -1092,7 +1542,9 @@
           const a = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
           return Array.isArray(a)
             ? a.map((e) =>
-                e.status === "pending" ? { ...e, status: "error", result: "(bị ngắt giữa chừng)" } : e,
+                e.status === "pending"
+                  ? { ...e, status: "error", result: "(bị ngắt giữa chừng)" }
+                  : e,
               )
             : [];
         } catch {
@@ -1136,11 +1588,13 @@
           ...data,
         };
         events.push(e);
-        if (events.length > MAX_ENTRIES) events.splice(0, events.length - MAX_ENTRIES);
+        if (events.length > MAX_ENTRIES)
+          events.splice(0, events.length - MAX_ENTRIES);
         touch();
         return e;
       }
-      const note = (text, status = "info", data = {}) => begin("info", text, { status, ...data });
+      const note = (text, status = "info", data = {}) =>
+        begin("info", text, { status, ...data });
 
       /**
        * Bọc mọi lời gọi cần test: ghi tên hàm, tham số, kết quả/lỗi, thời gian chạy,
@@ -1178,7 +1632,12 @@
         touch();
         return { ok: !error, value, error, entry: h.e };
       }
-      function trace(fn, args, run, { source = "ui", target = () => ctl, show = snap } = {}) {
+      function trace(
+        fn,
+        args,
+        run,
+        { source = "ui", target = () => ctl, show = snap } = {},
+      ) {
         const h = traceBegin(fn, args, source, target);
         callStack.push(h.e.id);
         let value,
@@ -1191,7 +1650,12 @@
         callStack.pop();
         return traceEnd(h, value, error, show);
       }
-      async function traceAsync(fn, args, run, { source = "ui", target = () => ctl, show = snap } = {}) {
+      async function traceAsync(
+        fn,
+        args,
+        run,
+        { source = "ui", target = () => ctl, show = snap } = {},
+      ) {
         const h = traceBegin(fn, args, source, target);
         callStack.push(h.e.id);
         let p,
@@ -1249,9 +1713,14 @@
         const v = V();
         if (!v || v.selectedId == null) return false;
         if (hasAction("clearSelection")) {
-          trace("controller.actions.clearSelection", [], () => ctl.actions.clearSelection(), {
-            show: () => viewBrief(V()),
-          });
+          trace(
+            "controller.actions.clearSelection",
+            [],
+            () => ctl.actions.clearSelection(),
+            {
+              show: () => viewBrief(V()),
+            },
+          );
           return "clearSelection";
         }
         const p = pieceById(v, v.selectedId);
@@ -1273,10 +1742,15 @@
         offCtl = [];
         const old = ctl;
         if (old)
-          trace("controller.destroy  // thay controller cũ", [], () => old.destroy(), {
-            source,
-            target: () => old,
-          });
+          trace(
+            "controller.destroy  // thay controller cũ",
+            [],
+            () => old.destroy(),
+            {
+              source,
+              target: () => old,
+            },
+          );
         ctl = null;
         curMode = null;
         destroyed = false;
@@ -1291,16 +1765,25 @@
         promoTried = null;
         legend = null;
         if (!plugin) {
-          note(`Không nạp được ../index.js: ${pluginError?.message ?? "?"}`, "error", { source });
+          note(
+            `Không nạp được ../index.js: ${pluginError?.message ?? "?"}`,
+            "error",
+            { source },
+          );
           buildTargets();
           updateAll();
           return;
         }
-        const r = trace("plugin.create", { mode }, () => plugin.create({ mode: GM[mode] }), {
-          source,
-          target: () => null,
-          show: () => "[controller]",
-        });
+        const r = trace(
+          "plugin.create",
+          { mode },
+          () => plugin.create({ mode: GM[mode] }),
+          {
+            source,
+            target: () => null,
+            show: () => "[controller]",
+          },
+        );
         if (!r.ok) {
           buildTargets();
           updateAll();
@@ -1336,20 +1819,28 @@
 
       function subscribe() {
         if (!ctl) return note("Chưa có controller", "error");
-        if (unsub) return note("Đã subscribe rồi — hãy gọi off() trước", "error");
-        const r = trace("controller.subscribe", { listener: "<function>" }, () =>
-          ctl.subscribe((...cb) => {
-            subCalls++;
-            const gotView = isView(cb[0]);
-            if (listenerView === null) listenerView = gotView;
-            begin("callback", `controller listener được gọi (lần ${subCalls})`, {
-              source: "callback",
-              args: gotView ? "[view]" : cb.length ? snap(cb) : [],
-              after: summarize(V()),
-              result: viewBrief(V()),
-            });
-            renderStat();
-          }),
+        if (unsub)
+          return note("Đã subscribe rồi — hãy gọi off() trước", "error");
+        const r = trace(
+          "controller.subscribe",
+          { listener: "<function>" },
+          () =>
+            ctl.subscribe((...cb) => {
+              subCalls++;
+              const gotView = isView(cb[0]);
+              if (listenerView === null) listenerView = gotView;
+              begin(
+                "callback",
+                `controller listener được gọi (lần ${subCalls})`,
+                {
+                  source: "callback",
+                  args: gotView ? "[view]" : cb.length ? snap(cb) : [],
+                  after: summarize(V()),
+                  result: viewBrief(V()),
+                },
+              );
+              renderStat();
+            }),
         );
         if (r.ok) unsub = r.value;
       }
@@ -1362,10 +1853,15 @@
 
       function doRestart(source = "ui") {
         if (!ctl) return { ok: false };
-        const r = trace("controller.actions.restart", [], () => ctl.actions.restart(), {
-          source,
-          show: () => viewBrief(V()),
-        });
+        const r = trace(
+          "controller.actions.restart",
+          [],
+          () => ctl.actions.restart(),
+          {
+            source,
+            show: () => viewBrief(V()),
+          },
+        );
         selected = null;
         lastMove = null;
         moveLog = [];
@@ -1387,8 +1883,15 @@
         const v0 = V();
         const piece = pieceAtV(v0, from.row, from.col);
         if (!piece) {
-          note(`Không có quân ở ${sqName(from)} (theo view) → không gọi controller`, "error", { source });
-          return { ok: false, error: new Error(`không có quân ở ${sqName(from)}`) };
+          note(
+            `Không có quân ở ${sqName(from)} (theo view) → không gọi controller`,
+            "error",
+            { source },
+          );
+          return {
+            ok: false,
+            error: new Error(`không có quân ở ${sqName(from)}`),
+          };
         }
         const clickStep = (s, step) =>
           trace(
@@ -1426,7 +1929,9 @@
         flash(to);
         return {
           ok: false,
-          error: new Error("controller không gửi nước đi: ô đích không nằm trong view.targets"),
+          error: new Error(
+            "controller không gửi nước đi: ô đích không nằm trong view.targets",
+          ),
         };
       }
 
@@ -1434,8 +1939,15 @@
         if (!ctl) return { ok: false, error: new Error("chưa có controller") };
         const value = legend?.PieceType?.[name];
         if (value === undefined) {
-          note(`Chưa biết giá trị PieceType.${name} (cần controller.enums — mục 9)`, "error", { source });
-          return { ok: false, error: new Error(`chưa biết giá trị PieceType.${name}`) };
+          note(
+            `Chưa biết giá trị PieceType.${name} (cần controller.enums — mục 9)`,
+            "error",
+            { source },
+          );
+          return {
+            ok: false,
+            error: new Error(`chưa biết giá trị PieceType.${name}`),
+          };
         }
         const pending = !!V()?.promotion;
         const e0 = ctlErrors;
@@ -1485,7 +1997,8 @@
       // Nút "bấm ô → xem view.targets": chỉ bấm qua controller, kết quả đọc từ view
       function consoleSquare(text) {
         text = text.trim().toLowerCase();
-        if (!isSquareText(text)) return note(`"${text}" không phải ô hợp lệ (vd e2)`, "error");
+        if (!isSquareText(text))
+          return note(`"${text}" không phải ô hợp lệ (vd e2)`, "error");
         if (!ctl) return note("Chưa có controller", "error");
         const s = sq(text);
         trace(
@@ -1541,16 +2054,24 @@
         if (replaying) return;
         const seq = moveLog.map((m) => ({ ...m }));
         if (!seq.length)
-          return note("Chưa có thao tác nào để replay (hãy đi vài nước trước)", "error");
+          return note(
+            "Chưa có thao tác nào để replay (hãy đi vài nước trước)",
+            "error",
+          );
         replaying = true;
-        const head = begin("info", `▶ Replay ${seq.length} thao tác`, { source: "replay" });
+        const head = begin("info", `▶ Replay ${seq.length} thao tác`, {
+          source: "replay",
+        });
         callStack.push(head.id);
         let mismatch = 0;
         try {
           doRestart("replay");
           for (const m of seq) {
             await sleep(350);
-            const d = m.kind === "promote" ? doPromote(m.pieceType, "replay") : doMove(m.from, m.to, "replay");
+            const d =
+              m.kind === "promote"
+                ? doPromote(m.pieceType, "replay")
+                : doMove(m.from, m.to, "replay");
             if (d.ok !== m.ok) mismatch++;
             updateAll();
           }
@@ -1584,14 +2105,20 @@
         if (promoTried === sid) return; // chỉ thử tự phong 1 lần cho mỗi view (tránh lặp vô hạn)
         promoTried = sid;
         const name = mode.slice(5);
-        note(`Chế độ tự phong: view.promotion có giá trị → chọn ${name}`, "info", { source: "promotion" });
+        note(
+          `Chế độ tự phong: view.promotion có giá trị → chọn ${name}`,
+          "info",
+          { source: "promotion" },
+        );
         doPromote(name, "auto");
         updateAll();
       }
 
       function renderPromo() {
         const v = V();
-        $("promo-api").textContent = !ctl ? "⚠ chưa có controller" : "controller.actions.promote(pieceType)";
+        $("promo-api").textContent = !ctl
+          ? "⚠ chưa có controller"
+          : "controller.actions.promote(pieceType)";
         const p = promoPending,
           mode = $("opt-promo").value;
         const opts = v?.promotion?.options;
@@ -1600,7 +2127,10 @@
           : `<span class="muted">Không có tốt nào đang chờ phong cấp</span>`;
         for (const b of $("promo-pick").querySelectorAll("button")) {
           const val = legend?.PieceType?.[b.dataset.ptype];
-          const allowed = Array.isArray(opts) && val !== undefined ? opts.includes(val) : true;
+          const allowed =
+            Array.isArray(opts) && val !== undefined
+              ? opts.includes(val)
+              : true;
           b.classList.toggle("hot", !!p && mode === "ask" && allowed);
           b.classList.toggle("off", !!p && !allowed);
           b.title =
@@ -1627,22 +2157,26 @@
 
       // Controller bọc để mọi lời gọi từ UI thật được ghi log (getView / subscribe giữ nguyên)
       function wrapForUI(c) {
-        const call = (label, fn) => (...a) => {
-          const r = trace(label, a, () => fn(...a), {
-            source: "ui-thật",
-            target: () => c,
-            show: () => viewBrief(peekView(c)),
-          });
-          if (!r.ok) throw r.error;
-          return r.value;
-        };
+        const call =
+          (label, fn) =>
+          (...a) => {
+            const r = trace(label, a, () => fn(...a), {
+              source: "ui-thật",
+              target: () => c,
+              show: () => viewBrief(peekView(c)),
+            });
+            if (!r.ok) throw r.error;
+            return r.value;
+          };
         const w = {};
         for (const [k, val] of Object.entries(c)) {
           if (k === "actions" && val && typeof val === "object")
             w.actions = Object.fromEntries(
               Object.entries(val).map(([n, f]) => [
                 n,
-                typeof f === "function" ? call(`controller.actions.${n}  // từ UI thật`, f) : f,
+                typeof f === "function"
+                  ? call(`controller.actions.${n}  // từ UI thật`, f)
+                  : f,
               ]),
             );
           else if (k === "destroy" && typeof val === "function")
@@ -1675,7 +2209,9 @@
           return false;
         }
         const lr = await traceAsync(
-          viaCtl ? "controller.loadUI" : "plugin.loadUI  // controller chưa có loadUI()",
+          viaCtl
+            ? "controller.loadUI"
+            : "plugin.loadUI  // controller chưa có loadUI()",
           [],
           viaCtl ? () => ctl.loadUI() : () => plugin.loadUI(),
           { source: "ui-thật", show: describeModule },
@@ -1684,7 +2220,10 @@
           showUiError(lr.error);
           return false;
         }
-        const ns = typeof lr.value === "function" ? { default: lr.value } : (lr.value ?? {});
+        const ns =
+          typeof lr.value === "function"
+            ? { default: lr.value }
+            : (lr.value ?? {});
         const hit = UI_MOUNTERS.map(([label, pick]) => {
           try {
             const [fn, self] = pick(ns);
@@ -1704,9 +2243,17 @@
         const passed = $("opt-wrap").checked ? wrapForUI(ctl) : ctl;
         const mr = await traceAsync(
           `ui.${hit.label}`,
-          { container: "#ui-host", controller: $("opt-wrap").checked ? "[controller bọc log]" : "[controller]" },
+          {
+            container: "#ui-host",
+            controller: $("opt-wrap").checked
+              ? "[controller bọc log]"
+              : "[controller]",
+          },
           () => hit.fn.call(hit.self, hostEl, passed),
-          { source: "ui-thật", show: (h) => (h === undefined ? "undefined" : typeof h) },
+          {
+            source: "ui-thật",
+            show: (h) => (h === undefined ? "undefined" : typeof h),
+          },
         );
         if (!mr.ok) {
           showUiError(mr.error);
@@ -1723,8 +2270,13 @@
                 : null;
         if (h instanceof Node && !hostEl.contains(h)) hostEl.append(h);
         uiState = "ok";
-        uiInfo = { via: viaCtl ? "controller.loadUI" : "plugin.loadUI", mounter: hit.label, hasUnmount: !!uiHandle };
-        $("ui-status").textContent = `✅ đã mount qua ${hit.label}${uiHandle ? "" : " · UI không trả hàm hủy"}`;
+        uiInfo = {
+          via: viaCtl ? "controller.loadUI" : "plugin.loadUI",
+          mounter: hit.label,
+          hasUnmount: !!uiHandle,
+        };
+        $("ui-status").textContent =
+          `✅ đã mount qua ${hit.label}${uiHandle ? "" : " · UI không trả hàm hủy"}`;
         return true;
       }
 
@@ -1738,7 +2290,9 @@
       function applyUiVisibility() {
         $("board-wrap").hidden = uiMode;
         $("ui-wrap").hidden = !uiMode;
-        $("btn-ui").textContent = uiMode ? "◀ Về bàn cờ test" : "Chuyển sang UI thật (ui/) ▶";
+        $("btn-ui").textContent = uiMode
+          ? "◀ Về bàn cờ test"
+          : "Chuyển sang UI thật (ui/) ▶";
         $("view-src").textContent = uiMode
           ? "(UI thật từ ui/, nhận controller)"
           : "(vẽ từ controller.getView())";
@@ -1782,8 +2336,16 @@
           buttons: ev.buttons,
           detail: ev.detail,
           client: { x: ev.clientX, y: ev.clientY },
-          inBoard: { x: Math.round(ev.clientX - rect.left), y: Math.round(ev.clientY - rect.top) },
-          modifiers: { shift: ev.shiftKey, ctrl: ev.ctrlKey, alt: ev.altKey, meta: ev.metaKey },
+          inBoard: {
+            x: Math.round(ev.clientX - rect.left),
+            y: Math.round(ev.clientY - rect.top),
+          },
+          modifiers: {
+            shift: ev.shiftKey,
+            ctrl: ev.ctrlKey,
+            alt: ev.altKey,
+            meta: ev.metaKey,
+          },
           isTrusted: ev.isTrusted,
           square: s ? sqName(s) : null,
           row: s ? s.row : null,
@@ -1800,7 +2362,13 @@
         const e0 = ctlErrors;
         const r = trace(
           "controller.actions.move",
-          { id: piece.id, row: to.row, col: to.col, from: sqName(from), square: sqName(to) },
+          {
+            id: piece.id,
+            row: to.row,
+            col: to.col,
+            from: sqName(from),
+            square: sqName(to),
+          },
           () => ctl.actions.move(piece.id, to.row, to.col),
           { show: () => viewBrief(V()) },
         );
@@ -1811,7 +2379,8 @@
           return `ép ${text} (actions.move): engine CHẤP NHẬN (!)`;
         }
         flash(to);
-        if (!r.ok) return `ép ${text}: actions.move ném lỗi ra ngoài → ${r.error?.message}`;
+        if (!r.ok)
+          return `ép ${text}: actions.move ném lỗi ra ngoài → ${r.error?.message}`;
         return ctlErrors > e0
           ? `ép ${text}: engine từ chối → onError: ${lastCtlError?.message}`
           : `ép ${text}: controller bỏ qua (không gửi, không báo onError)`;
@@ -1848,7 +2417,11 @@
           return v0.promotion
             ? "đang chờ phong cấp → controller bỏ qua click bàn cờ"
             : `controller không đổi gì (view giữ nguyên tham chiếu, canAct = ${v0.canAct})`;
-        if (sel && !sameSq(from, target) && pieceAtV(v1, row, col)?.id === sel.id) {
+        if (
+          sel &&
+          !sameSq(from, target) &&
+          pieceAtV(v1, row, col)?.id === sel.id
+        ) {
           lastMove = { from, to: target };
           moveLog.push({ kind: "move", from, to: target, ok: true });
           return (
@@ -1870,7 +2443,10 @@
         renderHover();
 
         const me = $("m-" + type)?.checked
-          ? begin("mouse", `${type}${s ? " @ " + sqName(s) : ""}`, { source: "mouse", args: lastMouse })
+          ? begin("mouse", `${type}${s ? " @ " + sqName(s) : ""}`, {
+              source: "mouse",
+              args: lastMouse,
+            })
           : null;
         if (me) callStack.push(me.id);
         let outcome = null;
@@ -1896,7 +2472,13 @@
         if (type === "click" || type === "contextmenu") updateAll();
       }
 
-      for (const type of ["click", "dblclick", "contextmenu", "mousedown", "mouseup"])
+      for (const type of [
+        "click",
+        "dblclick",
+        "contextmenu",
+        "mousedown",
+        "mouseup",
+      ])
         boardEl.addEventListener(type, (ev) => onMouse(ev, type));
 
       boardEl.addEventListener("mouseover", (ev) => {
@@ -1929,7 +2511,9 @@
         boardEl.querySelector(".sq.hover")?.classList.remove("hover");
         if (hoverSq)
           boardEl
-            .querySelector(`.sq[data-row="${hoverSq.row}"][data-col="${hoverSq.col}"]`)
+            .querySelector(
+              `.sq[data-row="${hoverSq.row}"][data-col="${hoverSq.col}"]`,
+            )
             ?.classList.add("hover");
       }
 
@@ -1953,8 +2537,11 @@
         const idx = [0, 1, 2, 3, 4, 5, 6, 7]; // CSS đang cố định 8x8
         const order = $("opt-flip").checked ? [...idx].reverse() : idx;
         const lab = $("opt-label").value;
-        const byCell = new Map(v ? v.pieces.map((p) => [`${p.row},${p.col}`, p]) : []);
-        const selPiece = v && v.selectedId != null ? pieceById(v, v.selectedId) : null;
+        const byCell = new Map(
+          v ? v.pieces.map((p) => [`${p.row},${p.col}`, p]) : [],
+        );
+        const selPiece =
+          v && v.selectedId != null ? pieceById(v, v.selectedId) : null;
         // view.lastMove nếu controller đã có, chưa có thì dùng bản UI tự nhớ
         const last = v && "lastMove" in v ? v.lastMove : lastMove;
         let html = "";
@@ -1964,7 +2551,8 @@
             const piece = byCell.get(`${row},${col}`) ?? null;
             const lm = v?.targets.find((m) => sameSq(m, cell));
             const cls = ["sq", (row + col) % 2 ? "dark" : "light"];
-            if (last && (sameSq(last.from, cell) || sameSq(last.to, cell))) cls.push("last");
+            if (last && (sameSq(last.from, cell) || sameSq(last.to, cell)))
+              cls.push("last");
             if (v?.promotion && sameSq(v.promotion, cell)) cls.push("pend");
             if (v?.checkedKing && sameSq(v.checkedKing, cell)) cls.push("chk");
             if (selPiece && sameSq(selPiece, cell)) cls.push("sel");
@@ -1972,19 +2560,29 @@
             if (sameSq(flashSq, cell)) cls.push("flash");
             const tip =
               `${sqName(cell)} (row ${row}, col ${col})` +
-              (piece ? ` · ${sideName(piece.side)} ${typeName(piece.type)}` : "");
+              (piece
+                ? ` · ${sideName(piece.side)} ${typeName(piece.type)}`
+                : "");
             const tag = lm ? moveTag(lm, cell, selPiece, v) : "";
             html +=
               `<div class="${cls.join(" ")}" data-row="${row}" data-col="${col}" title="${esc(tip)}">` +
-              (lab !== "none" ? `<i class="lb">${lab === "rc" ? `${row},${col}` : sqName(cell)}</i>` : "") +
-              (piece ? `<span class="pc ${isWhite(piece) ? "w" : "b"}">${esc(pieceChar(piece))}</span>` : "") +
+              (lab !== "none"
+                ? `<i class="lb">${lab === "rc" ? `${row},${col}` : sqName(cell)}</i>`
+                : "") +
+              (piece
+                ? `<span class="pc ${isWhite(piece) ? "w" : "b"}">${esc(pieceChar(piece))}</span>`
+                : "") +
               (tag ? `<i class="tg">${esc(tag)}</i>` : "") +
               `</div>`;
           }
         }
         boardEl.innerHTML = html;
-        $("ranks").innerHTML = order.map((r) => `<span>${8 - r}</span>`).join("");
-        $("files").innerHTML = order.map((c) => `<span>${FILES[c]}</span>`).join("");
+        $("ranks").innerHTML = order
+          .map((r) => `<span>${8 - r}</span>`)
+          .join("");
+        $("files").innerHTML = order
+          .map((c) => `<span>${FILES[c]}</span>`)
+          .join("");
         paintHover();
       }
 
@@ -2002,26 +2600,63 @@
           cell("Chế độ", curMode ?? "—"),
           cell("View", v ? `#${viewId(v)}` : "—"),
           cell("Lượt", v ? sideName(v.turn) : "—"),
-          cell("Kết quả", v?.result ? resultText(v.result) : "chưa có", v?.result ? "bad" : ""),
-          cell("Chiếu", v ? (v.checkedKing ? `CÓ (${sqName(v.checkedKing)})` : "không") : "—", v?.checkedKing ? "bad" : ""),
+          cell(
+            "Kết quả",
+            v?.result ? resultText(v.result) : "chưa có",
+            v?.result ? "bad" : "",
+          ),
+          cell(
+            "Chiếu",
+            v
+              ? v.checkedKing
+                ? `CÓ (${sqName(v.checkedKing)})`
+                : "không"
+              : "—",
+            v?.checkedKing ? "bad" : "",
+          ),
           cell("Phong cấp", pend ? "đang chờ" : "—", pend ? "wait" : ""),
           cell("Số quân", v ? v.pieces.length : "—"),
-          cell("canAct (view)", v ? String(v.canAct) : "—", v && !v.canAct ? "wait" : ""),
-          cell("Subscribe", unsub ? `bật · ${subCalls} lần` : `tắt · ${subCalls} lần`, unsub ? "good" : ""),
+          cell(
+            "canAct (view)",
+            v ? String(v.canAct) : "—",
+            v && !v.canAct ? "wait" : "",
+          ),
+          cell(
+            "Subscribe",
+            unsub ? `bật · ${subCalls} lần` : `tắt · ${subCalls} lần`,
+            unsub ? "good" : "",
+          ),
           cell("onError", `${ctlErrors} lần`, ctlErrors ? "bad" : ""),
-          cell("Hiển thị", uiMode ? (uiState === "ok" ? "UI thật" : uiState === "fail" ? "UI thật (lỗi)" : "UI thật…") : "bàn cờ test", uiState === "fail" ? "bad" : ""),
+          cell(
+            "Hiển thị",
+            uiMode
+              ? uiState === "ok"
+                ? "UI thật"
+                : uiState === "fail"
+                  ? "UI thật (lỗi)"
+                  : "UI thật…"
+              : "bàn cờ test",
+            uiState === "fail" ? "bad" : "",
+          ),
         ].join("");
-        $("btn-sub").textContent = unsub ? "off() — hủy subscribe" : "subscribe()";
+        $("btn-sub").textContent = unsub
+          ? "off() — hủy subscribe"
+          : "subscribe()";
       }
 
       function renderHover() {
         const v = V();
-        const piece = hoverSq && v ? pieceAtV(v, hoverSq.row, hoverSq.col) : null;
+        const piece =
+          hoverSq && v ? pieceAtV(v, hoverSq.row, hoverSq.col) : null;
         $("hover").textContent = hoverSq
           ? `${sqName(hoverSq)} (row ${hoverSq.row}, col ${hoverSq.col}) · ` +
-            (piece ? `${sideName(piece.side)} ${typeName(piece.type)} id=${piece.id}` : "ô trống")
+            (piece
+              ? `${sideName(piece.side)} ${typeName(piece.type)} id=${piece.id}`
+              : "ô trống")
           : "Rê chuột vào bàn cờ để xem thông tin ô";
-        $("mouseInfo").textContent = lastMouse ? safeStringify(lastMouse, 2) : "(chưa có sự kiện chuột)";
+        $("mouseInfo").textContent = lastMouse
+          ? safeStringify(lastMouse, 2)
+          : "(chưa có sự kiện chuột)";
       }
 
       function renderProbes(v) {
@@ -2035,27 +2670,48 @@
             cls = "";
           try {
             const x = f();
-            out = Array.isArray(x) ? `${x.length} phần tử · ${brief(snap(x), 100)}` : brief(snap(x), 120);
+            out = Array.isArray(x)
+              ? `${x.length} phần tử · ${brief(snap(x), 100)}`
+              : brief(snap(x), 120);
           } catch (err) {
             out = `✖ ${err.message}`;
             cls = "st-error";
           }
-          rows.push(`<tr><td>${esc(label)}</td><td class="${cls}">${esc(out)}</td></tr>`);
+          rows.push(
+            `<tr><td>${esc(label)}</td><td class="${cls}">${esc(out)}</td></tr>`,
+          );
         };
         add("view.turn", () => sideName(v.turn));
         add("view.result", () => (v.result ? resultText(v.result) : null));
-        add("view.checkedKing", () => (v.checkedKing ? sqName(v.checkedKing) : null));
+        add("view.checkedKing", () =>
+          v.checkedKing ? sqName(v.checkedKing) : null,
+        );
         add("view.promotion", () =>
           v.promotion
-            ? { square: sqName(v.promotion), side: sideName(v.promotion.side), options: (v.promotion.options ?? []).map(typeName) }
+            ? {
+                square: sqName(v.promotion),
+                side: sideName(v.promotion.side),
+                options: (v.promotion.options ?? []).map(typeName),
+              }
             : null,
         );
         add("view.canAct", () => v.canAct);
         add("view.selectedId", () => v.selectedId);
-        add("view.targets", () => v.targets.map((m) => sqName(m) + (m.capture ? "x" : "")));
-        add("view.pieces (số lượng · id duy nhất?)", () => `${v.pieces.length} · ${new Set(v.pieces.map((p) => p.id)).size === v.pieces.length}`);
-        add("view.lastMove", () => ("lastMove" in v ? v.lastMove : "(view chưa có lastMove)"));
-        add("Side / PieceType lấy từ", () => legend?.from ?? "(chưa suy ra được)");
+        add("view.targets", () =>
+          v.targets.map((m) => sqName(m) + (m.capture ? "x" : "")),
+        );
+        add(
+          "view.pieces (số lượng · id duy nhất?)",
+          () =>
+            `${v.pieces.length} · ${new Set(v.pieces.map((p) => p.id)).size === v.pieces.length}`,
+        );
+        add("view.lastMove", () =>
+          "lastMove" in v ? v.lastMove : "(view chưa có lastMove)",
+        );
+        add(
+          "Side / PieceType lấy từ",
+          () => legend?.from ?? "(chưa suy ra được)",
+        );
         $("probes").innerHTML =
           `<table><thead><tr><th>đọc</th><th>giá trị</th></tr></thead><tbody>${rows.join("")}</tbody></table>`;
       }
@@ -2063,7 +2719,10 @@
       // Mục 7 + 8 + 9 của tab Trạng thái
       function renderCtlView(v) {
         $("viewJson").textContent = v
-          ? safeStringify({ ...v, pieces: `[${v.pieces.length} quân — xem mục 5]` }, 2)
+          ? safeStringify(
+              { ...v, pieces: `[${v.pieces.length} quân — xem mục 5]` },
+              2,
+            )
           : "(chưa có controller)";
 
         const need = (cond, msg) => {
@@ -2072,38 +2731,88 @@
         };
         // [nhãn, hàm kiểm tra → true | false | null (chưa kiểm được)]
         const deps = [
-          ["import ../index.js (cửa duy nhất của plugin)", () => {
-            if (pluginError) throw pluginError;
-            return !!plugin;
-          }],
-          ["plugin: id, title, create(), loadUI()", () =>
-            !!plugin &&
-            typeof plugin.id === "string" &&
-            typeof plugin.title === "string" &&
-            typeof plugin.create === "function" &&
-            typeof plugin.loadUI === "function"],
-          ["index.js export GameMode (LOCAL, VS_BOT, BOT, ONLINE)", () =>
-            !!GameMode && ["LOCAL", "VS_BOT", "BOT", "ONLINE"].every((k) => k in GameMode)],
-          ["controller: getView / subscribe / onError / destroy", () =>
-            !!ctl && ["getView", "subscribe", "onError", "destroy"].every(hasCtl)],
-          ["controller.actions: clickSquare / promote / restart", () =>
-            ["clickSquare", "promote", "restart"].every(hasAction)],
-          ["view có đủ: rows, cols, pieces, turn, selectedId, targets, checkedKing, promotion, result, canAct", () =>
-            !!v &&
-            ["rows", "cols", "pieces", "turn", "selectedId", "targets", "checkedKing", "promotion", "result", "canAct"].every((k) => k in v)],
-          ["view.pieces[i] có id, type, side, row, col (id duy nhất)", () =>
-            need(v, "chưa có view") &&
-            v.pieces.every((p) => ["id", "type", "side", "row", "col"].every((k) => k in p)) &&
-            new Set(v.pieces.map((p) => p.id)).size === v.pieces.length],
-          ["view.targets[i] có row, col, capture", () =>
-            !v || !v.targets.length ? null : v.targets.every((t) => ["row", "col", "capture"].every((k) => k in t))],
-          ["view.promotion có pieceId, side, row, col, options (không rỗng)", () =>
-            !v?.promotion
-              ? null
-              : ["pieceId", "side", "row", "col", "options"].every((k) => k in v.promotion) &&
-                Array.isArray(v.promotion.options) &&
-                v.promotion.options.length > 0],
-          ["Side / PieceType dùng được (enums hoặc suy ra từ thế ban đầu)", () => !!legend],
+          [
+            "import ../index.js (cửa duy nhất của plugin)",
+            () => {
+              if (pluginError) throw pluginError;
+              return !!plugin;
+            },
+          ],
+          [
+            "plugin: id, title, create(), loadUI()",
+            () =>
+              !!plugin &&
+              typeof plugin.id === "string" &&
+              typeof plugin.title === "string" &&
+              typeof plugin.create === "function" &&
+              typeof plugin.loadUI === "function",
+          ],
+          [
+            "index.js export GameMode (LOCAL, VS_BOT, BOT, ONLINE)",
+            () =>
+              !!GameMode &&
+              ["LOCAL", "VS_BOT", "BOT", "ONLINE"].every((k) => k in GameMode),
+          ],
+          [
+            "controller: getView / subscribe / onError / destroy",
+            () =>
+              !!ctl &&
+              ["getView", "subscribe", "onError", "destroy"].every(hasCtl),
+          ],
+          [
+            "controller.actions: clickSquare / promote / restart",
+            () => ["clickSquare", "promote", "restart"].every(hasAction),
+          ],
+          [
+            "view có đủ: rows, cols, pieces, turn, selectedId, targets, checkedKing, promotion, result, canAct",
+            () =>
+              !!v &&
+              [
+                "rows",
+                "cols",
+                "pieces",
+                "turn",
+                "selectedId",
+                "targets",
+                "checkedKing",
+                "promotion",
+                "result",
+                "canAct",
+              ].every((k) => k in v),
+          ],
+          [
+            "view.pieces[i] có id, type, side, row, col (id duy nhất)",
+            () =>
+              need(v, "chưa có view") &&
+              v.pieces.every((p) =>
+                ["id", "type", "side", "row", "col"].every((k) => k in p),
+              ) &&
+              new Set(v.pieces.map((p) => p.id)).size === v.pieces.length,
+          ],
+          [
+            "view.targets[i] có row, col, capture",
+            () =>
+              !v || !v.targets.length
+                ? null
+                : v.targets.every((t) =>
+                    ["row", "col", "capture"].every((k) => k in t),
+                  ),
+          ],
+          [
+            "view.promotion có pieceId, side, row, col, options (không rỗng)",
+            () =>
+              !v?.promotion
+                ? null
+                : ["pieceId", "side", "row", "col", "options"].every(
+                    (k) => k in v.promotion,
+                  ) &&
+                  Array.isArray(v.promotion.options) &&
+                  v.promotion.options.length > 0,
+          ],
+          [
+            "Side / PieceType dùng được (enums hoặc suy ra từ thế ban đầu)",
+            () => !!legend,
+          ],
         ];
         $("ctlDeps").innerHTML =
           `<table><thead><tr><th>phụ thuộc</th><th>kết quả</th></tr></thead><tbody>` +
@@ -2145,7 +2854,8 @@
                 : uiState === "fail"
                   ? false
                   : null,
-            () => (uiState === "fail" ? uiErr : "bấm “Chuyển sang UI thật” để kiểm"),
+            () =>
+              uiState === "fail" ? uiErr : "bấm “Chuyển sang UI thật” để kiểm",
           ],
           [
             "controller.enums hoặc view.enums = { Side, PieceType }",
@@ -2174,7 +2884,10 @@
           [
             "view.targets[i].kind",
             "nhãn CASTLE / EP / PROMO trên ô đích",
-            () => (!v || !v.targets.length ? null : v.targets.some((t) => "kind" in t)),
+            () =>
+              !v || !v.targets.length
+                ? null
+                : v.targets.some((t) => "kind" in t),
             "chỉ hiện PROMO (suy ra từ vị trí tốt), không phân biệt nhập thành / bắt tốt qua đường",
           ],
           [
@@ -2214,7 +2927,9 @@
           ? safeStringify(
               {
                 piece: selected.piece,
-                "view.targets": selected.legal.map((m) => sqName(m) + (m.capture ? " (ăn quân)" : "")),
+                "view.targets": selected.legal.map(
+                  (m) => sqName(m) + (m.capture ? " (ăn quân)" : ""),
+                ),
                 "chi tiết": selected.legal.map((m) => withSquare(m)),
               },
               2,
@@ -2262,7 +2977,8 @@
       function showTab(name) {
         for (const b of document.querySelectorAll("#tabs button"))
           b.classList.toggle("on", b.dataset.tab === name);
-        for (const p of document.querySelectorAll(".tabpane")) p.hidden = p.id !== `tab-${name}`;
+        for (const p of document.querySelectorAll(".tabpane"))
+          p.hidden = p.id !== `tab-${name}`;
         if (name === "log") {
           lastSig = "";
           renderLog();
@@ -2288,7 +3004,11 @@
             const a = e.before?.viewId,
               b = e.after?.viewId;
             const ids =
-              e.before && e.after ? (a === b ? ` · view #${a} (giữ nguyên)` : ` · view #${a}→#${b}`) : "";
+              e.before && e.after
+                ? a === b
+                  ? ` · view #${a} (giữ nguyên)`
+                  : ` · view #${a}→#${b}`
+                : "";
             const body =
               e.status === "error"
                 ? `✖ ${esc(e.error?.message ?? "lỗi")}`
@@ -2317,12 +3037,15 @@
       }
 
       function visibleEntries() {
-        const kinds = new Set([...document.querySelectorAll(".kind:checked")].map((x) => x.value));
+        const kinds = new Set(
+          [...document.querySelectorAll(".kind:checked")].map((x) => x.value),
+        );
         const q = $("q").value.trim().toLowerCase();
         const onlyBad = $("onlyBad").checked;
         return events.filter((e) => {
           if (!kinds.has(e.kind)) return false;
-          if (onlyBad && e.status !== "error" && e.status !== "fail") return false;
+          if (onlyBad && e.status !== "error" && e.status !== "fail")
+            return false;
           if (q) {
             const hay =
               `${e.label} ${e.fn ?? ""} ${e.source} ${safeStringify(e.args) ?? ""} ${safeStringify(e.result) ?? ""}`.toLowerCase();
@@ -2344,7 +3067,8 @@
         const box = $("logbox"),
           list = $("log");
         const follow = $("follow").checked;
-        const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 40;
+        const nearBottom =
+          box.scrollHeight - box.scrollTop - box.clientHeight < 40;
         const all = visibleEntries();
         const shown = all.slice(-VIEW_LIMIT);
         if (follow && shown.length) selectedId = shown.at(-1).id;
@@ -2365,7 +3089,8 @@
           html += rowHtml(e, depth);
         }
         list.innerHTML = html || `<li class="empty">Chưa có sự kiện nào</li>`;
-        $("logCount").textContent = `hiển thị ${shown.length}/${all.length} · đã lưu ${events.length}`;
+        $("logCount").textContent =
+          `hiển thị ${shown.length}/${all.length} · đã lưu ${events.length}`;
         $("tabcount").textContent = events.length;
         if (follow || nearBottom) box.scrollTop = box.scrollHeight;
         renderDetail();
@@ -2376,7 +3101,9 @@
         $("follow").checked = false;
         lastSig = "";
         renderLog();
-        $("log").querySelector(".row.sel")?.scrollIntoView({ block: "nearest" });
+        $("log")
+          .querySelector(".row.sel")
+          ?.scrollIntoView({ block: "nearest" });
       }
 
       function pre(v) {
@@ -2408,13 +3135,20 @@
           return;
         }
         const kids = events.filter((x) => x.parent === e.id);
-        const sig = [e.id, e.status, e.ms ?? "", e.result === undefined ? 0 : 1, kids.length].join("|");
+        const sig = [
+          e.id,
+          e.status,
+          e.ms ?? "",
+          e.result === undefined ? 0 : 1,
+          kids.length,
+        ].join("|");
         if (sig === lastSig) return;
         lastSig = sig;
 
         const d = new Date(e.time);
         const parent = e.parent ? events.find((x) => x.id === e.parent) : null;
-        const link = (x) => `<a href="#" data-goto="${x.id}">#${x.id} ${esc(x.fn || x.label)}</a>`;
+        const link = (x) =>
+          `<a href="#" data-goto="${x.id}">#${x.id} ${esc(x.fn || x.label)}</a>`;
         const [h1, h2] = SECTION[e.kind] ?? SECTION.info;
         const p = [];
         p.push(
@@ -2430,7 +3164,10 @@
             `${e.sameView !== undefined ? kv("view giữ nguyên tham chiếu?", e.sameView ? "CÓ (===)" : "không (object mới)") : ""}</dl>`,
         );
         if (e.args !== undefined) p.push(`<h4>1 · ${h1}</h4>${pre(e.args)}`);
-        if (e.status !== "pending" && (e.result !== undefined || e.kind === "call"))
+        if (
+          e.status !== "pending" &&
+          (e.result !== undefined || e.kind === "call")
+        )
           p.push(`<h4>2 · ${h2}</h4>${pre(e.result)}`);
         if (e.error)
           p.push(
@@ -2440,7 +3177,9 @@
           p.push(
             `<h4>3 · View trước → sau</h4><div class="cols">${viewBox("Trước", e.before)}${viewBox("Sau", e.after)}</div>`,
           );
-        p.push(`<details><summary>JSON gốc của sự kiện</summary>${pre(e)}</details>`);
+        p.push(
+          `<details><summary>JSON gốc của sự kiện</summary>${pre(e)}</details>`,
+        );
         box.innerHTML = p.join("");
       }
 
@@ -2461,7 +3200,9 @@
           ev.target.textContent = "Đã copy ✓";
         });
       });
-      for (const el of document.querySelectorAll(".kind, #onlyBad, #q, #follow"))
+      for (const el of document.querySelectorAll(
+        ".kind, #onlyBad, #q, #follow",
+      ))
         el.addEventListener("input", () => {
           lastSig = "";
           scheduleLog();
@@ -2600,17 +3341,24 @@
           : x.need === "required"
             ? `<span class="live st-error">❌ thiếu (bắt buộc)</span>`
             : `<span class="live st-pending">⚪ chưa có (UI cần — mục 9)</span>`;
-        const tag = x.need === "required" ? `<span class="eff r">bắt buộc</span>` : `<span class="eff w">UI cần</span>`;
+        const tag =
+          x.need === "required"
+            ? `<span class="eff r">bắt buộc</span>`
+            : `<span class="eff w">UI cần</span>`;
         const real = ok ? `(${esc(paramsOf(fn))})` : "—";
         const canFill = x.id && targets.has(x.id);
         return (
           `<div class="fn"><div class="fh"><b>${esc(x.name)}</b><span class="sig">${esc(x.sig)}</span>${tag}${live}</div>` +
           `<p>${esc(x.desc)}</p>` +
           `<div class="meta"><small>Tham số thực tế:</small> <code>${real}</code></div>` +
-          (x.example ? `<div class="meta"><small>Ví dụ tham số:</small> <code>${esc(x.example)}</code></div>` : "") +
+          (x.example
+            ? `<div class="meta"><small>Ví dụ tham số:</small> <code>${esc(x.example)}</code></div>`
+            : "") +
           (canFill
             ? `<div class="btns"><button data-fill="${esc(x.id)}" data-ex="${esc(x.example ?? "[]")}">Điền sẵn vào ô gọi hàm</button>` +
-              (x.run ? `<button data-run="${esc(x.id)}" data-ex="${esc(x.example ?? "[]")}">Gọi ngay ▶</button>` : "") +
+              (x.run
+                ? `<button data-run="${esc(x.id)}" data-ex="${esc(x.example ?? "[]")}">Gọi ngay ▶</button>`
+                : "") +
               `</div>`
             : "") +
           `</div>`
@@ -2628,7 +3376,8 @@
           `<div><small>view</small> ${v ? esc(Object.keys(v).join(", ")) : "—"}</div></div>`;
         const groups = new Map();
         for (const x of CTL_API) {
-          if (q && !`${x.name} ${x.desc} ${x.sig}`.toLowerCase().includes(q)) continue;
+          if (q && !`${x.name} ${x.desc} ${x.sig}`.toLowerCase().includes(q))
+            continue;
           if (!groups.has(x.group)) groups.set(x.group, []);
           groups.get(x.group).push(x);
         }
@@ -2679,7 +3428,8 @@
         if (ctl) {
           const group = "controller (instance hiện tại)";
           for (const [k, val] of Object.entries(ctl)) {
-            if (k === "actions" || k === "subscribe" || k === "onError") continue; // cần callback → dùng nút bên trái
+            if (k === "actions" || k === "subscribe" || k === "onError")
+              continue; // cần callback → dùng nút bên trái
             if (typeof val === "function")
               addTarget(`ctl:${k}`, {
                 group,
@@ -2765,7 +3515,8 @@
             `$${root} chưa có giá trị${root === "ret" ? " (hãy gọi hàm khác trước)" : root === "sel" ? " (hãy click chọn một quân)" : ""}`,
           );
         for (const k of path.split(".").filter(Boolean)) {
-          if (v == null) throw new Error(`"${k}" không tồn tại (giá trị đang là ${v})`);
+          if (v == null)
+            throw new Error(`"${k}" không tồn tại (giá trị đang là ${v})`);
           v = v[k];
           if (v === undefined) throw new Error(`"${k}" không tồn tại`);
         }
@@ -2773,12 +3524,21 @@
       }
       function tokenRoots() {
         const v = V();
-        const sel = v && v.selectedId != null ? pieceById(v, v.selectedId) : null;
+        const sel =
+          v && v.selectedId != null ? pieceById(v, v.selectedId) : null;
         return {
           view: v,
           turn: v?.turn,
           ret: lastRet,
-          sel: sel ? { id: sel.id, row: sel.row, col: sel.col, square: sqName(sel), piece: sel } : undefined,
+          sel: sel
+            ? {
+                id: sel.id,
+                row: sel.row,
+                col: sel.col,
+                square: sqName(sel),
+                piece: sel,
+              }
+            : undefined,
           Side: legend?.Side,
           PieceType: legend?.PieceType,
           GameMode: GM,
@@ -2802,31 +3562,40 @@
         }
         if (Array.isArray(val)) return val.map((x) => resolveToken(x, roots));
         if (val && typeof val === "object")
-          return Object.fromEntries(Object.entries(val).map(([k, x]) => [k, resolveToken(x, roots)]));
+          return Object.fromEntries(
+            Object.entries(val).map(([k, x]) => [k, resolveToken(x, roots)]),
+          );
         return val;
       }
 
       async function runApi() {
         const t = targets.get($("api-target").value);
-        if (!t) return note("Chưa chọn hàm để gọi", "error", { source: "console" });
+        if (!t)
+          return note("Chưa chọn hàm để gọi", "error", { source: "console" });
         let args;
         try {
           let raw = JSON.parse($("api-args").value.trim() || "[]");
           if (!Array.isArray(raw)) raw = [raw];
           args = resolveToken(raw, tokenRoots());
         } catch (err) {
-          return note(`Không đọc được tham số: ${err.message}`, "error", { source: "console" });
+          return note(`Không đọc được tham số: ${err.message}`, "error", {
+            source: "console",
+          });
         }
         const r = await traceAsync(t.label, args, () => t.invoke(args), {
           source: "console",
-          show: (x) => (x && typeof x.getView === "function" ? "[controller]" : snap(x)),
+          show: (x) =>
+            x && typeof x.getView === "function" ? "[controller]" : snap(x),
         });
         if (r.ok) {
           lastRet = r.value;
           $("api-ret").textContent = jsonText(
-            r.value && typeof r.value.getView === "function" ? "[controller]" : snap(r.value),
+            r.value && typeof r.value.getView === "function"
+              ? "[controller]"
+              : snap(r.value),
           );
-        } else $("api-ret").textContent = `✖ ${r.error?.name}: ${r.error?.message}`;
+        } else
+          $("api-ret").textContent = `✖ ${r.error?.name}: ${r.error?.message}`;
         if (r.ok && t.label === "controller.destroy") destroyed = true;
         if (r.ok && t.label === "controller.actions.restart") {
           lastMove = null;
@@ -2873,7 +3642,10 @@
           begin("info", title, { source: SRC });
         };
         const check = (label, cond) => {
-          const e = begin("check", label, { source: SRC, status: cond ? "pass" : "fail" });
+          const e = begin("check", label, {
+            source: SRC,
+            status: cond ? "pass" : "fail",
+          });
           results.push({ label, pass: !!cond, id: e.id });
         };
         const T = (fn, args, run, opts = {}) =>
@@ -2888,7 +3660,9 @@
             { show: () => viewBrief(CV()) },
           );
         const restart = () =>
-          T("controller.actions.restart()", [], () => c.actions.restart(), { show: () => viewBrief(CV()) });
+          T("controller.actions.restart()", [], () => c.actions.restart(), {
+            show: () => viewBrief(CV()),
+          });
         // đi 1 nước bằng 2 lần clickSquare, trả về true nếu quân đã nằm ở ô đích
         const mv = (text) => {
           const a = text.slice(0, 2),
@@ -2898,13 +3672,22 @@
           clk(b);
           return !!p0 && P(b)?.id === p0.id;
         };
-        const names = (list) => list.map((m) => sqName(m)).sort().join();
+        const names = (list) =>
+          list
+            .map((m) => sqName(m))
+            .sort()
+            .join();
         const open = (mode = "LOCAL") => {
-          const r = trace(`plugin.create({ mode: ${mode} })`, { mode }, () => plugin.create({ mode: GM[mode] }), {
-            source: SRC,
-            target: () => null,
-            show: () => "[controller]",
-          });
+          const r = trace(
+            `plugin.create({ mode: ${mode} })`,
+            { mode },
+            () => plugin.create({ mode: GM[mode] }),
+            {
+              source: SRC,
+              target: () => null,
+              show: () => "[controller]",
+            },
+          );
           c = r.ok ? r.value : null;
           return r;
         };
@@ -2924,48 +3707,75 @@
           if (!plugin) throw new Error("không có plugin → dừng bộ test");
           check(
             "plugin: id = 'chess', có create() và loadUI()",
-            plugin.id === "chess" && typeof plugin.create === "function" && typeof plugin.loadUI === "function",
+            plugin.id === "chess" &&
+              typeof plugin.create === "function" &&
+              typeof plugin.loadUI === "function",
           );
           check(
             "GameMode có LOCAL, VS_BOT, BOT, ONLINE",
-            !!GameMode && ["LOCAL", "VS_BOT", "BOT", "ONLINE"].every((k) => k in GameMode),
+            !!GameMode &&
+              ["LOCAL", "VS_BOT", "BOT", "ONLINE"].every((k) => k in GameMode),
           );
           open("LOCAL");
           check(
             "plugin.create({ mode: LOCAL }) trả controller có getView / subscribe / onError / destroy / actions",
-            !!c && ["getView", "subscribe", "onError", "destroy"].every((k) => typeof c[k] === "function") && !!c.actions,
+            !!c &&
+              ["getView", "subscribe", "onError", "destroy"].every(
+                (k) => typeof c[k] === "function",
+              ) &&
+              !!c.actions,
           );
           if (!c) throw new Error("không tạo được controller → dừng bộ test");
           const v0 = CV();
           L = buildLegend(v0);
           const W = L?.Side.WHITE,
             Bk = L?.Side.BLACK;
-          check("lấy được Side / PieceType (enums hoặc suy ra từ thế ban đầu)", !!L);
+          check(
+            "lấy được Side / PieceType (enums hoặc suy ra từ thế ban đầu)",
+            !!L,
+          );
           check(
             "view ban đầu: 8x8, 32 quân, lượt trắng, chưa chọn, canAct = true",
-            v0.rows === 8 && v0.cols === 8 && v0.pieces.length === 32 && v0.turn === W && v0.selectedId === null && v0.canAct === true,
+            v0.rows === 8 &&
+              v0.cols === 8 &&
+              v0.pieces.length === 32 &&
+              v0.turn === W &&
+              v0.selectedId === null &&
+              v0.canAct === true,
           );
           check(
             "view ban đầu: không chiếu, không phong cấp, chưa có kết quả",
-            v0.checkedKing === null && v0.promotion === null && v0.result === null,
+            v0.checkedKing === null &&
+              v0.promotion === null &&
+              v0.result === null,
           );
-          check("getView() trả cùng tham chiếu khi không có gì đổi", c.getView() === v0);
+          check(
+            "getView() trả cùng tham chiếu khi không có gì đổi",
+            c.getView() === v0,
+          );
 
           /* ---------- 2 ---------- */
           group("2. Chọn quân → view.targets");
           let ticks = 0;
           c.subscribe(() => ticks++);
           clk("e5");
-          check("bấm ô trống: view giữ nguyên tham chiếu, listener không bị gọi", CV() === v0 && ticks === 0);
+          check(
+            "bấm ô trống: view giữ nguyên tham chiếu, listener không bị gọi",
+            CV() === v0 && ticks === 0,
+          );
           const e2id = P("e2").id;
           clk("e2");
           const v1 = CV();
           check("bấm e2: selectedId = id tốt e2", v1.selectedId === e2id);
           check(
             "bấm e2: targets = e3, e4 (không phải nước ăn quân)",
-            names(v1.targets) === "e3,e4" && v1.targets.every((t) => t.capture === false),
+            names(v1.targets) === "e3,e4" &&
+              v1.targets.every((t) => t.capture === false),
           );
-          check("bấm e2: listener gọi đúng 1 lần, view là object mới", ticks === 1 && v1 !== v0);
+          check(
+            "bấm e2: listener gọi đúng 1 lần, view là object mới",
+            ticks === 1 && v1 !== v0,
+          );
           clk("e2");
           check("bấm lại e2: bỏ chọn", CV().selectedId === null);
           clk("e2");
@@ -2977,31 +3787,62 @@
 
           /* ---------- 3 ---------- */
           group("3. Đi 7 nước qua clickSquare: e4 e5 Nf3 Nc6 Bc4 Nf6 O-O");
-          const okAll = ["e2e4", "e7e5", "g1f3", "b8c6", "f1c4", "g8f6", "e1g1"].map((m) => mv(m));
-          check(`cả 7 nước đều đi được (${okAll.map((x) => (x ? "✓" : "✗")).join("")})`, okAll.every(Boolean));
+          const okAll = [
+            "e2e4",
+            "e7e5",
+            "g1f3",
+            "b8c6",
+            "f1c4",
+            "g8f6",
+            "e1g1",
+          ].map((m) => mv(m));
+          check(
+            `cả 7 nước đều đi được (${okAll.map((x) => (x ? "✓" : "✗")).join("")})`,
+            okAll.every(Boolean),
+          );
           const vs = CV();
-          check("tới lượt đen, canAct = true, chưa chọn", vs.turn === Bk && vs.canAct === true && vs.selectedId === null);
+          check(
+            "tới lượt đen, canAct = true, chưa chọn",
+            vs.turn === Bk && vs.canAct === true && vs.selectedId === null,
+          );
           check(
             "vua trắng ở g1, xe ở f1 (đã nhập thành)",
-            !!L && L.typeName(P("g1")?.type) === "KING" && L.typeName(P("f1")?.type) === "ROOK",
+            !!L &&
+              L.typeName(P("g1")?.type) === "KING" &&
+              L.typeName(P("f1")?.type) === "ROOK",
           );
-          check("id quân không đổi sau khi đi (tốt e2 → e4)", P("e4")?.id === e2id);
+          check(
+            "id quân không đổi sau khi đi (tốt e2 → e4)",
+            P("e4")?.id === e2id,
+          );
           check("listener được gọi trong lúc đi", ticks > 1);
 
           /* ---------- 4 ---------- */
           group("4. Thao tác sai: bị bỏ qua, không phá thế cờ");
           const v4 = CV();
           clk("a2");
-          check("bấm quân trắng khi tới lượt đen: view giữ nguyên tham chiếu", CV() === v4);
+          check(
+            "bấm quân trắng khi tới lượt đen: view giữ nguyên tham chiếu",
+            CV() === v4,
+          );
           clk("a8");
           clk("a5");
           check(
             "xe a8 không tới được a5: bỏ chọn, quân vẫn ở a8",
-            !!P("a8") && !P("a5") && CV().turn === Bk && CV().selectedId === null,
+            !!P("a8") &&
+              !P("a5") &&
+              CV().turn === Bk &&
+              CV().selectedId === null,
           );
           clk("e5");
           clk("e3");
-          check("tốt đen e5 không đi lùi được e3", !!P("e5") && !P("e3") && CV().turn === Bk && CV().selectedId === null);
+          check(
+            "tốt đen e5 không đi lùi được e3",
+            !!P("e5") &&
+              !P("e3") &&
+              CV().turn === Bk &&
+              CV().selectedId === null,
+          );
 
           /* ---------- 5 ---------- */
           group("5. Hủy đăng ký + listener lỗi");
@@ -3027,67 +3868,118 @@
           group("6. Restart");
           restart();
           const v6 = CV();
-          check("restart: 32 quân, lượt trắng, hết chọn", v6.pieces.length === 32 && v6.turn === W && v6.selectedId === null);
+          check(
+            "restart: 32 quân, lượt trắng, hết chọn",
+            v6.pieces.length === 32 && v6.turn === W && v6.selectedId === null,
+          );
           clk("e2");
           check("(chuẩn bị) chọn e2 sau restart", CV().selectedId !== null);
           restart();
-          check("restart xóa lựa chọn thủ công (id quân giữ nguyên qua ván mới)", CV().selectedId === null && CV().turn === W);
+          check(
+            "restart xóa lựa chọn thủ công (id quân giữ nguyên qua ván mới)",
+            CV().selectedId === null && CV().turn === W,
+          );
 
           /* ---------- 7 ---------- */
           group("7. Chiếu hết (Fool's Mate)");
           const fm = ["f2f3", "e7e5", "g2g4", "d8h4"].map((m) => mv(m));
           check("4 nước Fool's Mate đều đi được", fm.every(Boolean));
           const vm = CV();
-          check("view.result = checkmate, đen thắng", vm.result?.type === "checkmate" && vm.result.winner === Bk);
-          check("view.checkedKing = e1 (vua trắng bị chiếu hết)", !!vm.checkedKing && sqName(vm.checkedKing) === "e1");
+          check(
+            "view.result = checkmate, đen thắng",
+            vm.result?.type === "checkmate" && vm.result.winner === Bk,
+          );
+          check(
+            "view.checkedKing = e1 (vua trắng bị chiếu hết)",
+            !!vm.checkedKing && sqName(vm.checkedKing) === "e1",
+          );
           check("hết ván: canAct = false", vm.canAct === false);
           clk("a2");
-          check("hết ván: bấm tiếp không đổi gì (view giữ nguyên tham chiếu)", CV() === vm);
+          check(
+            "hết ván: bấm tiếp không đổi gì (view giữ nguyên tham chiếu)",
+            CV() === vm,
+          );
 
           /* ---------- 8 ---------- */
           const promoCase = (key, target, side, label) => {
             const sc = SCENARIOS[key];
-            group(`8. Phong cấp (${label}): ${sc.setup.length} nước dựng thế rồi ${sc.final}`);
+            group(
+              `8. Phong cấp (${label}): ${sc.setup.length} nước dựng thế rồi ${sc.final}`,
+            );
             restart();
             const okS = sc.setup.map((m) => mv(m));
-            check(`${sc.title}: ${sc.setup.length} nước dựng thế đều đi được`, okS.every(Boolean));
-            check(`${sc.final} (tốt ăn quân, tới hàng cuối) đi được`, mv(sc.final));
+            check(
+              `${sc.title}: ${sc.setup.length} nước dựng thế đều đi được`,
+              okS.every(Boolean),
+            );
+            check(
+              `${sc.final} (tốt ăn quân, tới hàng cuối) đi được`,
+              mv(sc.final),
+            );
             const vp = CV();
             check(
               `view.promotion tại ${target}, bên ${label}`,
-              !!vp.promotion && sqName(vp.promotion) === target && vp.promotion.side === side,
+              !!vp.promotion &&
+                sqName(vp.promotion) === target &&
+                vp.promotion.side === side,
             );
             if (!vp.promotion) return;
             const o = vp.promotion.options ?? [];
             const PT = L?.PieceType ?? {};
             check(
               "promotion.options có Hậu, Xe, Tượng, Mã; không có Vua, Tốt",
-              PROMO_NAMES.every((k) => o.includes(PT[k])) && !o.includes(PT.KING) && !o.includes(PT.PAWN),
+              PROMO_NAMES.every((k) => o.includes(PT[k])) &&
+                !o.includes(PT.KING) &&
+                !o.includes(PT.PAWN),
             );
-            check("chờ phong cấp: không có quân đang chọn, targets rỗng", vp.selectedId === null && vp.targets.length === 0);
+            check(
+              "chờ phong cấp: không có quân đang chọn, targets rỗng",
+              vp.selectedId === null && vp.targets.length === 0,
+            );
             clk("e1");
             check("chờ phong cấp: bấm bàn cờ bị bỏ qua", CV() === vp);
 
             const errs = [];
             const offErr = c.onError((e) => errs.push(e));
-            const bad = T("controller.actions.promote(loại sai)", { value: "__khong_ton_tai__" }, () =>
-              c.actions.promote("__khong_ton_tai__"),
+            const bad = T(
+              "controller.actions.promote(loại sai)",
+              { value: "__khong_ton_tai__" },
+              () => c.actions.promote("__khong_ton_tai__"),
             );
-            check("promote(loại sai): không ném ra ngoài, báo qua onError", bad.ok && errs.length === 1);
-            check("promote(loại sai): vẫn đang chờ phong cấp", !!CV().promotion);
+            check(
+              "promote(loại sai): không ném ra ngoài, báo qua onError",
+              bad.ok && errs.length === 1,
+            );
+            check(
+              "promote(loại sai): vẫn đang chờ phong cấp",
+              !!CV().promotion,
+            );
             offErr();
 
-            T("controller.actions.promote(QUEEN)", { value: PT.QUEEN }, () => c.actions.promote(PT.QUEEN), {
-              show: () => viewBrief(CV()),
-            });
+            T(
+              "controller.actions.promote(QUEEN)",
+              { value: PT.QUEEN },
+              () => c.actions.promote(PT.QUEEN),
+              {
+                show: () => viewBrief(CV()),
+              },
+            );
             const vq = CV();
             const bq = P(target);
             check(
               `promote(Hậu): ${target} là Hậu ${label}, hết chờ phong cấp, đổi lượt`,
-              L?.typeName(bq?.type) === "QUEEN" && bq.side === side && vq.promotion === null && vq.turn !== side,
+              L?.typeName(bq?.type) === "QUEEN" &&
+                bq.side === side &&
+                vq.promotion === null &&
+                vq.turn !== side,
             );
-            T("controller.actions.promote(QUEEN)  // khi không chờ", [], () => c.actions.promote(PT.QUEEN));
-            check("promote khi không có tốt chờ: bị bỏ qua, view giữ nguyên", CV() === vq);
+            T("controller.actions.promote(QUEEN)  // khi không chờ", [], () =>
+              c.actions.promote(PT.QUEEN),
+            );
+            check(
+              "promote khi không có tốt chờ: bị bỏ qua, view giữ nguyên",
+              CV() === vq,
+            );
           };
           promoCase("white", "b8", W, "trắng");
           promoCase("black", "b1", Bk, "đen");
@@ -3105,18 +3997,29 @@
           clk("d6");
           check(
             "exd6 e.p.: tốt trắng ở d6, tốt đen d5 bị ăn (còn 31 quân)",
-            L?.typeName(P("d6")?.type) === "PAWN" && P("d6")?.side === W && !P("d5") && CV().pieces.length === 31,
+            L?.typeName(P("d6")?.type) === "PAWN" &&
+              P("d6")?.side === W &&
+              !P("d5") &&
+              CV().pieces.length === 31,
           );
 
           /* ---------- 10 ---------- */
-          group("10. Chế độ chơi (plugin.create): BOT, VS_BOT, ONLINE, mode lạ");
+          group(
+            "10. Chế độ chơi (plugin.create): BOT, VS_BOT, ONLINE, mode lạ",
+          );
           close();
           open("BOT");
-          check("BOT: tạo được controller, canAct = false (không có người chơi)", !!c && CV().canAct === false);
+          check(
+            "BOT: tạo được controller, canAct = false (không có người chơi)",
+            !!c && CV().canAct === false,
+          );
           if (c) {
             const vb = CV();
             clk("e2");
-            check("BOT: bấm e2 bị bỏ qua (view giữ nguyên tham chiếu)", CV() === vb);
+            check(
+              "BOT: bấm e2 bị bỏ qua (view giữ nguyên tham chiếu)",
+              CV() === vb,
+            );
           }
           close();
           open("VS_BOT");
@@ -3132,18 +4035,32 @@
                 : "VS_BOT: người chơi cầm Đen, lượt trắng của bot → bấm e2 bị bỏ qua",
               can ? CV().selectedId !== null : CV() === vv,
             );
-            note("VS_BOT / BOT: attachBot đang comment trong index.js nên bot chưa tự đi", "info", { source: SRC });
+            note(
+              "VS_BOT / BOT: attachBot đang comment trong index.js nên bot chưa tự đi",
+              "info",
+              { source: SRC },
+            );
           }
           close();
-          const onl = trace("plugin.create({ mode: ONLINE })", { mode: "ONLINE" }, () => plugin.create({ mode: GM.ONLINE }), {
-            source: SRC,
-            target: () => null,
-          });
+          const onl = trace(
+            "plugin.create({ mode: ONLINE })",
+            { mode: "ONLINE" },
+            () => plugin.create({ mode: GM.ONLINE }),
+            {
+              source: SRC,
+              target: () => null,
+            },
+          );
           check("ONLINE: ném lỗi vì cần phòng ghép từ server", !onl.ok);
-          const unk = trace("plugin.create({ mode: 'XYZ' })", { mode: "XYZ" }, () => plugin.create({ mode: "XYZ" }), {
-            source: SRC,
-            target: () => null,
-          });
+          const unk = trace(
+            "plugin.create({ mode: 'XYZ' })",
+            { mode: "XYZ" },
+            () => plugin.create({ mode: "XYZ" }),
+            {
+              source: SRC,
+              target: () => null,
+            },
+          );
           check("mode lạ: ném lỗi", !unk.ok);
 
           /* ---------- 11 ---------- */
@@ -3154,9 +4071,17 @@
           T("controller.destroy()", [], () => c.destroy());
           const vd = CV();
           clk("e2");
-          T("controller.actions.restart()  // sau destroy", [], () => c.actions.restart());
-          check("sau destroy: bấm / restart không làm view đổi, listener không được gọi", CV() === vd && afterN === 0);
-          check("destroy lần 2 không ném lỗi", T("controller.destroy()  // lần 2", [], () => c.destroy()).ok);
+          T("controller.actions.restart()  // sau destroy", [], () =>
+            c.actions.restart(),
+          );
+          check(
+            "sau destroy: bấm / restart không làm view đổi, listener không được gọi",
+            CV() === vd && afterN === 0,
+          );
+          check(
+            "destroy lần 2 không ném lỗi",
+            T("controller.destroy()  // lần 2", [], () => c.destroy()).ok,
+          );
 
           /* ---------- 12 ---------- */
           group("12. Hàm bổ sung (chỉ kiểm khi controller đã có — mục 9)");
@@ -3166,41 +4091,85 @@
           const extra = [];
           if (typeof c.actions.clearSelection === "function") {
             clk("e2");
-            T("controller.actions.clearSelection()", [], () => c.actions.clearSelection(), { show: () => viewBrief(CV()) });
-            check("actions.clearSelection: bỏ chọn quân", CV().selectedId === null);
+            T(
+              "controller.actions.clearSelection()",
+              [],
+              () => c.actions.clearSelection(),
+              { show: () => viewBrief(CV()) },
+            );
+            check(
+              "actions.clearSelection: bỏ chọn quân",
+              CV().selectedId === null,
+            );
           } else extra.push("actions.clearSelection");
           if (typeof c.actions.move === "function") {
             const id = P("e2").id;
-            T("controller.actions.move(e2→e4)", { id, row: 4, col: 4 }, () => c.actions.move(id, 4, 4), { show: () => viewBrief(CV()) });
-            check("actions.move: đi e2→e4 được", P("e4")?.id === id && CV().turn === L2?.Side.BLACK);
+            T(
+              "controller.actions.move(e2→e4)",
+              { id, row: 4, col: 4 },
+              () => c.actions.move(id, 4, 4),
+              { show: () => viewBrief(CV()) },
+            );
+            check(
+              "actions.move: đi e2→e4 được",
+              P("e4")?.id === id && CV().turn === L2?.Side.BLACK,
+            );
             const errs = [];
             const offErr = c.onError((e) => errs.push(e));
             const vb = CV();
-            const bad = T("controller.actions.move(a7→a4, nước sai)", [], () => c.actions.move(P("a7").id, 4, 0));
-            check("actions.move(nước sai): không ném ra ngoài, báo onError, quân không đổi", bad.ok && errs.length === 1 && !!P("a7") && !P("a4"));
+            const bad = T("controller.actions.move(a7→a4, nước sai)", [], () =>
+              c.actions.move(P("a7").id, 4, 0),
+            );
+            check(
+              "actions.move(nước sai): không ném ra ngoài, báo onError, quân không đổi",
+              bad.ok && errs.length === 1 && !!P("a7") && !P("a4"),
+            );
             offErr();
           } else extra.push("actions.move");
           if ("lastMove" in CV()) {
             restart();
             mv("e2e4");
             const lm = CV().lastMove;
-            check("view.lastMove = e2→e4", sqName(lm?.from) === "e2" && sqName(lm?.to) === "e4");
+            check(
+              "view.lastMove = e2→e4",
+              sqName(lm?.from) === "e2" && sqName(lm?.to) === "e4",
+            );
           } else extra.push("view.lastMove");
           restart();
           clk("e2");
-          if (CV().targets.some((t) => "kind" in t)) check("view.targets[i].kind có giá trị cho mọi ô", CV().targets.every((t) => t.kind !== undefined));
+          if (CV().targets.some((t) => "kind" in t))
+            check(
+              "view.targets[i].kind có giá trị cho mọi ô",
+              CV().targets.every((t) => t.kind !== undefined),
+            );
           else extra.push("view.targets[i].kind");
           let arg;
           c.subscribe((x) => (arg = x));
           clk("e2");
-          if (isView(arg)) check("emit(listeners, view): listener nhận view mới nhất", arg === CV());
+          if (isView(arg))
+            check(
+              "emit(listeners, view): listener nhận view mới nhất",
+              arg === CV(),
+            );
           else extra.push("emit(listeners, view)");
           const en = c.enums ?? CV().enums;
-          if (en?.Side) check("enums: có Side.WHITE / Side.BLACK và PieceType.QUEEN", !!en.Side.WHITE && !!en.Side.BLACK && en.PieceType?.QUEEN !== undefined);
+          if (en?.Side)
+            check(
+              "enums: có Side.WHITE / Side.BLACK và PieceType.QUEEN",
+              !!en.Side.WHITE &&
+                !!en.Side.BLACK &&
+                en.PieceType?.QUEEN !== undefined,
+            );
           else extra.push("controller.enums / view.enums");
-          if (typeof c.loadUI === "function") check("controller.loadUI(): trả về module / component", true);
+          if (typeof c.loadUI === "function")
+            check("controller.loadUI(): trả về module / component", true);
           else extra.push("controller.loadUI");
-          if (extra.length) note(`Chưa có (UI đang dùng cách tạm, không tính FAIL): ${extra.join(", ")}`, "info", { source: SRC });
+          if (extra.length)
+            note(
+              `Chưa có (UI đang dùng cách tạm, không tính FAIL): ${extra.join(", ")}`,
+              "info",
+              { source: SRC },
+            );
           close();
         } catch (err) {
           check(`bộ test ném lỗi ngoài dự kiến: ${err.message}`, false);
@@ -3209,7 +4178,9 @@
         }
         const failed = results.filter((x) => x.pass === false).length;
         head.status = failed ? "error" : "ok";
-        head.result = failed ? `${failed} KIỂM TRA THẤT BẠI` : "TẤT CẢ ĐỀU PASS";
+        head.result = failed
+          ? `${failed} KIỂM TRA THẤT BẠI`
+          : "TẤT CẢ ĐỀU PASS";
         touch();
         document.title = failed === 0 ? "✅ Room test" : "❌ Room test";
         renderTestResults(results);
@@ -3222,12 +4193,16 @@
       function buildPromoUi() {
         $("opt-promo").innerHTML =
           `<option value="ask">hỏi tôi (bấm nút chọn quân)</option>` +
-          PROMO_NAMES.map((k) => `<option value="auto:${k}">tự phong ${k}</option>`).join("") +
+          PROMO_NAMES.map(
+            (k) => `<option value="auto:${k}">tự phong ${k}</option>`,
+          ).join("") +
           `<option value="none">không xử lý (chỉ ghi log)</option>`;
         const saved = localStorage.getItem(PROMO_MODE_KEY);
-        if (saved && [...$("opt-promo").options].some((o) => o.value === saved)) $("opt-promo").value = saved;
+        if (saved && [...$("opt-promo").options].some((o) => o.value === saved))
+          $("opt-promo").value = saved;
         $("promo-pick").innerHTML = PROMO_NAMES.map(
-          (k) => `<button data-ptype="${k}"><span class="pcs w">${LETTER[k].toUpperCase()}</span>${k}</button>`,
+          (k) =>
+            `<button data-ptype="${k}"><span class="pcs w">${LETTER[k].toUpperCase()}</span>${k}</button>`,
         ).join("");
         $("sc-hint").innerHTML = Object.values(SCENARIOS)
           .map((s) => `<b>${esc(s.title)}:</b> ${esc(s.hint)}`)
@@ -3235,7 +4210,10 @@
       }
       function buildModeSelect() {
         $("opt-mode").innerHTML = Object.keys(GM)
-          .map((k) => `<option value="${esc(k)}"${k === "LOCAL" ? " selected" : ""}>${esc(k)}</option>`)
+          .map(
+            (k) =>
+              `<option value="${esc(k)}"${k === "LOCAL" ? " selected" : ""}>${esc(k)}</option>`,
+          )
           .join("");
       }
       $("opt-promo").addEventListener("change", () => {
@@ -3273,7 +4251,10 @@
       $("opt-flip").addEventListener("change", renderBoard);
       $("opt-label").addEventListener("change", renderBoard);
       $("opt-size").addEventListener("input", (ev) =>
-        document.documentElement.style.setProperty("--cell", ev.target.value + "px"),
+        document.documentElement.style.setProperty(
+          "--cell",
+          ev.target.value + "px",
+        ),
       );
       for (const [inp, btn] of [
         ["in-move", "btn-move"],
@@ -3284,7 +4265,9 @@
         });
 
       $("btn-export").onclick = () => {
-        const blob = new Blob([JSON.stringify(events, null, 2)], { type: "application/json" });
+        const blob = new Blob([JSON.stringify(events, null, 2)], {
+          type: "application/json",
+        });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
         a.download = `room-test-history-${Date.now()}.json`;

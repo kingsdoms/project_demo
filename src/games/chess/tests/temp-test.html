@@ -7,24 +7,11 @@
   </head>
   <body style="background-color: black"></body>
   <script type="module">
-    import chess,{GameMode } from "../index.js";
-    console.log("01:",chess);
-    const game = chess.create({ mode: GameMode.VS_BOT });
-    console.log(game);
-    
-  </script>
-  <!-- BOARD 8x8 (0-7)
-.   A   B   C   D   E   F   G   H
-0   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
-1   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
-2   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
-3   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
-4   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
-5   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
-6   [P] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
-7   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+    import chess, { GameMode } from "../index.js";
+    const controller = chess.create({ mode: GameMode.VS_BOT });
+    console.log(chess.loadUI());
 
-/////////////////////////////
-bên trắng hàng 6 cột 0
-hàng cuối 7 - bên trắng 6 = vị trí lật lại bên đen 1
---></html>
+
+
+  </script>
+  </html>

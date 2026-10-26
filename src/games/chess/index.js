@@ -10,6 +10,7 @@
 import { Room } from "./core/engine/room.js";
 import { Side, randomSide, OPPONENT } from "./core/constants/Side.js";
 import { createController } from "./controller/createController.js";
+import { PieceType } from "./core/constants/PieceType.js";
 
 export const GameMode = Object.freeze({
   VS_BOT: "VS_BOT", // human x bot
@@ -94,6 +95,7 @@ export default {
 
     return controller;
   },
+  enums: Object.freeze({ Side, PieceType }),
 
   // @ts-ignore
   loadUI: () => import("./ui/index.js"), // lazy

@@ -170,7 +170,6 @@ export function buildMoveInput(game, piece, row, col, kind) {
     Object.assign(input, castleFacts(game, piece, col));
   if (kind === MoveKind.EN_PASSANT)
     Object.assign(input, passantFacts(game, piece, row, col));
-  console.log(input);
   return input;
 }
 
