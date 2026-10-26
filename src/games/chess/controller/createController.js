@@ -1,17 +1,21 @@
-// @ts-nocheck
 /**
- * @file Createcontroller.js
+ * @file createController.js
  * @author tuanca
  */
 
 import { Action } from "../core/models/Action.js";
 import { GameError } from "../utils/GameError.js";
-import { getLegalMoves } from "../core/engine/legalMoves.js";
-import { EMPTY,click, syncInteraction } from "./interaction.js";
+import { EMPTY, click, syncInteraction } from "./interaction.js";
 import { toView } from "./toview.js";
 import { Room } from "../core/engine/room.js";
-import { PROMOTION_TARGETS } from "../core/constants/StandardDef.js";
 import { Side } from "../core/constants/Side.js";
+import { Game } from "../core/models/Game.js";
+import { PieceType } from "../core/constants/PieceType.js";
+/**
+ * @typedef {Readonly<{
+ *   selectedId: string | null
+ * }>} Interaction
+ */
 
 /**
  * controller phục vụ UI,
@@ -19,25 +23,31 @@ import { Side } from "../core/constants/Side.js";
  *
  * @param {object} options
  * @param {Room} options.room - Phòng chơi mà controller quản lý.
- * @param {Side[]} options.humanSides - Các bên được điều khiển bởi người chơi.
+ * @param {typeof Side[keyof typeof Side][]} options.sides - Các bên được điều khiển bởi người chơi.
  * @param {() => void} [options.dispose=() => {}] - Hàm dọn dẹp tài nguyên khi controller kết thúc.
  */
-export function createController({ room, humanSides, dispose = () => {} }) {
-  const sides = new Set(humanSides);
+export function createController({ room, sides, dispose = () => {} }) {
   const listeners = new Set();
   const errorListeners = new Set();
   const ctx = {
-    getLegalMoves,
-    PROMOTION_TARGETS,
-    canAct: (game) => game.result == null && sides.has(game.turn),
+    canAct: (/** @type {Game} game */ game) =>
+      game.result == null && sides.includes(game.turn),
   };
 
   let alive = true;
   let ix = EMPTY;
-  let view = null;
-  let seenGame = null;
-  let seenIx = null;
+  /** @type {any} */ let view = null;
+  /** @type {Game | null} */ let seenGame = null;
+  /** @type {Interaction | null} */ let seenIx = null;
 
+  /**
+   * Phát sự kiện đến tất cả listeners đã đăng ký.
+   * Listener bị lỗi sẽ không ảnh hưởng đến các listener còn lại.
+   *
+   * @param {Set<Function>} set - Tập hợp các listeners.
+   * @param {...any} args - Các đối số truyền vào mỗi listener.
+   * @returns {void}
+   */
   const emit = (set, ...args) => {
     for (const fn of [...set]) {
       try {
@@ -56,11 +66,18 @@ export function createController({ room, humanSides, dispose = () => {} }) {
     if (game === seenGame && ix === seenIx) return;
     seenGame = game;
     seenIx = ix;
-    view = toView(game, ix, ctx);
+    view = toView(game, ix, ctx.canAct);
     emit(listeners);
   }
 
-  // Trả true nếu dispatch thành công. Action sai (GameError) thì báo qua onError, không ném ra ngoài.
+  /**
+   * Gửi action và trả về kết quả dispatch.
+   * Action không hợp lệ (GameError) sẽ được thông báo qua onError,
+   * không ném exception ra ngoài.
+   *
+   * @param {Action} action - Action cần dispatch.
+   * @returns {boolean} true nếu dispatch thành công, ngược lại false.
+   */
   function send(action) {
     try {
       room.dispatch(action);
@@ -72,26 +89,34 @@ export function createController({ room, humanSides, dispose = () => {} }) {
     }
   }
 
-  const stopRoom = room.subscribe(refresh); // bot đi, restart từ nơi khác... đều về đây
+  const unsubscribeRoom = room.subscribe(refresh); // đăng ký khi game thay đổi tự gọi hàm refresh và trả về hàm hủy đăng ký
   refresh();
 
   const actions = Object.freeze({
+    /**
+     * @param {number} row
+     * @param {number} col
+     */
     clickSquare(row, col) {
       if (!alive) return;
       const game = room.getState();
       if (!ctx.canAct(game)) return;
-      const res = click(ix, game, { row, col }, legalTargets);
+      const res = click(ix, game, { row, col });
       ix = res.ix;
       if (res.intent)
         send(Action.move(res.intent.id, res.intent.row, res.intent.col));
+
       refresh();
     },
 
+    /**
+     * @param {any} pieceType
+     */
     promote(pieceType) {
       if (!alive) return;
       const game = room.getState();
       if (game.pendingPromotion == null || !ctx.canAct(game)) return;
-      send(Action.promote(game.pendingPromotion, pieceType));
+      send(Action.promote(pieceType));
       refresh();
     },
 
@@ -105,11 +130,12 @@ export function createController({ room, humanSides, dispose = () => {} }) {
 
   return Object.freeze({
     getView: () => view, // cùng tham chiếu cho tới khi game hoặc lựa chọn đổi
-    subscribe(fn) {
+
+    subscribe(/** @type {Function} */ fn) {
       listeners.add(fn);
       return () => listeners.delete(fn);
     },
-    onError(fn) {
+    onError(/** @type {Function} */ fn) {
       errorListeners.add(fn);
       return () => errorListeners.delete(fn);
     },
@@ -117,10 +143,11 @@ export function createController({ room, humanSides, dispose = () => {} }) {
     destroy() {
       if (!alive) return;
       alive = false;
-      stopRoom();
+      unsubscribeRoom();
       listeners.clear();
       errorListeners.clear();
       dispose();
     },
+    enums: Object.freeze({ Side, PieceType }),
   });
 }

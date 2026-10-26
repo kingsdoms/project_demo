@@ -6,7 +6,7 @@
     <title>Room test</title>
     <style>
       :root {
-        --cell: 60px; /* kích thước 1 ô: mọi ô đều bằng nhau */
+        --cell: 60px;
         --bg: #050505;
         --panel: #111113;
         --panel2: #18181b;
@@ -22,28 +22,16 @@
         --sq-dark: #3a3a3a;
         color-scheme: dark;
       }
-      * {
-        box-sizing: border-box;
-      }
-      [hidden] {
-        display: none !important;
-      }
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
       body {
         margin: 0;
         padding: 12px;
         background: var(--bg);
         color: var(--text);
-        font:
-          13px/1.5 ui-monospace,
-          SFMono-Regular,
-          Menlo,
-          Consolas,
-          monospace;
+        font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       }
-      h1 {
-        font-size: 16px;
-        margin: 0 0 10px;
-      }
+      h1 { font-size: 16px; margin: 0 0 10px; }
       h2 {
         font-size: 12px;
         margin: 0 0 8px;
@@ -52,17 +40,8 @@
         letter-spacing: 0.06em;
         font-weight: 600;
       }
-      h4 {
-        font-size: 12px;
-        margin: 14px 0 4px;
-      }
-      button,
-      input,
-      select,
-      textarea {
-        font: inherit;
-        color: inherit;
-      }
+      h4 { font-size: 12px; margin: 14px 0 4px; }
+      button, input, select, textarea { font: inherit; color: inherit; }
       button {
         background: var(--panel2);
         border: 1px solid var(--line);
@@ -70,35 +49,21 @@
         padding: 3px 10px;
         cursor: pointer;
       }
-      button:hover {
-        border-color: var(--accent);
-      }
-      button.danger:hover {
-        border-color: var(--err);
-        color: var(--err);
-      }
-      button.hot {
-        border-color: var(--warn);
-        color: var(--warn);
-      }
-      input[type="text"],
-      input[type="search"],
-      select,
-      textarea {
+      button:hover { border-color: var(--accent); }
+      button:disabled { opacity: 0.5; cursor: wait; }
+      button.danger:hover { border-color: var(--err); color: var(--err); }
+      button.hot { border-color: var(--warn); color: var(--warn); }
+      button.primary { border-color: var(--accent); color: var(--accent); }
+      #promo-pick button.off { opacity: 0.45; }
+      input[type="text"], input[type="search"], select, textarea {
         background: var(--code);
         border: 1px solid var(--line);
         border-radius: 6px;
         padding: 3px 8px;
         min-width: 0;
       }
-      input[type="checkbox"],
-      input[type="range"] {
-        accent-color: var(--accent);
-      }
-      textarea {
-        width: 100%;
-        resize: vertical;
-      }
+      input[type="checkbox"], input[type="range"] { accent-color: var(--accent); }
+      textarea { width: 100%; resize: vertical; }
       label {
         display: inline-flex;
         align-items: center;
@@ -118,27 +83,11 @@
         word-break: break-word;
         line-height: 1.4;
       }
-      pre.err {
-        border-color: var(--err);
-        color: #fecaca;
-      }
-      small,
-      .muted,
-      .hint {
-        color: var(--muted);
-      }
-      .hint {
-        margin: 6px 0 0;
-        font-size: 12px;
-      }
-      a {
-        color: var(--accent);
-      }
-      code {
-        background: #1c1c20;
-        padding: 0 4px;
-        border-radius: 4px;
-      }
+      pre.err { border-color: var(--err); color: #fecaca; }
+      small, .muted, .hint { color: var(--muted); }
+      .hint { margin: 6px 0 0; font-size: 12px; }
+      a { color: var(--accent); }
+      code { background: #1c1c20; padding: 0 4px; border-radius: 4px; }
 
       .banner {
         border: 1px solid var(--err);
@@ -155,9 +104,16 @@
         padding: 10px 12px;
         margin-bottom: 12px;
       }
-      .btns,
-      .form,
-      .opts {
+      .cardhead {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+      }
+      .cardhead h2 { margin: 0; }
+      .btns, .form, .opts {
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
@@ -166,25 +122,16 @@
       }
       .layout {
         display: grid;
-        grid-template-columns: max(440px, calc(var(--cell) * 8 + 56px)) minmax(
-            0,
-            1fr
-          );
+        grid-template-columns: max(440px, calc(var(--cell) * 8 + 56px)) minmax(0, 1fr);
         gap: 12px;
         align-items: start;
       }
       @media (max-width: 1100px) {
-        .layout {
-          grid-template-columns: minmax(0, 1fr);
-        }
+        .layout { grid-template-columns: minmax(0, 1fr); }
       }
 
       /* ---------- Thanh trạng thái ---------- */
-      .stat {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-      }
+      .stat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
       .stat .s {
         border: 1px solid var(--line);
         border-radius: 6px;
@@ -204,19 +151,11 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      .stat .good {
-        border-color: var(--ok);
-      }
-      .stat .bad {
-        border-color: var(--err);
-        color: var(--err);
-      }
-      .stat .wait {
-        border-color: var(--warn);
-        color: var(--warn);
-      }
+      .stat .good { border-color: var(--ok); }
+      .stat .bad { border-color: var(--err); color: var(--err); }
+      .stat .wait { border-color: var(--warn); color: var(--warn); }
 
-      /* ---------- Bàn cờ: đen trắng, ô cố định bằng nhau ---------- */
+      /* ---------- Bàn cờ test ---------- */
       .boardframe {
         display: grid;
         grid-template-columns: 22px max-content;
@@ -224,16 +163,9 @@
         width: max-content;
         margin: 4px auto 0;
       }
-      #ranks {
-        display: grid;
-        grid-template-rows: repeat(8, var(--cell));
-      }
-      #files {
-        display: grid;
-        grid-template-columns: repeat(8, var(--cell));
-      }
-      #ranks span,
-      #files span {
+      #ranks { display: grid; grid-template-rows: repeat(8, var(--cell)); }
+      #files { display: grid; grid-template-columns: repeat(8, var(--cell)); }
+      #ranks span, #files span {
         display: grid;
         place-items: center;
         color: var(--muted);
@@ -257,12 +189,8 @@
         overflow: hidden;
         cursor: pointer;
       }
-      .sq.light {
-        background: var(--sq-light);
-      }
-      .sq.dark {
-        background: var(--sq-dark);
-      }
+      .sq.light { background: var(--sq-light); }
+      .sq.dark { background: var(--sq-dark); }
       .lb {
         position: absolute;
         left: 3px;
@@ -272,12 +200,8 @@
         line-height: 1;
         pointer-events: none;
       }
-      .light .lb {
-        color: #666;
-      }
-      .dark .lb {
-        color: #aaa;
-      }
+      .light .lb { color: #666; }
+      .dark .lb { color: #aaa; }
       .tg {
         position: absolute;
         right: 2px;
@@ -305,16 +229,8 @@
         line-height: 1;
         pointer-events: none;
       }
-      .pc.w {
-        background: #fff;
-        color: #000;
-        border-color: #000;
-      }
-      .pc.b {
-        background: #000;
-        color: #fff;
-        border-color: #fff;
-      }
+      .pc.w { background: #fff; color: #000; border-color: #000; }
+      .pc.b { background: #000; color: #fff; border-color: #fff; }
       .pcs {
         display: inline-grid;
         place-items: center;
@@ -326,27 +242,15 @@
         font-size: 11px;
         margin-right: 6px;
       }
-      .pcs.w {
-        background: #fff;
-        color: #000;
-        border-color: #000;
+      .pcs.w { background: #fff; color: #000; border-color: #000; }
+      .sq.last { box-shadow: inset 0 0 0 3px #2563eb; }
+      .sq.pend { box-shadow: inset 0 0 0 4px #a855f7; }
+      .sq.sel { box-shadow: inset 0 0 0 4px #f59e0b; }
+      .sq.chk {
+        box-shadow: inset 0 0 0 4px #dc2626, inset 0 0 18px 6px rgba(220, 38, 38, 0.55);
       }
-      .sq.last {
-        box-shadow: inset 0 0 0 3px #2563eb;
-      }
-      .sq.pend {
-        box-shadow: inset 0 0 0 4px #a855f7;
-      }
-      .sq.sel {
-        box-shadow: inset 0 0 0 4px #f59e0b;
-      }
-      .sq.flash {
-        box-shadow: inset 0 0 0 5px #dc2626;
-      }
-      .sq.hover {
-        outline: 3px solid #2563eb;
-        outline-offset: -3px;
-      }
+      .sq.flash { box-shadow: inset 0 0 0 5px #dc2626; }
+      .sq.hover { outline: 3px solid #2563eb; outline-offset: -3px; }
       .sq.legal::after {
         content: "";
         position: absolute;
@@ -367,26 +271,22 @@
         box-shadow: 0 0 0 1px #fff;
       }
       @keyframes shake {
-        25% {
-          transform: translateX(-3px);
-        }
-        75% {
-          transform: translateX(3px);
-        }
+        25% { transform: translateX(-3px); }
+        75% { transform: translateX(3px); }
       }
-      .sq.flash .pc {
-        animation: shake 0.25s 2;
-      }
-      .hoverline {
-        margin-top: 6px;
-        text-align: center;
-        color: var(--muted);
-        min-height: 20px;
-      }
-      details > summary {
-        cursor: pointer;
-        color: var(--muted);
+      .sq.flash .pc { animation: shake 0.25s 2; }
+      .hoverline { margin-top: 6px; text-align: center; color: var(--muted); min-height: 20px; }
+      details > summary { cursor: pointer; color: var(--muted); margin-top: 8px; }
+
+      /* ---------- UI thật ---------- */
+      #ui-host {
+        min-height: 220px;
         margin-top: 8px;
+        border: 1px dashed var(--line);
+        border-radius: 8px;
+        padding: 8px;
+        background: var(--code);
+        overflow: auto;
       }
 
       /* ---------- Tab ---------- */
@@ -404,23 +304,11 @@
         background: none;
         padding: 6px 14px;
       }
-      .tabs button.on {
-        border-bottom-color: var(--accent);
-        font-weight: 700;
-      }
-      .tabs .count {
-        color: var(--muted);
-        font-weight: 400;
-      }
+      .tabs button.on { border-bottom-color: var(--accent); font-weight: 700; }
+      .tabs .count { color: var(--muted); font-weight: 400; }
 
       /* ---------- Nhật ký ---------- */
-      .logtools {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
-        margin-bottom: 8px;
-      }
+      .logtools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
       #logbox {
         max-height: 42vh;
         overflow: auto;
@@ -428,13 +316,8 @@
         border-radius: 6px;
         background: var(--code);
       }
-      #log {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
-      .loghead,
-      .row {
+      #log { list-style: none; margin: 0; padding: 0; }
+      .loghead, .row {
         display: grid;
         grid-template-columns: 48px 96px 72px minmax(0, 1.3fr) minmax(0, 1.4fr);
         gap: 8px;
@@ -449,45 +332,16 @@
         color: var(--muted);
         font-size: 11px;
       }
-      .row {
-        border-left: 3px solid transparent;
-        border-bottom: 1px solid #18181b;
-        cursor: pointer;
-      }
-      .row > span {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      .row .main {
-        padding-left: calc(var(--d, 0) * 14px);
-      }
-      .row.child .main::before {
-        content: "└ ";
-        color: var(--muted);
-      }
-      .row .id,
-      .row .tm,
-      .row .args {
-        color: var(--muted);
-      }
-      .row:hover {
-        background: #1a1a1e;
-      }
-      .row.s-error,
-      .row.s-fail {
-        border-left-color: var(--err);
-        background: #2a1214;
-      }
-      .row.s-pass {
-        border-left-color: var(--ok);
-      }
-      .row.s-pending {
-        border-left-color: var(--warn);
-      }
-      .row.sel {
-        background: #14284a;
-      }
+      .row { border-left: 3px solid transparent; border-bottom: 1px solid #18181b; cursor: pointer; }
+      .row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .row .main { padding-left: calc(var(--d, 0) * 14px); }
+      .row.child .main::before { content: "└ "; color: var(--muted); }
+      .row .id, .row .tm, .row .args { color: var(--muted); }
+      .row:hover { background: #1a1a1e; }
+      .row.s-error, .row.s-fail { border-left-color: var(--err); background: #2a1214; }
+      .row.s-pass { border-left-color: var(--ok); }
+      .row.s-pending { border-left-color: var(--warn); }
+      .row.sel { background: #14284a; }
       .badge {
         display: inline-block;
         font-size: 11px;
@@ -497,51 +351,23 @@
         border: 1px solid var(--line);
         text-align: center;
       }
-      .k-mouse .badge {
-        color: #7dd3fc;
-      }
-      .k-call .badge {
-        color: #c4b5fd;
-      }
-      .k-callback .badge {
-        color: var(--warn);
-      }
-      .k-check .badge {
-        color: var(--ok);
-      }
-      .st-ok,
-      .st-pass {
-        color: var(--ok);
-      }
-      .st-error,
-      .st-fail {
-        color: var(--err);
-      }
-      .st-pending {
-        color: var(--warn);
-      }
-      .sep,
-      .empty {
+      .k-mouse .badge { color: #7dd3fc; }
+      .k-call .badge { color: #c4b5fd; }
+      .k-callback .badge { color: var(--warn); }
+      .k-check .badge { color: var(--ok); }
+      .st-ok, .st-pass { color: var(--ok); }
+      .st-error, .st-fail { color: var(--err); }
+      .st-pending { color: var(--warn); }
+      .sep, .empty {
         list-style: none;
         padding: 3px 8px;
         color: var(--muted);
         background: #0f0f11;
         font-size: 11px;
       }
-
-      #detail {
-        max-height: 56vh;
-        overflow: auto;
-      }
-      .dh {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        flex-wrap: wrap;
-      }
-      .dh button {
-        margin-left: auto;
-      }
+      #detail { max-height: 56vh; overflow: auto; }
+      .dh { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+      .dh button { margin-left: auto; }
       .flow {
         margin-top: 8px;
         padding: 6px 8px;
@@ -549,35 +375,21 @@
         border: 1px solid var(--line);
         border-radius: 6px;
       }
-      .flow small {
-        display: inline-block;
-        min-width: 62px;
-      }
+      .flow small { display: inline-block; min-width: 62px; }
       .kv {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
         gap: 2px 12px;
         margin: 8px 0 0;
       }
-      .kv dt {
-        color: var(--muted);
-        font-size: 11px;
-      }
-      .kv dd {
-        margin: 0 0 4px;
-      }
-      .cols {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
+      .kv dt { color: var(--muted); font-size: 11px; }
+      .kv dd { margin: 0 0 4px; }
+      .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
       @media (max-width: 1300px) {
-        .cols {
-          grid-template-columns: 1fr;
-        }
+        .cols { grid-template-columns: 1fr; }
       }
 
-      /* ---------- Hàm engine ---------- */
+      /* ---------- Controller API ---------- */
       .fn {
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -585,45 +397,15 @@
         margin: 8px 0;
         background: var(--panel2);
       }
-      .fn .fh {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: baseline;
-      }
-      .fn .sig {
-        color: var(--accent);
-      }
-      .fn p {
-        margin: 6px 0;
-      }
-      .fn .meta {
-        color: var(--muted);
-        font-size: 12px;
-      }
-      .fn .meta small {
-        display: inline-block;
-        min-width: 118px;
-      }
-      .fn .live {
-        margin-left: auto;
-        font-size: 11px;
-      }
-      .eff {
-        font-size: 11px;
-        padding: 0 6px;
-        border-radius: 4px;
-        border: 1px solid var(--line);
-      }
-      .eff.w {
-        color: var(--warn);
-        border-color: var(--warn);
-      }
-      .eff.r {
-        color: var(--ok);
-      }
-
-      /* ---------- API ---------- */
+      .fn .fh { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+      .fn .sig { color: var(--accent); }
+      .fn p { margin: 6px 0; }
+      .fn .meta { color: var(--muted); font-size: 12px; }
+      .fn .meta small { display: inline-block; min-width: 118px; }
+      .fn .live { margin-left: auto; font-size: 11px; }
+      .eff { font-size: 11px; padding: 0 6px; border-radius: 4px; border: 1px solid var(--line); }
+      .eff.w { color: var(--warn); border-color: var(--warn); }
+      .eff.r { color: var(--ok); }
       .mod {
         border: 1px solid var(--line);
         border-radius: 6px;
@@ -631,37 +413,16 @@
         padding: 4px 10px;
         background: var(--panel2);
       }
-      .mem {
-        padding: 1px 0 1px 8px;
-      }
-      .mem.pick {
-        cursor: pointer;
-      }
-      .mem.pick:hover {
-        background: #14284a;
-      }
-      .tag {
-        display: inline-block;
-        min-width: 68px;
-        font-size: 11px;
-        color: var(--muted);
-      }
-      #api-sig {
-        margin: 6px 0;
-        font-weight: 700;
-      }
+      .mem { padding: 1px 0 1px 8px; }
+      .mem.pick { cursor: pointer; }
+      .mem.pick:hover { background: #14284a; }
+      .tag { display: inline-block; min-width: 68px; font-size: 11px; color: var(--muted); }
+      #api-sig { margin: 6px 0; font-weight: 700; }
 
       /* ---------- Bảng ---------- */
-      .scroll {
-        max-height: 300px;
-        overflow: auto;
-      }
-      table {
-        border-collapse: collapse;
-        width: 100%;
-      }
-      th,
-      td {
+      .scroll { max-height: 300px; overflow: auto; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td {
         border-bottom: 1px solid var(--line);
         padding: 2px 8px;
         text-align: left;
@@ -675,30 +436,17 @@
         font-weight: 400;
         font-size: 11px;
       }
-      #autoList {
-        list-style: none;
-        margin: 8px 0 0;
-        padding: 0;
-        max-height: 50vh;
-        overflow: auto;
-      }
-      #autoList li {
-        padding: 1px 0;
-        cursor: pointer;
-      }
-      #autoList .fail {
-        color: var(--err);
-      }
-      #autoList .grp {
-        color: var(--accent);
-        margin-top: 6px;
-        cursor: default;
-        font-weight: 700;
-      }
+      #autoList { list-style: none; margin: 8px 0 0; padding: 0; max-height: 50vh; overflow: auto; }
+      #autoList li { padding: 1px 0; cursor: pointer; }
+      #autoList .fail { color: var(--err); }
+      #autoList .grp { color: var(--accent); margin-top: 6px; cursor: default; font-weight: 700; }
     </style>
   </head>
   <body>
-    <h1>Room test <small>· giao diện tối</small></h1>
+    <h1>
+      Room test
+      <small>· chỉ import ../index.js · mọi thao tác đi qua controller</small>
+    </h1>
     <div id="banner" class="banner" hidden></div>
 
     <div class="layout">
@@ -710,64 +458,72 @@
         </div>
 
         <div class="card">
-          <h2>Bàn cờ</h2>
-          <div class="boardframe">
-            <div id="ranks"></div>
-            <div id="board"></div>
-            <div></div>
-            <div id="files"></div>
+          <div class="cardhead">
+            <h2>Bàn cờ <small id="view-src">(vẽ từ controller.getView())</small></h2>
+            <button id="btn-ui" class="primary">Chuyển sang UI thật (ui/) ▶</button>
           </div>
-          <div class="hoverline" id="hover"></div>
-          <p class="hint">
-            Click quân → click ô đích · chuột phải hoặc Esc = bỏ chọn · nhãn
-            vàng trên ô = loại nước (PROMO, CASTLE…)
-          </p>
-          <div class="opts">
-            <label
-              title="Click ô không hợp lệ vẫn gửi dispatch để xem engine từ chối"
-              ><input type="checkbox" id="opt-force" /> Ép dispatch cả nước
-              sai</label
-            >
-            <label
-              title="Gọi classifyMove(game, piece, row, col) trước khi dispatch và ghi vào nhật ký"
-              ><input type="checkbox" id="opt-classify" checked /> Gọi
-              classifyMove trước khi đi</label
-            >
-            <label><input type="checkbox" id="opt-flip" /> Lật bàn cờ</label>
-            <label
-              >Nhãn ô
-              <select id="opt-label">
-                <option value="name">tên (e2)</option>
-                <option value="rc">row,col</option>
-                <option value="none">ẩn</option>
-              </select>
-            </label>
-            <label
-              >Cỡ ô
-              <input type="range" id="opt-size" min="36" max="84" value="60"
-            /></label>
-          </div>
-          <details>
-            <summary>Sự kiện chuột cần ghi vào nhật ký</summary>
+
+          <!-- Chế độ mặc định: bàn cờ test -->
+          <div id="board-wrap">
+            <div class="boardframe">
+              <div id="ranks"></div>
+              <div id="board"></div>
+              <div></div>
+              <div id="files"></div>
+            </div>
+            <div class="hoverline" id="hover"></div>
+            <p class="hint">
+              Click quân → click ô đích · chuột phải hoặc Esc = bỏ chọn · nhãn
+              vàng trên ô = loại nước · viền đỏ đậm = vua đang bị chiếu
+            </p>
             <div class="opts">
               <label
-                ><input type="checkbox" id="m-click" checked /> click</label
+                title="Click ô không hợp lệ vẫn gửi nước đi qua controller.actions.move để xem engine từ chối. Cần controller có actions.move (mục 9)."
+                ><input type="checkbox" id="opt-force" /> Ép gửi cả nước sai
+                (cần actions.move)</label
               >
+              <label><input type="checkbox" id="opt-flip" /> Lật bàn cờ</label>
               <label
-                ><input type="checkbox" id="m-dblclick" checked />
-                dblclick</label
-              >
+                >Nhãn ô
+                <select id="opt-label">
+                  <option value="name">tên (e2)</option>
+                  <option value="rc">row,col</option>
+                  <option value="none">ẩn</option>
+                </select>
+              </label>
               <label
-                ><input type="checkbox" id="m-contextmenu" checked />
-                contextmenu</label
-              >
-              <label
-                ><input type="checkbox" id="m-mousedown" /> mousedown</label
-              >
-              <label><input type="checkbox" id="m-mouseup" /> mouseup</label>
-              <label><input type="checkbox" id="m-hover" /> hover</label>
+                >Cỡ ô
+                <input type="range" id="opt-size" min="36" max="84" value="60"
+              /></label>
             </div>
-          </details>
+            <details>
+              <summary>Sự kiện chuột cần ghi vào nhật ký</summary>
+              <div class="opts">
+                <label><input type="checkbox" id="m-click" checked /> click</label>
+                <label><input type="checkbox" id="m-dblclick" checked /> dblclick</label>
+                <label><input type="checkbox" id="m-contextmenu" checked /> contextmenu</label>
+                <label><input type="checkbox" id="m-mousedown" /> mousedown</label>
+                <label><input type="checkbox" id="m-mouseup" /> mouseup</label>
+                <label><input type="checkbox" id="m-hover" /> hover</label>
+              </div>
+            </details>
+          </div>
+
+          <!-- Chế độ UI thật: component từ ui/ được mount vào #ui-host -->
+          <div id="ui-wrap" hidden>
+            <div class="opts" style="margin-top: 0">
+              <label title="Bọc controller đưa cho UI để mọi lời gọi actions.* / destroy từ UI thật hiện trong Nhật ký"
+                ><input type="checkbox" id="opt-wrap" checked /> ghi log mọi lời gọi của UI thật</label
+              >
+              <span id="ui-status" class="muted"></span>
+            </div>
+            <div id="ui-host"></div>
+            <p class="hint">
+              HTML gọi <code>controller.loadUI()</code> (chưa có thì
+              <code>plugin.loadUI()</code>) rồi <code>mount(container, controller)</code>.
+              Các nút bên dưới (phong cấp, restart...) vẫn đi qua cùng controller.
+            </p>
+          </div>
         </div>
 
         <div class="card">
@@ -786,7 +542,7 @@
           <p class="hint" id="promo-hint"></p>
           <h4>
             Dựng thế nhanh
-            <small>(đi qua room.dispatch, có ghi log, replay được)</small>
+            <small>(đi qua controller, có ghi log, replay được)</small>
           </h4>
           <div class="btns" style="margin-top: 4px">
             <button id="sc-white">Trắng sắp phong cấp</button>
@@ -802,31 +558,31 @@
         <div class="card">
           <h2>Thao tác nhanh</h2>
           <div class="btns" style="margin-top: 0">
-            <button id="btn-state">getState()</button>
-            <button id="btn-restart">restart()</button>
-            <button id="btn-destroy" class="danger">destroy()</button>
-            <button id="btn-new">new Room()</button>
+            <button id="btn-state">controller.getView()</button>
+            <button id="btn-restart">actions.restart()</button>
+            <button id="btn-destroy" class="danger">controller.destroy()</button>
             <button id="btn-sub">subscribe()</button>
           </div>
           <div class="form">
-            <input
-              id="in-move"
-              type="text"
-              placeholder="e2e4"
-              size="6" /><button id="btn-move">dispatch nước đi</button>
+            <select id="opt-mode"></select>
+            <button id="btn-new">plugin.create() → controller mới</button>
           </div>
           <div class="form">
-            <input id="in-sq" type="text" placeholder="e2" size="4" /><button
-              id="btn-legal">
-              getLegalMoves(ô)
+            <input id="in-move" type="text" placeholder="e2e4" size="6" /><button id="btn-move">
+              đi nước (2 lần clickSquare)
+            </button>
+          </div>
+          <div class="form">
+            <input id="in-sq" type="text" placeholder="e2" size="4" /><button id="btn-legal">
+              bấm ô → xem view.targets
             </button>
           </div>
           <div class="form">
             <button id="btn-replay">⏪ Replay các nước đã đi</button>
           </div>
           <p class="hint">
-            Replay phát lại các nước đi và các lần chọn quân phong cấp đã
-            dispatch từ giao diện.
+            Replay phát lại các nước đi và các lần chọn quân phong cấp đã gửi
+            từ giao diện (qua controller).
           </p>
         </div>
       </section>
@@ -837,7 +593,7 @@
           <button data-tab="log" class="on">
             Nhật ký <span class="count">(<span id="tabcount">0</span>)</span>
           </button>
-          <button data-tab="fns">Hàm engine</button>
+          <button data-tab="fns">Controller API</button>
           <button data-tab="call">Gọi hàm</button>
           <button data-tab="state">Trạng thái</button>
           <button data-tab="auto">Test tự động</button>
@@ -848,36 +604,14 @@
           <div class="card">
             <h2>Lịch sử sự kiện — <span id="logCount"></span></h2>
             <div class="logtools">
-              <label
-                ><input type="checkbox" class="kind" value="mouse" checked />
-                chuột</label
-              >
-              <label
-                ><input type="checkbox" class="kind" value="call" checked /> gọi
-                hàm</label
-              >
-              <label
-                ><input type="checkbox" class="kind" value="callback" checked />
-                callback</label
-              >
-              <label
-                ><input type="checkbox" class="kind" value="check" checked />
-                check</label
-              >
-              <label
-                ><input type="checkbox" class="kind" value="info" checked /> ghi
-                chú</label
-              >
+              <label><input type="checkbox" class="kind" value="mouse" checked /> chuột</label>
+              <label><input type="checkbox" class="kind" value="call" checked /> gọi hàm</label>
+              <label><input type="checkbox" class="kind" value="callback" checked /> callback</label>
+              <label><input type="checkbox" class="kind" value="check" checked /> check</label>
+              <label><input type="checkbox" class="kind" value="info" checked /> ghi chú</label>
               <label><input type="checkbox" id="onlyBad" /> chỉ lỗi</label>
-              <label
-                ><input type="checkbox" id="follow" checked /> theo dòng mới
-                nhất</label
-              >
-              <input
-                id="q"
-                type="search"
-                placeholder="lọc theo chữ…"
-                size="14" />
+              <label><input type="checkbox" id="follow" checked /> theo dòng mới nhất</label>
+              <input id="q" type="search" placeholder="lọc theo chữ…" size="14" />
               <button id="btn-export">Export JSON</button>
               <button id="btn-clear" class="danger">Xóa</button>
             </div>
@@ -899,24 +633,17 @@
           </div>
         </div>
 
-        <!-- TAB: HÀM ENGINE -->
+        <!-- TAB: CONTROLLER API -->
         <div class="tabpane" id="tab-fns" hidden>
           <div class="card">
-            <h2>
-              Hàm engine · applyAction · legalMoves · moveInput · outcome ·
-              squares
-            </h2>
+            <h2>Controller API · plugin (index.js) · actions</h2>
             <div class="form" style="margin-top: 0">
-              <input
-                id="fn-q"
-                type="search"
-                placeholder="lọc theo tên / mô tả…"
-                size="26" />
+              <input id="fn-q" type="search" placeholder="lọc theo tên / mô tả…" size="26" />
             </div>
             <p class="hint">
-              Mô tả và kiểu trả về được suy ra từ tên hàm và tham số, nên sửa
-              trong mảng <code>FN_CATALOG</code> nếu chưa đúng. Cột trạng thái
-              và "tham số thực tế" lấy từ import thật.
+              Danh sách hàm UI cần, đối chiếu với controller thật. ❌ bắt buộc
+              thì UI hỏng; ⚪ là hàm UI muốn có (mục 9 tab Trạng thái), thiếu thì
+              UI dùng cách tạm.
             </p>
             <div id="fn-sum"></div>
             <div id="fn-list"></div>
@@ -926,52 +653,36 @@
         <!-- TAB: GỌI HÀM -->
         <div class="tabpane" id="tab-call" hidden>
           <div class="card">
-            <h2>Gọi hàm</h2>
+            <h2>Gọi hàm (chỉ plugin + controller)</h2>
             <div class="form" style="margin-top: 0">
               <select id="api-target" style="flex: 1"></select>
               <button id="api-run">Gọi ▶</button>
             </div>
             <div id="api-sig"></div>
-            <div class="form" id="api-this-wrap" hidden>
-              <small>this =</small
-              ><input
-                id="api-this"
-                type="text"
-                placeholder="$ret hoặc $board"
-                style="flex: 1" />
-            </div>
             <textarea
               id="api-args"
               rows="3"
-              placeholder='Mảng JSON các tham số, ví dụ ["$state", "@e2"]'></textarea>
-            <div class="form">
-              <label
-                title="Chạy trên một Room phụ để các hàm ghi (applyMove, applyPromotion) không đụng tới bàn cờ chính"
-                ><input type="checkbox" id="api-sandbox" /> Sandbox (Room
-                phụ)</label
-              >
-              <button id="api-sb-reset">Tạo lại sandbox</button>
-            </div>
+              placeholder='Mảng JSON các tham số, ví dụ [6, 4] hoặc ["@e2.id", 4, 4]'></textarea>
             <p class="hint">
               Mã đặc biệt trong tham số (chuỗi JSON):
-              <code>"$state"</code> state hiện tại · <code>"$board"</code> ·
-              <code>"$turn"</code> · <code>"$ret"</code> kết quả lần gọi trước ·
-              <code>"$room"</code> · <code>"$sel.piece"</code> /
-              <code>"$sel.row"</code> / <code>"$sel.col"</code> quân đang chọn ·
-              <code>"$Side.WHITE"</code> · <code>"$PieceType.QUEEN"</code> ·
-              <code>"$MoveKind.NORMAL"</code> · <code>"@e2"</code> quân ở ô e2 ·
-              <code>"@e2.id"</code> id quân đó.<br />
-              Hàm cần callback (như <code>subscribe</code>) hãy dùng nút ở cột
-              trái. Chọn quân phong cấp thô: <code>Action.promote</code> ←
-              <code>["$PieceType.QUEEN"]</code>, rồi
-              <code>room.dispatch</code> ← <code>["$ret"]</code>.
+              <code>"$view"</code> view hiện tại · <code>"$turn"</code> ·
+              <code>"$ret"</code> kết quả lần gọi trước ·
+              <code>"$sel.id"</code> / <code>"$sel.row"</code> /
+              <code>"$sel.col"</code> quân đang chọn ·
+              <code>"$Side.WHITE"</code> · <code>"$PieceType.QUEEN"</code>
+              (lấy từ enums hoặc suy ra) · <code>"$GameMode.LOCAL"</code> ·
+              <code>"@e2"</code> quân ở ô e2 (theo view) · <code>"@e2.id"</code>
+              id quân đó.<br />
+              Hàm cần callback (<code>subscribe</code>, <code>onError</code>)
+              hãy dùng nút ở cột trái. <code>plugin.create</code> tạo thêm một
+              controller phụ, không thay controller chính.
             </p>
             <h4>Kết quả lần gọi gần nhất ($ret)</h4>
             <pre id="api-ret">(chưa gọi)</pre>
           </div>
           <div class="card">
             <h2>
-              Tất cả export quét được
+              Tất cả hàm gọi được
               <small>(click một dòng để chọn vào ô gọi hàm)</small>
             </h2>
             <div id="api-tree"></div>
@@ -981,14 +692,11 @@
         <!-- TAB: TRẠNG THÁI -->
         <div class="tabpane" id="tab-state" hidden>
           <div class="card">
-            <h2>1 · Quân đang chọn + kết quả getLegalMoves</h2>
+            <h2>1 · Quân đang chọn (từ view)</h2>
             <pre id="selInfo"></pre>
           </div>
           <div class="card">
-            <h2>
-              2 · Gọi nhanh các hàm đọc trên state hiện tại
-              <small>(không ghi log)</small>
-            </h2>
+            <h2>2 · Các giá trị suy ra từ view <small>(không ghi log)</small></h2>
             <div class="scroll" id="probes"></div>
           </div>
           <div class="card">
@@ -1005,9 +713,31 @@
           </div>
           <div class="card">
             <details id="stateDetails" style="margin-top: 0">
-              <summary>6 · State JSON đầy đủ</summary>
+              <summary>6 · View JSON đầy đủ</summary>
               <pre id="stateJson" style="margin-top: 8px"></pre>
             </details>
+          </div>
+          <div class="card">
+            <h2>7 · controller.getView() (rút gọn)</h2>
+            <pre id="viewJson"></pre>
+          </div>
+          <div class="card">
+            <h2>8 · Kiểm tra phụ thuộc của plugin / controller / view</h2>
+            <div class="scroll" id="ctlDeps"></div>
+            <p class="hint">
+              HTML không import engine nên không soi được
+              <code>game.*</code> hay <code>board.*</code>. Các thứ đó được
+              kiểm gián tiếp bằng test tự động (chọn quân, phong cấp, bắt tốt
+              qua đường, VS_BOT).
+            </p>
+          </div>
+          <div class="card">
+            <h2>9 · UI cần mà controller có thể chưa có</h2>
+            <div class="scroll" id="ctlWanted"></div>
+            <p class="hint">
+              Thiếu thì UI vẫn chạy bằng cách tạm ghi ở cột cuối. Bổ sung vào
+              controller / ui rồi tải lại trang, dòng sẽ chuyển sang ✅.
+            </p>
           </div>
         </div>
 
@@ -1019,12 +749,13 @@
               <button id="btn-auto">▶ Chạy test</button>
             </div>
             <p class="hint">
-              Chạy trên một Room riêng nên không phá bàn cờ đang chơi. Click một
-              kết quả để nhảy tới dòng log của nó.
+              Mỗi nhóm dùng controller riêng tạo bằng
+              <code>plugin.create()</code>, không phá bàn cờ đang chơi. Mọi
+              thao tác đều qua <code>clickSquare</code> / <code>promote</code>
+              / <code>restart</code>. Click một kết quả để nhảy tới dòng log
+              của nó.
             </p>
-            <div id="autoSummary" class="muted" style="margin-top: 8px">
-              Chưa chạy.
-            </div>
+            <div id="autoSummary" class="muted" style="margin-top: 8px">Chưa chạy.</div>
             <ul id="autoList"></ul>
           </div>
         </div>
@@ -1032,298 +763,84 @@
     </div>
 
     <script type="module">
-      import { Room } from "../core/engine/room.js";
-      import { reduce } from "../core/engine/reduce.js";
-      import { Action } from "../core/models/Action.js";
-      import { Side } from "../core/constants/Side.js";
-      import { PieceType } from "../core/constants/PieceType.js";
-
       /* =====================================================================
-       * 0. CẤU HÌNH — sửa ở đây nếu đường dẫn / tên khác
+       * 0. CẤU HÌNH
+       * File này CHỈ import ../index.js (cửa duy nhất của plugin).
+       * Không import core/, controller/ hay file engine nào.
        * ===================================================================== */
-      // Các file hàm mới: lần lượt thử từng thư mục cho tới khi import được
-      const ENGINE_DIRS = ["../core/engine/", "../core/rules/", "../core/"];
-      const ENGINE_FILES = [
-        "applyMoves.js",
-        "legalMoves.js",
-        "buildMoves.js",
-        "outcome.js",
-        "squaresMoves.js",
+      let plugin = null,
+        GameMode = null,
+        pluginError = null;
+      try {
+        const mod = await import("../index.js");
+        plugin = mod.default ?? null;
+        GameMode = mod.GameMode ?? null;
+        if (!plugin || typeof plugin.create !== "function")
+          throw new Error("../index.js: export default phải là object có create()");
+      } catch (err) {
+        pluginError = err;
+        plugin = null;
+      }
+      const GM = GameMode ?? { LOCAL: "LOCAL", VS_BOT: "VS_BOT", BOT: "BOT", ONLINE: "ONLINE" };
+
+      // Cách HTML thử gọi UI sau khi nạp xong ui/index.js. Sửa ở đây nếu ui/ dùng quy ước khác.
+      // Mỗi dòng: [nhãn, (module) => [hàm, this]]
+      const UI_MOUNTERS = [
+        ["mount(container, controller)", (m) => [m.mount, m]],
+        ["default.mount(container, controller)", (m) => [m.default?.mount, m.default]],
+        ["render(container, controller)", (m) => [m.render, m]],
+        [
+          "default(container, controller)",
+          (m) => [
+            typeof m.default === "function" &&
+            !/^class\b/.test(Function.prototype.toString.call(m.default))
+              ? m.default
+              : null,
+            m,
+          ],
+        ],
       ];
-      const MOVEKIND_DIRS = [
-        "../core/constants/",
-        "../core/models/",
-        "../core/engine/",
-      ]; // tìm MoveKind.js (không bắt buộc)
 
-      // Các module khác được quét để liệt kê trong tab "Gọi hàm"
-      const SCAN_PATHS = [
-        "../core/engine/room.js",
-        "../core/engine/reduce.js",
-        "../core/models/Action.js",
-        "../core/models/Board.js",
-        "../core/models/Game.js",
-        "../core/models/piece.js",
-        "../core/models/Rule.js",
-        "../core/models/RuleSet.js",
-        "../core/models/Square.js",
-        "../core/constants/Side.js",
-        "../core/constants/PieceType.js",
-      ];
-
-      // Nếu engine có cờ riêng báo "đang chờ phong cấp", điền vào đây. Ví dụ: (st) => st.pendingPromotion
-      const CUSTOM_PENDING = null;
-
-      const FN_FILES = {
-        "applyMoves.js":
-          "Áp dụng hành động lên game: thực hiện nước đi và hoàn tất phong cấp.",
-        "legalMoves.js": "Tính các nước đi hợp lệ của một quân và của cả ván.",
-        "buildMoves.js":
-          "Phân loại nước đi và dựng input chuẩn để đưa vào bước áp dụng.",
-        "outcome.js": "Đánh giá kết quả ván cờ (tiếp tục, chiếu hết, hòa…).",
-        "squaresMoves.js":
-          "Tiện ích cấp thấp về ô: quân đi tới / tấn công những ô nào, ô bị tấn công, vua, chiếu.",
-      };
-
-      const FN_CATALOG = [
-        {
-          file: "applyMoves.js",
-          name: "applyMove",
-          sig: "(game, piece, row, col, kind = MoveKind.NORMAL)",
-          effect: "write",
-          desc: "Thực hiện nước đi: đưa quân `piece` tới ô (row, col) theo loại nước `kind` (mặc định NORMAL; còn có thể là nhập thành, bắt tốt qua đường, phong cấp…). Cập nhật bàn cờ, lượt đi và các trạng thái đi kèm.",
-          returns: "game sau khi đi (mới hoặc đã sửa tại chỗ)",
-          example: '["$state","@e2",4,4]',
-        },
-        {
-          file: "applyMoves.js",
-          name: "applyPromotion",
-          sig: "(game, pieceType)",
-          effect: "write",
-          desc: "Hoàn tất phong cấp: đổi tốt đang chờ phong cấp thành quân `pieceType` (thường là Hậu, Xe, Tượng hoặc Mã), rồi kết thúc lượt.",
-          returns: "game sau khi phong cấp",
-          example: '["$state","$PieceType.QUEEN"]',
-        },
-        {
-          file: "legalMoves.js",
-          name: "getLegalMoves",
-          sig: "(game, piece)",
-          effect: "read",
-          desc: "Các ô mà `piece` được phép đi tới (đã loại những nước làm vua phe mình bị chiếu). Giao diện dùng kết quả này để tô sáng ô đích.",
-          returns: "mảng ô { row, col } (có thể kèm kind)",
-          example: '["$state","@e2"]',
-        },
-        {
-          file: "legalMoves.js",
-          name: "hasLegalMove",
-          sig: "(game)",
-          effect: "read",
-          desc: "Bên đang tới lượt còn ít nhất một nước đi hợp lệ hay không. Dùng để nhận biết hết nước đi (chiếu hết hoặc hòa bí).",
-          returns: "boolean",
-          example: '["$state"]',
-        },
-        {
-          file: "legalMoves.js",
-          name: "getAllLegalMoves",
-          sig: "(game)",
-          effect: "read",
-          desc: "Toàn bộ nước đi hợp lệ của bên đang tới lượt.",
-          returns: "danh sách nước đi (mảng hoặc map theo quân)",
-          example: '["$state"]',
-        },
-        {
-          file: "buildMoves.js",
-          name: "classifyMove",
-          sig: "(game, piece, row, col)",
-          effect: "read",
-          desc: "Phân loại nước đi `piece` → (row, col) thành một MoveKind: thường, ăn quân, nhập thành, bắt tốt qua đường, phong cấp…",
-          returns: "một giá trị MoveKind",
-          example: '["$state","@e2",4,4]',
-        },
-        {
-          file: "buildMoves.js",
-          name: "buildMoveInput",
-          sig: "(game, piece, row, col, kind)",
-          effect: "read",
-          desc: "Dựng đối tượng input chuẩn cho một nước đi (gói quân, ô đích, loại nước…) để đưa vào applyMove.",
-          returns: "object input của nước đi",
-          example: '["$state","@e2",4,4,"$MoveKind.NORMAL"]',
-        },
-        {
-          file: "buildMoves.js",
-          name: "buildPromoteInput",
-          sig: "(game, piece, action)",
-          effect: "read",
-          desc: "Dựng input cho bước phong cấp từ tốt `piece` đang chờ và `action` (hành động chọn quân phong cấp).",
-          returns: "object input của phong cấp",
-          example: '["$state","@a7","$ret"]',
-          note: "gọi Action.promote trước để $ret là action; đổi @a7 thành ô của tốt đang chờ.",
-        },
-        {
-          file: "outcome.js",
-          name: "evaluateOutcome",
-          sig: "(game)",
-          effect: "read",
-          desc: "Đánh giá thế cờ hiện tại: ván tiếp tục, chiếu hết (ai thắng) hay hòa. Kết quả tương ứng với state.result.",
-          returns: "null hoặc object kết quả, ví dụ { type, winner }",
-          example: '["$state"]',
-        },
-        {
-          file: "squaresMoves.js",
-          name: "movementSquares",
-          sig: "(board, piece)",
-          effect: "read",
-          desc: "Các ô `piece` có thể di chuyển tới theo luật đi của loại quân đó (chưa lọc chiếu vua).",
-          returns: "mảng ô { row, col }",
-          example: '["$board","@e2"]',
-        },
-        {
-          file: "squaresMoves.js",
-          name: "isAttacked",
-          sig: "(board, row, col, bySide)",
-          effect: "read",
-          desc: "Ô (row, col) có đang bị phe `bySide` tấn công hay không.",
-          returns: "boolean",
-          example: '["$board",4,4,"$Side.BLACK"]',
-        },
-        {
-          file: "squaresMoves.js",
-          name: "hasSquare",
-          sig: "(squares, row, col)",
-          effect: "read",
-          desc: "Kiểm tra danh sách ô `squares` có chứa ô (row, col) hay không.",
-          returns: "boolean",
-          example: '["$ret",4,4]',
-          note: "gọi movementSquares hoặc attackSquares trước để $ret là danh sách ô.",
-        },
-        {
-          file: "squaresMoves.js",
-          name: "attackSquares",
-          sig: "(board, piece)",
-          effect: "read",
-          desc: "Các ô `piece` đang tấn công / khống chế. Khác movementSquares ở quân tốt: tốt chỉ tấn công chéo.",
-          returns: "mảng ô { row, col }",
-          example: '["$board","@e2"]',
-        },
-        {
-          file: "squaresMoves.js",
-          name: "findKing",
-          sig: "(board, side)",
-          effect: "read",
-          desc: "Tìm vua của phe `side` trên bàn cờ.",
-          returns: "quân vua hoặc vị trí của nó",
-          example: '["$board","$Side.WHITE"]',
-        },
-        {
-          file: "squaresMoves.js",
-          name: "isInCheck",
-          sig: "(board, side)",
-          effect: "read",
-          desc: "Vua của phe `side` có đang bị chiếu hay không.",
-          returns: "boolean",
-          example: '["$board","$Side.WHITE"]',
-        },
-      ];
+      const PROMO_NAMES = ["QUEEN", "ROOK", "BISHOP", "KNIGHT"];
+      const LETTER = { PAWN: "p", KNIGHT: "n", BISHOP: "b", ROOK: "r", QUEEN: "q", KING: "k" };
 
       // Thế dựng sẵn để test phong cấp (mỗi nước theo dạng "ô-đi ô-đến")
       const SCENARIOS = {
         white: {
           title: "Trắng sắp phong cấp",
           final: "a7b8",
-          setup: [
-            "a2a4",
-            "b7b5",
-            "a4b5",
-            "a7a6",
-            "b5a6",
-            "g8f6",
-            "a6a7",
-            "e7e6",
-          ],
+          setup: ["a2a4", "b7b5", "a4b5", "a7a6", "b5a6", "g8f6", "a6a7", "e7e6"],
           hint: "8 nước: a4 b5 axb5 a6 bxa6 Nf6 a7 e6, rồi bấm tốt a7 ăn mã b8 (a7→b8).",
         },
         black: {
           title: "Đen sắp phong cấp",
           final: "a2b1",
-          setup: [
-            "h2h3",
-            "a7a5",
-            "b2b4",
-            "a5b4",
-            "a2a3",
-            "b4a3",
-            "h3h4",
-            "a3a2",
-            "h4h5",
-          ],
+          setup: ["h2h3", "a7a5", "b2b4", "a5b4", "a2a3", "b4a3", "h3h4", "a3a2", "h4h5"],
           hint: "9 nước: h3 a5 b4 axb4 a3 bxa3 h4 a2 h5, rồi bấm tốt a2 ăn mã b1 (a2→b1).",
         },
       };
 
       /* =====================================================================
-       * 1. Nạp các file hàm engine (không làm chết cả trang nếu sai đường dẫn)
-       * ===================================================================== */
-      async function importFirst(file, dirs) {
-        const tried = [];
-        for (const dir of dirs) {
-          try {
-            return { file, path: dir + file, ns: await import(dir + file) };
-          } catch (err) {
-            tried.push(`${dir + file} → ${err.name}: ${err.message}`);
-          }
-        }
-        return { file, tried };
-      }
-
-      const resolved = {}; // file → { path, ns } | { tried[] }
-      const engine = {}; // tên hàm → function
-      const engineSrc = {}; // tên hàm → file
-      for (const file of ENGINE_FILES) {
-        const r = (resolved[file] = await importFirst(file, ENGINE_DIRS));
-        if (r.ns)
-          for (const [k, v] of Object.entries(r.ns))
-            if (typeof v === "function") {
-              engine[k] = v;
-              engineSrc[k] = file;
-            }
-      }
-      const mkRes = await importFirst("MoveKind.js", MOVEKIND_DIRS);
-      const MoveKind = mkRes.ns
-        ? (mkRes.ns.MoveKind ?? mkRes.ns.default ?? null)
-        : null;
-
-      function E(name) {
-        const f = engine[name];
-        if (typeof f !== "function") {
-          const file = FN_CATALOG.find((x) => x.name === name)?.file ?? "?";
-          throw new Error(
-            `Hàm ${name}() chưa import được từ ${file} — xem tab "Hàm engine"`,
-          );
-        }
-        return f;
-      }
-
-      /* =====================================================================
-       * 2. Tiện ích
+       * 1. Tiện ích
        * ===================================================================== */
       const $ = (id) => document.getElementById(id);
       const esc = (s) =>
         String(s).replace(
           /[&<>"']/g,
-          (c) =>
-            ({
-              "&": "&amp;",
-              "<": "&lt;",
-              ">": "&gt;",
-              '"': "&quot;",
-              "'": "&#39;",
-            })[c],
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
         );
       const pad = (n, l = 2) => String(n).padStart(l, "0");
       const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       const clock = (iso) => {
         const d = new Date(iso);
         return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
+      };
+      const safe = (f, d) => {
+        try {
+          return f();
+        } catch {
+          return d;
+        }
       };
 
       const FILES = "abcdefgh";
@@ -1336,60 +853,122 @@
       const isSquareText = (s) => /^[a-h][1-8]$/.test(s);
       const sameSq = (a, b) => !!a && !!b && a.row === b.row && a.col === b.col;
 
-      const enumName = (En, v) =>
-        Object.entries(En).find(([, x]) => x === v)?.[0] ?? String(v);
-      const sideName = (s) => enumName(Side, s);
-      const typeName = (t) => enumName(PieceType, t);
-      const kindName = (v) => (MoveKind ? enumName(MoveKind, v) : String(v));
+      const boardEl = $("board");
+      const hostEl = $("ui-host");
 
-      const LETTER = {
-        [PieceType.PAWN]: "p",
-        [PieceType.KNIGHT]: "n",
-        [PieceType.BISHOP]: "b",
-        [PieceType.ROOK]: "r",
-        [PieceType.QUEEN]: "q",
-        [PieceType.KING]: "k",
-      };
-      // Chữ hoa = trắng, chữ thường = đen
-      const pieceChar = (p) => {
-        const l = LETTER[p.type] ?? "?";
-        return p.side === Side.WHITE ? l.toUpperCase() : l;
-      };
+      /* =====================================================================
+       * 2. Trạng thái giao diện (khai báo sớm vì nhiều hàm dùng)
+       * ===================================================================== */
+      let ctl = null; // controller: nguồn sự thật duy nhất
+      let curMode = null;
+      let legend = null; // { Side, PieceType, sideName(v), typeName(v), from }
+      let unsub = null,
+        subCalls = 0,
+        destroyed = false;
+      let offCtl = [],
+        ctlErrors = 0,
+        lastCtlError = null,
+        uiRaf = 0;
+      let listenerView = null; // listener có nhận view làm đối số không? (null = chưa biết)
+      let selected = null; // bản sao suy ra từ view: { id, side, type, square, piece, legal[] }
+      let lastMove = null, // dự phòng khi view chưa có lastMove
+        flashSq = null,
+        flashTimer = 0;
+      let hoverSq = null,
+        lastMouse = null;
+      let moveLog = []; // dùng cho replay
+      let replaying = false;
+      let selectedId = null,
+        lastSig = "",
+        logRaf = 0;
+      let lastRet;
+      let promoPending = null,
+        promoTried = null;
+      let uiMode = false,
+        uiBusy = false,
+        uiHandle = null,
+        uiState = "none", // none | ok | fail
+        uiInfo = null,
+        uiErr = null;
 
-      function boardToText(game) {
-        const { board } = game;
-        const lines = [];
-        for (let row = 0; row < board.rows; row++) {
-          const cells = [];
-          for (let col = 0; col < board.cols; col++) {
-            const p = board.pieceAt(row, col);
-            cells.push(p === null ? "." : pieceChar(p));
+      const V = () => safe(() => (ctl ? ctl.getView() : null), null);
+      const peekView = (c) => safe(() => (c ? c.getView() : undefined), undefined);
+      const hasCtl = (name) => typeof ctl?.[name] === "function";
+      const hasAction = (name) => typeof ctl?.actions?.[name] === "function";
+      const pieceAtV = (v, row, col) => v?.pieces.find((p) => p.row === row && p.col === col) ?? null;
+      const pieceById = (v, id) => v?.pieces.find((p) => p.id === id) ?? null;
+
+      /* ---------- Side / PieceType: lấy từ enums hoặc suy ra từ thế ban đầu ---------- */
+      function makeLegend(Side, PT, from) {
+        const inv = (o) => new Map(Object.entries(o).map(([k, v]) => [v, k]));
+        const sMap = inv(Side),
+          tMap = inv(PT);
+        return {
+          Side,
+          PieceType: PT,
+          from,
+          sideName: (v) => sMap.get(v) ?? String(v),
+          typeName: (v) => tMap.get(v) ?? String(v),
+        };
+      }
+      function buildLegend(v) {
+        const e = ctl?.enums ?? v?.enums;
+        if (e?.Side && e?.PieceType)
+          return makeLegend(e.Side, e.PieceType, "controller.enums / view.enums");
+        if (!v || !Array.isArray(v.pieces) || v.pieces.length !== 32) return null;
+        const at = (r, c) => pieceAtV(v, r, c);
+        const back = ["ROOK", "KNIGHT", "BISHOP", "QUEEN", "KING", "BISHOP", "KNIGHT", "ROOK"];
+        const w = at(7, 4),
+          b = at(0, 4);
+        if (!w || !b || w.side === b.side) return null;
+        const Side = { WHITE: w.side, BLACK: b.side },
+          PT = {};
+        for (let c = 0; c < 8; c++)
+          for (const r of [7, 0]) {
+            const p = at(r, c);
+            if (!p || (PT[back[c]] !== undefined && PT[back[c]] !== p.type)) return null;
+            PT[back[c]] = p.type;
           }
-          lines.push(`${8 - row}  ${cells.join(" ")}`);
-        }
-        lines.push("   A B C D E F G H");
+        const pw = at(6, 0);
+        if (!pw) return null;
+        PT.PAWN = pw.type;
+        return makeLegend(Side, PT, "suy ra từ thế ban đầu");
+      }
+      const sideName = (s) => (legend ? legend.sideName(s) : String(s));
+      const typeName = (t) => (legend ? legend.typeName(t) : String(t));
+      const isWhite = (p) => !!legend && p.side === legend.Side.WHITE;
+      const pieceChar = (p) => {
+        const l = LETTER[typeName(p.type)] ?? "?";
+        return isWhite(p) ? l.toUpperCase() : l;
+      };
+      const kindName = (v) => String(v);
+      const resultText = (r) =>
+        r && typeof r === "object"
+          ? safeStringify({ ...r, ...(r.winner !== undefined ? { winner: sideName(r.winner) } : {}) })
+          : String(r);
+
+      function boardToText(v) {
+        const g = Array.from({ length: v.rows }, () => Array(v.cols).fill("."));
+        for (const p of v.pieces) if (g[p.row]) g[p.row][p.col] = pieceChar(p);
+        const lines = g.map((r, i) => `${v.rows - i}  ${r.join(" ")}`);
+        lines.push("   " + [...Array(v.cols).keys()].map((c) => (FILES[c] ?? "?").toUpperCase()).join(" "));
         return lines.join("\n");
       }
 
       // JSON.stringify an toàn: không vỡ khi gặp vòng lặp, Error, Map, Set, function…
-      function safeStringify(v, space, summarizeStates = false) {
+      function safeStringify(v, space, summarizeViews = false) {
         const stack = [];
         return JSON.stringify(
           v,
           function (key, val) {
-            if (val instanceof Error)
-              val = { name: val.name, message: val.message, stack: val.stack };
+            if (val instanceof Error) val = { name: val.name, message: val.message, stack: val.stack };
             else if (val instanceof Map) val = { __map: [...val] };
             else if (val instanceof Set) val = { __set: [...val] };
-            else if (typeof val === "function")
-              return `[Function ${val.name || "anonymous"}]`;
-            else if (typeof val === "bigint" || typeof val === "symbol")
-              return String(val);
-            else if (summarizeStates && isState(val))
-              val = { __state: true, ...summarize(val) };
+            else if (typeof val === "function") return `[Function ${val.name || "anonymous"}]`;
+            else if (typeof val === "bigint" || typeof val === "symbol") return String(val);
+            else if (summarizeViews && isView(val)) val = { __view: true, ...summarize(val) };
             if (val !== null && typeof val === "object") {
-              while (stack.length && stack[stack.length - 1] !== this)
-                stack.pop();
+              while (stack.length && stack[stack.length - 1] !== this) stack.pop();
               if (stack.includes(val)) return "[Circular]";
               stack.push(val);
             }
@@ -1399,41 +978,35 @@
         );
       }
 
-      // Mỗi object state được đánh số để biết state có bị thay object hay không
-      const stateIds = new WeakMap();
-      let nextStateId = 1;
-      function stateId(s) {
-        if (!s || typeof s !== "object") return null;
-        if (!stateIds.has(s)) stateIds.set(s, nextStateId++);
-        return stateIds.get(s);
+      // Mỗi object view được đánh số: biết view có đổi tham chiếu hay không
+      const viewIds = new WeakMap();
+      let nextViewId = 1;
+      function viewId(v) {
+        if (!v || typeof v !== "object") return null;
+        if (!viewIds.has(v)) viewIds.set(v, nextViewId++);
+        return viewIds.get(v);
       }
-      function isState(v) {
-        return (
-          !!v &&
-          typeof v === "object" &&
-          !!v.board &&
-          !!v.board.pieces &&
-          "turn" in v
-        );
-      }
+      const isView = (v) =>
+        !!v && typeof v === "object" && Array.isArray(v.pieces) && "turn" in v && "targets" in v;
 
-      function summarize(state) {
-        if (!isState(state)) return null;
+      function summarize(v) {
+        if (!isView(v)) return null;
         return {
-          stateId: stateId(state),
-          turn: sideName(state.turn),
-          result: snap(state.result) ?? null,
-          pieces: state.board.pieces.length,
-          board: boardToText(state),
+          viewId: viewId(v),
+          turn: sideName(v.turn),
+          result: snap(v.result) ?? null,
+          pieces: v.pieces.length,
+          selected: v.selectedId == null ? null : sqName(pieceById(v, v.selectedId)),
+          canAct: v.canAct,
+          board: boardToText(v),
         };
       }
 
       // Chuyển giá trị bất kỳ thành dữ liệu thuần (lưu được vào localStorage)
       function snap(v) {
         if (v === undefined) return undefined;
-        if (typeof v === "function")
-          return `[Function ${v.name || "anonymous"}]`;
-        if (isState(v)) return { __state: true, ...summarize(v) };
+        if (typeof v === "function") return `[Function ${v.name || "anonymous"}]`;
+        if (isView(v)) return { __view: true, ...summarize(v) };
         let s;
         try {
           s = safeStringify(v, undefined, true);
@@ -1441,292 +1014,85 @@
           return `[không serialize được: ${err.message}]`;
         }
         if (s === undefined) return undefined;
-        if (
-          s === "{}" &&
-          v &&
-          typeof v === "object" &&
-          v.constructor &&
-          v.constructor !== Object
-        )
+        if (s === "{}" && v && typeof v === "object" && v.constructor && v.constructor !== Object)
           return `[${v.constructor.name} instance]`;
         if (s.length > 4000)
-          return {
-            __truncated: true,
-            length: s.length,
-            preview: s.slice(0, 4000),
-          };
+          return { __truncated: true, length: s.length, preview: s.slice(0, 4000) };
         return JSON.parse(s);
       }
 
       const jsonText = (v) =>
-        v === undefined
-          ? "undefined"
-          : typeof v === "string"
-            ? v
-            : JSON.stringify(v, null, 2);
+        v === undefined ? "undefined" : typeof v === "string" ? v : JSON.stringify(v, null, 2);
       function brief(v, n) {
         if (v === undefined) return "undefined";
-        if (v && v.__state)
-          return `state #${v.stateId} (lượt ${v.turn}, ${v.pieces} quân)`;
+        if (v && v.__view) return `view #${v.viewId} (lượt ${v.turn}, ${v.pieces} quân)`;
         let s = typeof v === "string" ? v : safeStringify(v);
         if (s === undefined) s = String(v);
         return s.length > n ? s.slice(0, n - 1) + "…" : s;
       }
 
-      // Mọi object liên quan tới ô đều có thêm `square` (tên ô), kèm row/col
       function withSquare(v, pos = v) {
         const p = snap(v);
-        const base =
-          p && typeof p === "object" && !Array.isArray(p)
-            ? { ...p }
-            : { value: p };
+        const base = p && typeof p === "object" && !Array.isArray(p) ? { ...p } : { value: p };
         if ("square" in base) base.squareRaw = base.square;
         return { ...base, square: sqName(pos), row: pos?.row, col: pos?.col };
       }
-
-      function locate(st, piece) {
-        if (!st || !piece) return null;
-        for (let r = 0; r < st.board.rows; r++)
-          for (let c = 0; c < st.board.cols; c++) {
-            const q = st.board.pieceAt(r, c);
-            if (
-              q &&
-              (q === piece || (piece.id !== undefined && q.id === piece.id))
-            )
-              return { row: r, col: c };
-          }
-        return null;
-      }
-
-      function describePiece(p, pos) {
+      function describePiece(p, pos = p) {
         if (!p) return null;
-        const where = pos ?? locate(curState(), p);
-        const out = where ? withSquare(p, where) : snap(p);
+        const out = withSquare(p, pos);
         return typeof out === "object" && out !== null
           ? { ...out, typeName: typeName(p.type), sideName: sideName(p.side) }
           : out;
       }
-
-      function listPieces(st) {
-        const out = [];
-        if (!st) return out;
-        for (let r = 0; r < st.board.rows; r++)
-          for (let c = 0; c < st.board.cols; c++) {
-            const p = st.board.pieceAt(r, c);
-            if (p) out.push(describePiece(p, { row: r, col: c }));
-          }
-        return out;
-      }
-
-      // Chuẩn hóa danh sách nước đi: nhận {row,col} | [row,col] | {to:{row,col}}
-      const normMoves = (v) =>
-        Array.isArray(v)
-          ? v.map((m) =>
-              Array.isArray(m)
-                ? { row: m[0], col: m[1] }
-                : m && m.to && Number.isInteger(m.to.row)
-                  ? { ...m, row: m.to.row, col: m.to.col }
-                  : m,
-            )
+      const listPieces = (v) =>
+        v
+          ? [...v.pieces].sort((a, b) => a.row - b.row || a.col - b.col).map((p) => describePiece(p))
           : [];
 
-      const showMoves = (v) => {
-        if (!Array.isArray(v)) return snap(v);
-        const mv = normMoves(v);
-        return {
-          count: mv.length,
-          squares: mv.map((m) => sqName(m)),
-          moves: mv.map((m) => ({
-            ...withSquare(m),
-            ...(m.kind !== undefined ? { kindName: kindName(m.kind) } : {}),
-          })),
-        };
-      };
-
-      function peekState(r) {
-        try {
-          return r?.getState();
-        } catch {
-          return undefined;
-        }
-      }
-
-      /* ---------- Phong cấp ---------- */
-      const PROMO_TYPES = Object.entries(PieceType).filter(
-        ([k]) => !/pawn|king/i.test(k),
-      );
-
-      // Tìm hàm tạo action phong cấp trong Action (tên có chữ "promot")
-      function findPromoteMaker() {
-        return (
-          Object.getOwnPropertyNames(Action).find(
-            (k) => typeof Action[k] === "function" && /promot/i.test(k),
-          ) ?? null
-        );
-      }
-
-      // Phát hiện "đang chờ phong cấp": cờ riêng → cờ trong state → tốt nằm ở hàng cuối
-      function detectPromotion(st) {
-        if (!st) return null;
-        const posOf = (v) =>
-          v && typeof v === "object"
-            ? Number.isInteger(v.row)
-              ? { row: v.row, col: v.col }
-              : locate(st, v)
-            : null;
-        if (CUSTOM_PENDING) {
-          let v;
-          try {
-            v = CUSTOM_PENDING(st);
-          } catch {
-            v = null;
-          }
-          if (v) return { by: "CUSTOM_PENDING", info: snap(v), sq: posOf(v) };
-        }
-        for (const k of [
-          "pendingPromotion",
-          "promotionPending",
-          "awaitingPromotion",
-          "pendingPromote",
-          "promoting",
-        ]) {
-          let v;
-          try {
-            v = st[k];
-          } catch {
-            continue;
-          }
-          if (v) return { by: `state.${k}`, info: snap(v), sq: posOf(v) };
-        }
-        for (const k of ["phase", "status", "mode", "stage"]) {
-          let v;
-          try {
-            v = st[k];
-          } catch {
-            continue;
-          }
-          if (typeof v === "string" && /promot/i.test(v))
-            return { by: `state.${k} = "${v}"`, info: v, sq: null };
-        }
-        const last = st.board.rows - 1;
-        for (let c = 0; c < st.board.cols; c++)
-          for (const [row, side] of [
-            [0, Side.WHITE],
-            [last, Side.BLACK],
-          ]) {
-            const p = st.board.pieceAt(row, c);
-            if (p && p.type === PieceType.PAWN && p.side === side)
-              return {
-                by: "bàn cờ: tốt nằm ở hàng cuối",
-                info: describePiece(p, { row, col: c }),
-                sq: { row, col: c },
-              };
-          }
-        return null;
-      }
+      const viewBrief = (v) =>
+        !v
+          ? null
+          : {
+              turn: sideName(v.turn),
+              selected: v.selectedId == null ? null : sqName(pieceById(v, v.selectedId)),
+              targets: v.targets.map((m) => sqName(m)).join(" ") || "—",
+              checkedKing: v.checkedKing ? sqName(v.checkedKing) : null,
+              promotion: v.promotion ? sqName(v.promotion) : null,
+              result: v.result ? snap(v.result) : null,
+              canAct: v.canAct,
+            };
 
       /* =====================================================================
-       * 3. Soi API: quét các hàm đã expose
+       * 3. Soi tham số hàm
        * ===================================================================== */
       function paramsOf(fn) {
         try {
           const src = Function.prototype.toString.call(fn);
-          const isClass = /^class\b/.test(src);
-          const m = isClass
-            ? src.match(/constructor\s*\(([^)]*)\)/)
-            : src.match(
-                /^(?:async\s+)?(?:function\b\s*\*?\s*[\w$]*\s*)?[\w$#]*\s*\(([^)]*)\)/,
-              ) || src.match(/^(?:async\s+)?([\w$]+)\s*=>/);
-          if (!m) return isClass ? "" : `…${fn.length} tham số`;
-          return m[1]
-            .replace(/\/\*[\s\S]*?\*\//g, "")
-            .replace(/\s+/g, " ")
-            .trim();
+          const m =
+            src.match(/^(?:async\s+)?(?:function\b\s*\*?\s*[\w$]*\s*)?[\w$#]*\s*\(([^)]*)\)/) ||
+            src.match(/^(?:async\s+)?([\w$]+)\s*=>/);
+          if (!m) return `…${fn.length} tham số`;
+          return m[1].replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ").trim();
         } catch {
           return `…${fn.length} tham số`;
         }
       }
 
-      const SKIP = new Set([
-        "constructor",
-        "length",
-        "name",
-        "prototype",
-        "caller",
-        "arguments",
-      ]);
-      function membersOf(obj) {
-        const out = [],
-          seen = new Set();
-        for (
-          let o = obj;
-          o && o !== Object.prototype && o !== Function.prototype;
-          o = Object.getPrototypeOf(o)
-        ) {
-          for (const key of Reflect.ownKeys(o)) {
-            if (typeof key !== "string" || SKIP.has(key) || seen.has(key))
-              continue;
-            seen.add(key);
-            const d = Object.getOwnPropertyDescriptor(o, key);
-            if (typeof d.value === "function")
-              out.push({
-                name: key,
-                kind: "method",
-                params: paramsOf(d.value),
-              });
-            else if (d.get || d.set)
-              out.push({
-                name: key,
-                kind: "accessor",
-                params: d.set ? "get/set" : "get",
-              });
-            else out.push({ name: key, kind: "value", value: d.value });
-          }
-        }
-        return out;
-      }
-
-      function describeExport(name, value) {
-        if (typeof value === "function") {
-          const isClass = /^class\b/.test(
-            Function.prototype.toString.call(value),
-          );
-          return {
-            name,
-            kind: isClass ? "class" : "function",
-            value,
-            params: paramsOf(value),
-            statics: membersOf(value),
-            methods: isClass ? membersOf(value.prototype) : [],
-          };
-        }
-        if (value && typeof value === "object")
-          return {
-            name,
-            kind: "object",
-            value,
-            entries: Object.keys(value).map((k) => [k, value[k]]),
-          };
-        return { name, kind: typeof value, value };
-      }
-
       /* =====================================================================
        * 4. Lịch sử sự kiện (lưu localStorage)
        * ===================================================================== */
-      const STORE_KEY = "room-test-history-v3";
+      const STORE_KEY = "room-test-history-v4";
       const MAX_ENTRIES = 600;
       const VIEW_LIMIT = 300;
       const SESSION = Date.now();
-      const callStack = []; // id của sự kiện đang chạy → để gắn "parent"
+      const callStack = [];
 
       function loadHistory() {
         try {
           const a = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
           return Array.isArray(a)
             ? a.map((e) =>
-                e.status === "pending"
-                  ? { ...e, status: "error", result: "(bị ngắt giữa chừng)" }
-                  : e,
+                e.status === "pending" ? { ...e, status: "error", result: "(bị ngắt giữa chừng)" } : e,
               )
             : [];
         } catch {
@@ -1770,25 +1136,19 @@
           ...data,
         };
         events.push(e);
-        if (events.length > MAX_ENTRIES)
-          events.splice(0, events.length - MAX_ENTRIES);
+        if (events.length > MAX_ENTRIES) events.splice(0, events.length - MAX_ENTRIES);
         touch();
         return e;
       }
-      const note = (text, status = "info", data = {}) =>
-        begin("info", text, { status, ...data });
+      const note = (text, status = "info", data = {}) => begin("info", text, { status, ...data });
 
       /**
-       * Bọc mọi lời gọi hàm cần test: ghi tên hàm, tham số, kết quả/lỗi, thời gian chạy,
-       * state trước/sau và state có bị thay object hay không.
+       * Bọc mọi lời gọi cần test: ghi tên hàm, tham số, kết quả/lỗi, thời gian chạy,
+       * view trước/sau và view có bị thay tham chiếu hay không.
+       * `target` trả về controller cần soi view (mặc định controller chính).
        */
-      function trace(
-        fn,
-        args,
-        run,
-        { source = "ui", target = () => room, show = snap } = {},
-      ) {
-        const before = peekState(target());
+      function traceBegin(fn, args, source, target) {
+        const before = peekView(target());
         const e = begin("call", fn, {
           fn,
           source,
@@ -1796,8 +1156,31 @@
           status: "pending",
           before: summarize(before),
         });
-        callStack.push(e.id);
-        const t0 = performance.now();
+        return { e, before, target, t0: performance.now() };
+      }
+      function traceEnd(h, value, error, show) {
+        const ms = Math.round((performance.now() - h.t0) * 1000) / 1000;
+        const after = peekView(h.target());
+        let shown;
+        try {
+          shown = error ? undefined : show(value);
+        } catch {
+          shown = snap(value);
+        }
+        Object.assign(h.e, {
+          ms,
+          status: error ? "error" : "ok",
+          result: shown,
+          error: error ? snap(error) : null,
+          after: summarize(after),
+          sameView: h.before !== undefined && h.before === after,
+        });
+        touch();
+        return { ok: !error, value, error, entry: h.e };
+      }
+      function trace(fn, args, run, { source = "ui", target = () => ctl, show = snap } = {}) {
+        const h = traceBegin(fn, args, source, target);
+        callStack.push(h.e.id);
         let value,
           error = null;
         try {
@@ -1805,94 +1188,165 @@
         } catch (err) {
           error = err;
         }
-        const ms = Math.round((performance.now() - t0) * 1000) / 1000;
         callStack.pop();
-        const after = peekState(target());
-        let shown;
+        return traceEnd(h, value, error, show);
+      }
+      async function traceAsync(fn, args, run, { source = "ui", target = () => ctl, show = snap } = {}) {
+        const h = traceBegin(fn, args, source, target);
+        callStack.push(h.e.id);
+        let p,
+          value,
+          error = null;
         try {
-          shown = error ? undefined : show(value);
-        } catch {
-          shown = snap(value);
+          p = run();
+        } catch (err) {
+          error = err;
         }
-        Object.assign(e, {
-          ms,
-          status: error ? "error" : "ok",
-          result: shown,
-          error: error ? snap(error) : null,
-          after: summarize(after),
-          sameState: before !== undefined && before === after,
-        });
-        touch();
-        return { ok: !error, value, error, entry: e };
+        callStack.pop(); // phần đồng bộ xong: không để sự kiện khác bị gắn nhầm "parent" trong lúc await
+        if (!error) {
+          try {
+            value = await p;
+          } catch (err) {
+            error = err;
+          }
+        }
+        return traceEnd(h, value, error, show);
       }
 
       /* =====================================================================
-       * 5. Trạng thái giao diện
+       * 5. Các thao tác — mọi thứ đi qua controller
        * ===================================================================== */
-      let room = null,
-        unsub = null,
-        subCalls = 0,
-        destroyed = false;
-      let lastState = null;
-      let selected = null; // { id, side, type, square:{row,col}, piece, legal[], error }
-      let lastMove = null,
-        flashSq = null,
-        flashTimer = 0;
-      let hoverSq = null,
-        lastMouse = null;
-      let moveLog = []; // dùng cho replay: { kind:"move"|"promote", from, to, pieceType, ok }
-      let replaying = false; // đang replay / dựng thế → chặn click
-      let selectedId = null,
-        lastSig = "",
-        logRaf = 0;
-      let lastRet; // kết quả lần gọi trong tab Gọi hàm ($ret)
-      let promoPending = null,
-        promoTried = null;
-      let sandbox = null;
-
-      const boardEl = $("board");
-
-      function curState() {
-        const s = peekState(room);
-        if (s) lastState = s;
-        return lastState;
+      // `selected` chỉ là bản sao suy ra từ view (controller giữ lựa chọn thật)
+      function syncSelected() {
+        const v = V();
+        const p = v && v.selectedId != null ? pieceById(v, v.selectedId) : null;
+        if (!p) {
+          selected = null;
+          return;
+        }
+        const pos = { row: p.row, col: p.col };
+        selected = {
+          id: p.id,
+          side: p.side,
+          type: p.type,
+          square: pos,
+          piece: describePiece(p, pos),
+          legal: v.targets,
+        };
       }
 
-      /* =====================================================================
-       * 6. Các thao tác có gọi vào engine
-       * ===================================================================== */
-      function newRoom(source = "ui") {
+      function scheduleUpdate() {
+        if (!uiRaf)
+          uiRaf = requestAnimationFrame(() => {
+            uiRaf = 0;
+            updateAll();
+          });
+      }
+
+      // Bỏ chọn: dùng actions.clearSelection nếu có; chưa có thì bấm lại đúng quân đang chọn.
+      // Trả về false | "clearSelection" | "toggle"
+      function clearSelection() {
+        const v = V();
+        if (!v || v.selectedId == null) return false;
+        if (hasAction("clearSelection")) {
+          trace("controller.actions.clearSelection", [], () => ctl.actions.clearSelection(), {
+            show: () => viewBrief(V()),
+          });
+          return "clearSelection";
+        }
+        const p = pieceById(v, v.selectedId);
+        if (!p) return false;
         trace(
-          "new Room(reduce)",
-          { reducer: "reduce" },
-          () => {
-            room = new Room(reduce);
-            return room;
-          },
-          { source, show: () => "[Room instance]" },
+          "controller.actions.clickSquare  // tạm: bấm lại quân đang chọn",
+          { row: p.row, col: p.col, square: sqName(p) },
+          () => ctl.actions.clickSquare(p.row, p.col),
+          { show: () => viewBrief(V()) },
         );
+        return "toggle";
+      }
+
+      async function newController(source = "ui") {
+        const mode = $("opt-mode").value || "LOCAL";
+        const wasUI = uiMode;
+        if (wasUI) unmountUI();
+        for (const f of offCtl) safe(f);
+        offCtl = [];
+        const old = ctl;
+        if (old)
+          trace("controller.destroy  // thay controller cũ", [], () => old.destroy(), {
+            source,
+            target: () => old,
+          });
+        ctl = null;
+        curMode = null;
         destroyed = false;
         unsub = null;
         subCalls = 0;
+        ctlErrors = 0;
+        lastCtlError = null;
+        listenerView = null;
         selected = null;
         lastMove = null;
         moveLog = [];
-        lastState = null;
         promoTried = null;
-        subscribe();
+        legend = null;
+        if (!plugin) {
+          note(`Không nạp được ../index.js: ${pluginError?.message ?? "?"}`, "error", { source });
+          buildTargets();
+          updateAll();
+          return;
+        }
+        const r = trace("plugin.create", { mode }, () => plugin.create({ mode: GM[mode] }), {
+          source,
+          target: () => null,
+          show: () => "[controller]",
+        });
+        if (!r.ok) {
+          buildTargets();
+          updateAll();
+          return;
+        }
+        ctl = r.value;
+        curMode = mode;
+        legend = buildLegend(V());
+        // listener nội bộ (không ghi log): vẽ lại khi controller báo đổi, kể cả khi đổi từ bên ngoài (UI thật, bot...)
+        offCtl.push(
+          ctl.subscribe((...a) => {
+            if (listenerView === null) listenerView = isView(a[0]);
+            scheduleUpdate();
+          }),
+        );
+        offCtl.push(
+          ctl.onError((e) => {
+            ctlErrors++;
+            lastCtlError = e;
+            begin("callback", `controller.onError: ${e?.message}`, {
+              source: "callback",
+              status: "error",
+              args: snap(e),
+            });
+            renderStat();
+          }),
+        );
+        subscribe(); // listener thứ hai: có ghi log, bật/tắt bằng nút subscribe()
+        buildTargets();
         updateAll();
+        if (wasUI) await mountUI();
       }
 
       function subscribe() {
-        if (unsub)
-          return note("Đã subscribe rồi — hãy gọi off() trước", "error");
-        const r = trace("room.subscribe", { listener: "<function>" }, () =>
-          room.subscribe((...cb) => {
+        if (!ctl) return note("Chưa có controller", "error");
+        if (unsub) return note("Đã subscribe rồi — hãy gọi off() trước", "error");
+        const r = trace("controller.subscribe", { listener: "<function>" }, () =>
+          ctl.subscribe((...cb) => {
             subCalls++;
-            begin("callback", `listener được gọi (lần ${subCalls})`, {
+            const gotView = isView(cb[0]);
+            if (listenerView === null) listenerView = gotView;
+            begin("callback", `controller listener được gọi (lần ${subCalls})`, {
               source: "callback",
-              args: cb.length ? snap(cb) : [],
-              after: summarize(peekState(room)),
+              args: gotView ? "[view]" : cb.length ? snap(cb) : [],
+              after: summarize(V()),
+              result: viewBrief(V()),
             });
             renderStat();
           }),
@@ -1907,7 +1361,11 @@
       }
 
       function doRestart(source = "ui") {
-        const r = trace("room.restart", [], () => room.restart(), { source });
+        if (!ctl) return { ok: false };
+        const r = trace("controller.actions.restart", [], () => ctl.actions.restart(), {
+          source,
+          show: () => viewBrief(V()),
+        });
         selected = null;
         lastMove = null;
         moveLog = [];
@@ -1917,90 +1375,90 @@
       }
 
       function doDestroy() {
-        const r = trace("room.destroy", [], () => room.destroy());
+        if (!ctl) return;
+        const r = trace("controller.destroy", [], () => ctl.destroy());
         if (r.ok) destroyed = true;
-        selected = null;
         updateAll();
       }
 
-      function selectPiece(piece, row, col) {
-        const st = curState();
-        const from = { row, col };
-        const r = trace(
-          "getLegalMoves",
-          { state: `#${stateId(st)}`, piece: describePiece(piece, from) },
-          () => E("getLegalMoves")(st, piece),
-          { show: showMoves },
-        );
-        const legal = r.ok ? normMoves(r.value) : [];
-        if (r.ok && !Array.isArray(r.value))
-          note(
-            `getLegalMoves không trả về mảng (kiểu ${typeof r.value}) → không tô được ô đích`,
-            "error",
-          );
-        selected = {
-          id: piece.id,
-          side: piece.side,
-          type: piece.type,
-          square: from,
-          piece: describePiece(piece, from),
-          legal,
-          error: r.error ? r.error.message : null,
-        };
-        return (
-          `chọn ${sideName(piece.side)} ${typeName(piece.type)} @ ${sqName(from)} → getLegalMoves trả ${legal.length} nước` +
-          (r.error ? ` (LỖI: ${r.error.message})` : "")
-        );
-      }
-
-      function doMove(piece, from, to, source = "ui") {
-        const meta = { square: sqName(to), from: sqName(from) };
-        const a = trace(
-          "Action.move",
-          { pieceId: piece.id, row: to.row, col: to.col, ...meta },
-          () => Action.move(piece.id, to.row, to.col),
-          { source },
-        );
-        if (!a.ok) {
-          flash(to);
-          return { ok: false, error: a.error };
+      // Đi 1 nước = 2 lần clickSquare qua controller (giống người dùng thật). Quân lấy từ view.
+      function doMove(from, to, source = "ui") {
+        if (!ctl) return { ok: false, error: new Error("chưa có controller") };
+        const v0 = V();
+        const piece = pieceAtV(v0, from.row, from.col);
+        if (!piece) {
+          note(`Không có quân ở ${sqName(from)} (theo view) → không gọi controller`, "error", { source });
+          return { ok: false, error: new Error(`không có quân ở ${sqName(from)}`) };
         }
-        const d = trace(
-          "room.dispatch",
-          { action: a.value, ...meta },
-          () => room.dispatch(a.value),
-          { source },
-        );
-        moveLog.push({ kind: "move", from, to, ok: d.ok });
-        if (d.ok) {
+        const clickStep = (s, step) =>
+          trace(
+            "controller.actions.clickSquare",
+            { row: s.row, col: s.col, square: sqName(s), step },
+            () => ctl.actions.clickSquare(s.row, s.col),
+            { source, show: () => viewBrief(V()) },
+          );
+        // đã chọn đúng quân này rồi thì không bấm lại (bấm lại sẽ bỏ chọn)
+        if (v0.selectedId !== piece.id) clickStep(from, "chọn quân");
+        if (V().selectedId !== piece.id) {
+          moveLog.push({ kind: "move", from, to, ok: false });
+          flash(to);
+          return {
+            ok: false,
+            error: new Error(
+              v0.result
+                ? "ván đã kết thúc"
+                : v0.promotion
+                  ? "đang chờ phong cấp"
+                  : !v0.canAct
+                    ? "controller: canAct = false (không phải lượt người chơi)"
+                    : "controller không cho chọn quân này (không phải bên đang đi?)",
+            ),
+          };
+        }
+        clickStep(to, "bấm ô đích");
+        const moved = pieceAtV(V(), to.row, to.col)?.id === piece.id;
+        moveLog.push({ kind: "move", from, to, ok: moved });
+        if (moved) {
           lastMove = { from, to };
-          selected = null;
-        } else flash(to);
-        return d;
+          return { ok: true };
+        }
+        clearSelection();
+        flash(to);
+        return {
+          ok: false,
+          error: new Error("controller không gửi nước đi: ô đích không nằm trong view.targets"),
+        };
       }
 
-      function doPromote(pieceType, source = "ui") {
-        const meta = {
-          pieceType: typeName(pieceType),
-          value: pieceType,
+      function doPromote(name, source = "ui") {
+        if (!ctl) return { ok: false, error: new Error("chưa có controller") };
+        const value = legend?.PieceType?.[name];
+        if (value === undefined) {
+          note(`Chưa biết giá trị PieceType.${name} (cần controller.enums — mục 9)`, "error", { source });
+          return { ok: false, error: new Error(`chưa biết giá trị PieceType.${name}`) };
+        }
+        const pending = !!V()?.promotion;
+        const e0 = ctlErrors;
+        const r = trace(
+          "controller.actions.promote",
+          { pieceType: name, value, dangCho: pending },
+          () => ctl.actions.promote(value),
+          { source, show: () => viewBrief(V()) },
+        );
+        const ok = r.ok && pending && !V()?.promotion;
+        moveLog.push({ kind: "promote", pieceType: name, ok });
+        if (ok) return r;
+        return {
+          ok: false,
+          error:
+            r.error ??
+            (ctlErrors > e0 ? lastCtlError : null) ??
+            new Error(
+              pending
+                ? "phong cấp không thành công (xem callback onError)"
+                : "controller bỏ qua: không có tốt nào chờ phong cấp",
+            ),
         };
-        const a = trace(
-          `Action.promote`,
-          meta,
-          () => Action.promote(pieceType),
-          { source },
-        );
-        
-        if (!a.ok) return a;
-        const d = trace(
-          "room.dispatch",
-          { action: a.value, ...meta },
-          () => room.dispatch(a.value),
-          { source },
-        );
-        moveLog.push({ kind: "promote", pieceType, ok: d.ok });
-        if (d.ok) selected = null;
-        return d;
       }
 
       function flash(s) {
@@ -2013,18 +1471,7 @@
       }
 
       function playText(text, source = "ui") {
-        const from = sq(text.slice(0, 2)),
-          to = sq(text.slice(2, 4));
-        const piece = curState()?.board.pieceAt(from.row, from.col);
-        if (!piece) {
-          note(
-            `Không có quân ở ${text.slice(0, 2)} → không gọi dispatch`,
-            "error",
-            { source },
-          );
-          return { ok: false };
-        }
-        return doMove(piece, from, to, source);
+        return doMove(sq(text.slice(0, 2)), sq(text.slice(2, 4)), source);
       }
 
       function consoleMove(text) {
@@ -2035,18 +1482,18 @@
         updateAll();
       }
 
-      function consoleLegal(text) {
+      // Nút "bấm ô → xem view.targets": chỉ bấm qua controller, kết quả đọc từ view
+      function consoleSquare(text) {
         text = text.trim().toLowerCase();
-        if (!isSquareText(text))
-          return note(`"${text}" không phải ô hợp lệ (vd e2)`, "error");
+        if (!isSquareText(text)) return note(`"${text}" không phải ô hợp lệ (vd e2)`, "error");
+        if (!ctl) return note("Chưa có controller", "error");
         const s = sq(text);
-        const piece = curState()?.board.pieceAt(s.row, s.col);
-        if (!piece)
-          return note(
-            `Ô ${text} trống → không có quân để gọi getLegalMoves`,
-            "error",
-          );
-        selectPiece(piece, s.row, s.col);
+        trace(
+          "controller.actions.clickSquare",
+          { row: s.row, col: s.col, square: text },
+          () => ctl.actions.clickSquare(s.row, s.col),
+          { show: () => viewBrief(V()) },
+        );
         updateAll();
       }
 
@@ -2094,33 +1541,16 @@
         if (replaying) return;
         const seq = moveLog.map((m) => ({ ...m }));
         if (!seq.length)
-          return note(
-            "Chưa có thao tác nào để replay (hãy đi vài nước trước)",
-            "error",
-          );
+          return note("Chưa có thao tác nào để replay (hãy đi vài nước trước)", "error");
         replaying = true;
-        const head = begin("info", `▶ Replay ${seq.length} thao tác dispatch`, {
-          source: "replay",
-        });
+        const head = begin("info", `▶ Replay ${seq.length} thao tác`, { source: "replay" });
         callStack.push(head.id);
         let mismatch = 0;
         try {
           doRestart("replay");
           for (const m of seq) {
             await sleep(350);
-            let d;
-            if (m.kind === "promote") d = doPromote(m.pieceType, "replay");
-            else {
-              const piece = curState()?.board.pieceAt(m.from.row, m.from.col);
-              if (!piece) {
-                mismatch++;
-                note(`Replay: không có quân ở ${sqName(m.from)}`, "error", {
-                  source: "replay",
-                });
-                continue;
-              }
-              d = doMove(piece, m.from, m.to, "replay");
-            }
+            const d = m.kind === "promote" ? doPromote(m.pieceType, "replay") : doMove(m.from, m.to, "replay");
             if (d.ok !== m.ok) mismatch++;
             updateAll();
           }
@@ -2136,50 +1566,207 @@
         updateAll();
       }
 
-      /* ---------- Chế độ phong cấp ---------- */
+      /* ---------- Chế độ phong cấp (lấy từ view.promotion) ---------- */
       function checkPromotion() {
-        const st = curState();
-        promoPending = !destroyed && st ? detectPromotion(st) : null;
+        const v = !destroyed ? V() : null;
+        promoPending = v?.promotion
+          ? {
+              by: "view.promotion",
+              info: snap(v.promotion),
+              sq: { row: v.promotion.row, col: v.promotion.col },
+            }
+          : null;
         renderPromo();
         if (!promoPending || replaying) return;
         const mode = $("opt-promo").value;
         if (!mode.startsWith("auto:")) return;
-        const sid = stateId(st);
-        if (promoTried === sid) return; // chỉ thử tự phong 1 lần cho mỗi state (tránh lặp vô hạn)
+        const sid = viewId(v);
+        if (promoTried === sid) return; // chỉ thử tự phong 1 lần cho mỗi view (tránh lặp vô hạn)
         promoTried = sid;
         const name = mode.slice(5);
-        note(
-          `Chế độ tự phong: phát hiện chờ phong cấp (${promoPending.by}) → chọn ${name}`,
-          "info",
-          { source: "promotion" },
-        );
-        doPromote(PieceType[name], "auto");
+        note(`Chế độ tự phong: view.promotion có giá trị → chọn ${name}`, "info", { source: "promotion" });
+        doPromote(name, "auto");
         updateAll();
       }
 
       function renderPromo() {
-        const maker = findPromoteMaker();
-        $("promo-api").textContent = maker
-          ? `room.dispatch(Action.${maker}(pieceType))`
-          : "⚠ Action không có hàm *promot* — dùng tab Gọi hàm";
+        const v = V();
+        $("promo-api").textContent = !ctl ? "⚠ chưa có controller" : "controller.actions.promote(pieceType)";
         const p = promoPending,
           mode = $("opt-promo").value;
+        const opts = v?.promotion?.options;
         $("promo-state").innerHTML = p
-          ? `<b class="st-pending">⏳ Đang chờ phong cấp</b> <small>· phát hiện qua ${esc(p.by)}${p.sq ? ` · ô ${esc(sqName(p.sq))}` : ""}</small>`
+          ? `<b class="st-pending">⏳ Đang chờ phong cấp</b> <small>· ${esc(p.by)}${p.sq ? ` · ô ${esc(sqName(p.sq))}` : ""}</small>`
           : `<span class="muted">Không có tốt nào đang chờ phong cấp</span>`;
-        for (const b of $("promo-pick").querySelectorAll("button"))
-          b.classList.toggle("hot", !!p && mode === "ask");
+        for (const b of $("promo-pick").querySelectorAll("button")) {
+          const val = legend?.PieceType?.[b.dataset.ptype];
+          const allowed = Array.isArray(opts) && val !== undefined ? opts.includes(val) : true;
+          b.classList.toggle("hot", !!p && mode === "ask" && allowed);
+          b.classList.toggle("off", !!p && !allowed);
+          b.title =
+            p && !allowed
+              ? "không nằm trong view.promotion.options (bấm thử để xem controller/engine từ chối)"
+              : "";
+        }
         $("promo-hint").textContent = p
           ? mode === "ask"
-            ? "Chọn quân ở trên để gửi action phong cấp."
+            ? "Chọn quân ở trên để gửi promote qua controller."
             : mode === "none"
               ? "Chế độ không xử lý: tự bấm nút ở trên hoặc dùng tab Gọi hàm."
               : "Đang ở chế độ tự phong."
-          : "Các nút vẫn bấm được khi không chờ phong cấp, để xem engine từ chối thế nào.";
+          : "Các nút vẫn bấm được khi không chờ phong cấp, để xem controller bỏ qua thế nào.";
       }
 
       /* =====================================================================
-       * 7. Sự kiện chuột trên bàn cờ
+       * 6. UI thật: lấy component qua controller rồi vẽ vào #ui-host
+       * ===================================================================== */
+      const describeModule = (m) =>
+        m && (typeof m === "object" || typeof m === "function")
+          ? { exports: Object.keys(m), default: typeof m.default }
+          : String(m);
+
+      // Controller bọc để mọi lời gọi từ UI thật được ghi log (getView / subscribe giữ nguyên)
+      function wrapForUI(c) {
+        const call = (label, fn) => (...a) => {
+          const r = trace(label, a, () => fn(...a), {
+            source: "ui-thật",
+            target: () => c,
+            show: () => viewBrief(peekView(c)),
+          });
+          if (!r.ok) throw r.error;
+          return r.value;
+        };
+        const w = {};
+        for (const [k, val] of Object.entries(c)) {
+          if (k === "actions" && val && typeof val === "object")
+            w.actions = Object.fromEntries(
+              Object.entries(val).map(([n, f]) => [
+                n,
+                typeof f === "function" ? call(`controller.actions.${n}  // từ UI thật`, f) : f,
+              ]),
+            );
+          else if (k === "destroy" && typeof val === "function")
+            w.destroy = call("controller.destroy  // từ UI thật", val);
+          else w[k] = val;
+        }
+        return Object.freeze(w);
+      }
+
+      function showUiError(err, msg) {
+        uiState = "fail";
+        uiErr = msg ?? err?.message ?? String(err);
+        hostEl.innerHTML = `<pre class="err">${esc(uiErr)}</pre>`;
+        $("ui-status").textContent = "✖ mount thất bại";
+        note(`UI thật: ${uiErr}`, "error", { source: "ui-thật" });
+      }
+
+      async function mountUI() {
+        uiState = "none";
+        uiErr = null;
+        uiInfo = null;
+        $("ui-status").textContent = "đang nạp…";
+        if (!ctl) {
+          showUiError(null, "Chưa có controller → chưa mount được UI");
+          return false;
+        }
+        const viaCtl = hasCtl("loadUI");
+        if (!viaCtl && typeof plugin?.loadUI !== "function") {
+          showUiError(null, "Không có controller.loadUI() lẫn plugin.loadUI()");
+          return false;
+        }
+        const lr = await traceAsync(
+          viaCtl ? "controller.loadUI" : "plugin.loadUI  // controller chưa có loadUI()",
+          [],
+          viaCtl ? () => ctl.loadUI() : () => plugin.loadUI(),
+          { source: "ui-thật", show: describeModule },
+        );
+        if (!lr.ok) {
+          showUiError(lr.error);
+          return false;
+        }
+        const ns = typeof lr.value === "function" ? { default: lr.value } : (lr.value ?? {});
+        const hit = UI_MOUNTERS.map(([label, pick]) => {
+          try {
+            const [fn, self] = pick(ns);
+            return typeof fn === "function" ? { label, fn, self } : null;
+          } catch {
+            return null;
+          }
+        }).find(Boolean);
+        if (!hit) {
+          showUiError(
+            null,
+            `ui không có hàm mount nào nhận ra.\nExport tìm thấy: ${Object.keys(ns).join(", ") || "(không có)"}\nCần một trong: ${UI_MOUNTERS.map((m) => m[0]).join(" | ")}\n(sửa mảng UI_MOUNTERS đầu script nếu ui dùng quy ước khác)`,
+          );
+          return false;
+        }
+        hostEl.innerHTML = "";
+        const passed = $("opt-wrap").checked ? wrapForUI(ctl) : ctl;
+        const mr = await traceAsync(
+          `ui.${hit.label}`,
+          { container: "#ui-host", controller: $("opt-wrap").checked ? "[controller bọc log]" : "[controller]" },
+          () => hit.fn.call(hit.self, hostEl, passed),
+          { source: "ui-thật", show: (h) => (h === undefined ? "undefined" : typeof h) },
+        );
+        if (!mr.ok) {
+          showUiError(mr.error);
+          return false;
+        }
+        const h = mr.value;
+        uiHandle =
+          typeof h === "function"
+            ? h
+            : typeof h?.unmount === "function"
+              ? () => h.unmount()
+              : typeof h?.destroy === "function"
+                ? () => h.destroy()
+                : null;
+        if (h instanceof Node && !hostEl.contains(h)) hostEl.append(h);
+        uiState = "ok";
+        uiInfo = { via: viaCtl ? "controller.loadUI" : "plugin.loadUI", mounter: hit.label, hasUnmount: !!uiHandle };
+        $("ui-status").textContent = `✅ đã mount qua ${hit.label}${uiHandle ? "" : " · UI không trả hàm hủy"}`;
+        return true;
+      }
+
+      function unmountUI() {
+        const f = uiHandle;
+        if (f) trace("ui.unmount", [], () => f(), { source: "ui-thật" });
+        uiHandle = null;
+        hostEl.innerHTML = "";
+      }
+
+      function applyUiVisibility() {
+        $("board-wrap").hidden = uiMode;
+        $("ui-wrap").hidden = !uiMode;
+        $("btn-ui").textContent = uiMode ? "◀ Về bàn cờ test" : "Chuyển sang UI thật (ui/) ▶";
+        $("view-src").textContent = uiMode
+          ? "(UI thật từ ui/, nhận controller)"
+          : "(vẽ từ controller.getView())";
+      }
+
+      async function toggleUI() {
+        if (uiBusy) return;
+        uiBusy = true;
+        $("btn-ui").disabled = true;
+        try {
+          if (!uiMode) {
+            uiMode = true;
+            applyUiVisibility();
+            await mountUI();
+          } else {
+            unmountUI();
+            uiMode = false;
+            applyUiVisibility();
+          }
+        } finally {
+          uiBusy = false;
+          $("btn-ui").disabled = false;
+          updateAll();
+        }
+      }
+
+      /* =====================================================================
+       * 7. Sự kiện chuột trên bàn cờ test
        * ===================================================================== */
       const squareOf = (ev) => {
         const el = ev.target.closest?.(".sq");
@@ -2188,82 +1775,92 @@
 
       function mouseData(ev, s) {
         const rect = boardEl.getBoundingClientRect();
-        const piece = s ? curState()?.board.pieceAt(s.row, s.col) : null;
+        const piece = s ? pieceAtV(V(), s.row, s.col) : null;
         return {
           event: ev.type,
           button: ev.button,
           buttons: ev.buttons,
           detail: ev.detail,
           client: { x: ev.clientX, y: ev.clientY },
-          inBoard: {
-            x: Math.round(ev.clientX - rect.left),
-            y: Math.round(ev.clientY - rect.top),
-          },
-          modifiers: {
-            shift: ev.shiftKey,
-            ctrl: ev.ctrlKey,
-            alt: ev.altKey,
-            meta: ev.metaKey,
-          },
+          inBoard: { x: Math.round(ev.clientX - rect.left), y: Math.round(ev.clientY - rect.top) },
+          modifiers: { shift: ev.shiftKey, ctrl: ev.ctrlKey, alt: ev.altKey, meta: ev.metaKey },
           isTrusted: ev.isTrusted,
           square: s ? sqName(s) : null,
           row: s ? s.row : null,
           col: s ? s.col : null,
-          piece: piece ? describePiece(piece, s) : null,
+          piece: piece ? describePiece(piece) : null,
         };
+      }
+
+      // "Ép gửi nước sai": chỉ qua controller.actions.move. Chưa có thì bỏ qua (KHÔNG gọi thẳng room.dispatch)
+      function forceMove(piece, from, to) {
+        const text = `${sqName(from)}→${sqName(to)}`;
+        if (!hasAction("move"))
+          return `ép ${text}: controller chưa có actions.move → bỏ qua (xem mục 9)`;
+        const e0 = ctlErrors;
+        const r = trace(
+          "controller.actions.move",
+          { id: piece.id, row: to.row, col: to.col, from: sqName(from), square: sqName(to) },
+          () => ctl.actions.move(piece.id, to.row, to.col),
+          { show: () => viewBrief(V()) },
+        );
+        const moved = pieceAtV(V(), to.row, to.col)?.id === piece.id;
+        moveLog.push({ kind: "move", from, to, ok: moved });
+        if (moved) {
+          lastMove = { from, to };
+          return `ép ${text} (actions.move): engine CHẤP NHẬN (!)`;
+        }
+        flash(to);
+        if (!r.ok) return `ép ${text}: actions.move ném lỗi ra ngoài → ${r.error?.message}`;
+        return ctlErrors > e0
+          ? `ép ${text}: engine từ chối → onError: ${lastCtlError?.message}`
+          : `ép ${text}: controller bỏ qua (không gửi, không báo onError)`;
       }
 
       function handleClick(row, col) {
         if (replaying) return "bỏ qua: đang replay / dựng thế";
-        const st = curState();
-        if (!st) return "bỏ qua: chưa có state";
-        const piece = st.board.pieceAt(row, col);
+        if (!ctl) return "bỏ qua: chưa có controller";
+        const v0 = V();
         const target = { row, col };
-        const sel = selected; // chụp lại: doMove() sẽ gán selected = null khi dispatch thành công
+        const hit = pieceAtV(v0, row, col);
+        const sel = v0.selectedId != null ? pieceById(v0, v0.selectedId) : null;
+        const from = sel ? { row: sel.row, col: sel.col } : null;
+        const isTarget = !!sel && v0.targets.some((m) => sameSq(m, target));
 
-        if (sel) {
-          if (sameSq(sel.square, target)) {
-            selected = null;
-            return "bỏ chọn (click lại đúng quân đang chọn)";
-          }
-          const isLegal = sel.legal.some((m) => sameSq(m, target));
-          const sameSide = !!piece && piece.side === sel.side;
-          const forced = !isLegal && $("opt-force").checked && !sameSide;
-          if (isLegal || forced) {
-            const from = sel.square;
-            const mover = st.board.pieceAt(from.row, from.col) ?? {
-              id: sel.id,
-            };
-            if (isLegal && $("opt-classify").checked && engine.classifyMove) {
-              trace(
-                "classifyMove",
-                {
-                  state: `#${stateId(st)}`,
-                  piece: describePiece(mover, from),
-                  row,
-                  col,
-                  square: sqName(target),
-                },
-                () => engine.classifyMove(st, mover, row, col),
-                { show: (v) => ({ value: snap(v), name: kindName(v) }) },
-              );
-            }
-            const d = doMove(mover, from, target);
-            const text = `${sqName(from)}→${sqName(target)}`;
-            if (forced)
-              return d.ok
-                ? `ép dispatch ${text}: engine CHẤP NHẬN (!)`
-                : `ép dispatch ${text}: engine từ chối → ${d.error?.message}`;
-            return d.ok
-              ? `dispatch thành công ${text}`
-              : `dispatch BỊ TỪ CHỐI ${text}: ${d.error?.message}`;
-          }
-          if (piece) return selectPiece(piece, row, col);
-          selected = null;
-          return "ô đích không nằm trong getLegalMoves → bỏ chọn, KHÔNG gọi dispatch";
+        if (
+          sel &&
+          !isTarget &&
+          $("opt-force").checked &&
+          !sameSq(from, target) &&
+          !(hit && hit.side === sel.side)
+        )
+          return forceMove(sel, from, target);
+
+        trace(
+          "controller.actions.clickSquare",
+          { row, col, square: sqName(target) },
+          () => ctl.actions.clickSquare(row, col),
+          { show: () => viewBrief(V()) },
+        );
+
+        const v1 = V();
+        if (v1 === v0)
+          return v0.promotion
+            ? "đang chờ phong cấp → controller bỏ qua click bàn cờ"
+            : `controller không đổi gì (view giữ nguyên tham chiếu, canAct = ${v0.canAct})`;
+        if (sel && !sameSq(from, target) && pieceAtV(v1, row, col)?.id === sel.id) {
+          lastMove = { from, to: target };
+          moveLog.push({ kind: "move", from, to: target, ok: true });
+          return (
+            `đi ${sqName(from)}→${sqName(target)} · lượt ${sideName(v1.turn)}` +
+            (v1.promotion ? " · CHỜ PHONG CẤP" : "") +
+            (v1.result ? " · HẾT VÁN" : "")
+          );
         }
-        if (piece) return selectPiece(piece, row, col);
-        return "ô trống, không có gì để chọn";
+        const np = v1.selectedId != null ? pieceById(v1, v1.selectedId) : null;
+        if (np)
+          return `chọn ${sideName(np.side)} ${typeName(np.type)} @ ${sqName(np)} → view.targets có ${v1.targets.length} ô`;
+        return sel ? "bỏ chọn" : "không có gì thay đổi";
       }
 
       function onMouse(ev, type) {
@@ -2273,19 +1870,18 @@
         renderHover();
 
         const me = $("m-" + type)?.checked
-          ? begin("mouse", `${type}${s ? " @ " + sqName(s) : ""}`, {
-              source: "mouse",
-              args: lastMouse,
-            })
+          ? begin("mouse", `${type}${s ? " @ " + sqName(s) : ""}`, { source: "mouse", args: lastMouse })
           : null;
         if (me) callStack.push(me.id);
         let outcome = null;
         try {
           if (type === "click" && s) outcome = handleClick(s.row, s.col);
-          else if (type === "contextmenu")
-            outcome = selected
-              ? ((selected = null), "bỏ chọn quân (chuột phải)")
+          else if (type === "contextmenu") {
+            const how = clearSelection();
+            outcome = how
+              ? `bỏ chọn quân (chuột phải) qua ${how === "toggle" ? "clickSquare — tạm, chưa có actions.clearSelection" : "actions.clearSelection()"}`
               : "không có quân đang chọn";
+          }
         } catch (err) {
           outcome = `LỖI trong handler: ${err.message}`;
           if (me) me.status = "error";
@@ -2300,13 +1896,7 @@
         if (type === "click" || type === "contextmenu") updateAll();
       }
 
-      for (const type of [
-        "click",
-        "dblclick",
-        "contextmenu",
-        "mousedown",
-        "mouseup",
-      ])
+      for (const type of ["click", "dblclick", "contextmenu", "mousedown", "mouseup"])
         boardEl.addEventListener(type, (ev) => onMouse(ev, type));
 
       boardEl.addEventListener("mouseover", (ev) => {
@@ -2329,10 +1919,7 @@
         renderHover();
       });
       document.addEventListener("keydown", (ev) => {
-        if (ev.key === "Escape" && selected) {
-          selected = null;
-          updateAll();
-        }
+        if (ev.key === "Escape" && clearSelection()) updateAll();
       });
 
       /* =====================================================================
@@ -2342,140 +1929,104 @@
         boardEl.querySelector(".sq.hover")?.classList.remove("hover");
         if (hoverSq)
           boardEl
-            .querySelector(
-              `.sq[data-row="${hoverSq.row}"][data-col="${hoverSq.col}"]`,
-            )
+            .querySelector(`.sq[data-row="${hoverSq.row}"][data-col="${hoverSq.col}"]`)
             ?.classList.add("hover");
       }
 
-      // Nhãn nhỏ trên ô đích: loại nước (nếu getLegalMoves có kind) hoặc PROMO khi tốt tới hàng cuối
-      function moveTag(m, cell) {
+      // Nhãn nhỏ trên ô đích: loại nước (nếu view.targets có kind) hoặc PROMO khi tốt tới hàng cuối
+      function moveTag(m, cell, selPiece, v) {
         if (m.kind !== undefined) {
           const n = kindName(m.kind);
           if (n && !/^normal$/i.test(n)) return n.slice(0, 7).toUpperCase();
         }
         if (
-          selected?.type === PieceType.PAWN &&
-          (cell.row === 0 || cell.row === 7)
+          legend &&
+          selPiece?.type === legend.PieceType.PAWN &&
+          cell.row === (selPiece.side === legend.Side.WHITE ? 0 : v.rows - 1)
         )
           return "PROMO";
         return "";
       }
 
       function renderBoard() {
-        const st = curState();
-        const idx = [0, 1, 2, 3, 4, 5, 6, 7];
+        const v = V();
+        const idx = [0, 1, 2, 3, 4, 5, 6, 7]; // CSS đang cố định 8x8
         const order = $("opt-flip").checked ? [...idx].reverse() : idx;
         const lab = $("opt-label").value;
+        const byCell = new Map(v ? v.pieces.map((p) => [`${p.row},${p.col}`, p]) : []);
+        const selPiece = v && v.selectedId != null ? pieceById(v, v.selectedId) : null;
+        // view.lastMove nếu controller đã có, chưa có thì dùng bản UI tự nhớ
+        const last = v && "lastMove" in v ? v.lastMove : lastMove;
         let html = "";
         for (const row of order) {
           for (const col of order) {
             const cell = { row, col };
-            const piece = st ? st.board.pieceAt(row, col) : null;
-            const lm = selected?.legal.find((m) => sameSq(m, cell));
+            const piece = byCell.get(`${row},${col}`) ?? null;
+            const lm = v?.targets.find((m) => sameSq(m, cell));
             const cls = ["sq", (row + col) % 2 ? "dark" : "light"];
-            if (
-              lastMove &&
-              (sameSq(lastMove.from, cell) || sameSq(lastMove.to, cell))
-            )
-              cls.push("last");
-            if (promoPending?.sq && sameSq(promoPending.sq, cell))
-              cls.push("pend");
-            if (selected && sameSq(selected.square, cell)) cls.push("sel");
-            if (lm) cls.push("legal", ...(piece ? ["cap"] : []));
+            if (last && (sameSq(last.from, cell) || sameSq(last.to, cell))) cls.push("last");
+            if (v?.promotion && sameSq(v.promotion, cell)) cls.push("pend");
+            if (v?.checkedKing && sameSq(v.checkedKing, cell)) cls.push("chk");
+            if (selPiece && sameSq(selPiece, cell)) cls.push("sel");
+            if (lm) cls.push("legal", ...(lm.capture ? ["cap"] : []));
             if (sameSq(flashSq, cell)) cls.push("flash");
             const tip =
               `${sqName(cell)} (row ${row}, col ${col})` +
-              (piece
-                ? ` · ${sideName(piece.side)} ${typeName(piece.type)}`
-                : "");
-            const tag = lm ? moveTag(lm, cell) : "";
+              (piece ? ` · ${sideName(piece.side)} ${typeName(piece.type)}` : "");
+            const tag = lm ? moveTag(lm, cell, selPiece, v) : "";
             html +=
               `<div class="${cls.join(" ")}" data-row="${row}" data-col="${col}" title="${esc(tip)}">` +
-              (lab !== "none"
-                ? `<i class="lb">${lab === "rc" ? `${row},${col}` : sqName(cell)}</i>`
-                : "") +
-              (piece
-                ? `<span class="pc ${piece.side === Side.WHITE ? "w" : "b"}">${esc(pieceChar(piece))}</span>`
-                : "") +
+              (lab !== "none" ? `<i class="lb">${lab === "rc" ? `${row},${col}` : sqName(cell)}</i>` : "") +
+              (piece ? `<span class="pc ${isWhite(piece) ? "w" : "b"}">${esc(pieceChar(piece))}</span>` : "") +
               (tag ? `<i class="tg">${esc(tag)}</i>` : "") +
               `</div>`;
           }
         }
         boardEl.innerHTML = html;
-        $("ranks").innerHTML = order
-          .map((r) => `<span>${8 - r}</span>`)
-          .join("");
-        $("files").innerHTML = order
-          .map((c) => `<span>${FILES[c]}</span>`)
-          .join("");
+        $("ranks").innerHTML = order.map((r) => `<span>${8 - r}</span>`).join("");
+        $("files").innerHTML = order.map((c) => `<span>${FILES[c]}</span>`).join("");
         paintHover();
       }
 
       function renderStat() {
-        const st = curState();
-        const cell = (k, v, cls = "") =>
-          `<div class="s ${cls}"><small>${k}</small><b>${esc(v)}</b></div>`;
-        let check = "—";
-        if (st) {
-          try {
-            check = E("isInCheck")(st.board, st.turn)
-              ? `CÓ (${sideName(st.turn)})`
-              : "không";
-          } catch {
-            check = "?";
-          }
-        }
+        const v = V();
+        const cell = (k, val, cls = "") =>
+          `<div class="s ${cls}"><small>${k}</small><b>${esc(val)}</b></div>`;
+        const pend = !!v?.promotion;
         $("stat").innerHTML = [
           cell(
-            "Room",
-            destroyed ? "đã destroy()" : "đang chạy",
-            destroyed ? "bad" : "good",
+            "Controller",
+            ctl ? (destroyed ? "đã destroy()" : "đang chạy") : "chưa tạo",
+            ctl && !destroyed ? "good" : "bad",
           ),
-          cell("State", st ? `#${stateId(st)}` : "—"),
-          cell("Lượt", st ? sideName(st.turn) : "—"),
-          cell(
-            "Kết quả",
-            st?.result ? safeStringify(st.result) : "chưa có",
-            st?.result ? "bad" : "",
-          ),
-          cell("Chiếu", check, check.startsWith("CÓ") ? "bad" : ""),
-          cell(
-            "Phong cấp",
-            promoPending ? "đang chờ" : "—",
-            promoPending ? "wait" : "",
-          ),
-          cell("Số quân", st ? st.board.pieces.length : "—"),
-          cell(
-            "Subscribe",
-            unsub ? `bật · ${subCalls} lần` : `tắt · ${subCalls} lần`,
-            unsub ? "good" : "",
-          ),
-          cell("Lịch sử", `${events.length} sự kiện`),
+          cell("Chế độ", curMode ?? "—"),
+          cell("View", v ? `#${viewId(v)}` : "—"),
+          cell("Lượt", v ? sideName(v.turn) : "—"),
+          cell("Kết quả", v?.result ? resultText(v.result) : "chưa có", v?.result ? "bad" : ""),
+          cell("Chiếu", v ? (v.checkedKing ? `CÓ (${sqName(v.checkedKing)})` : "không") : "—", v?.checkedKing ? "bad" : ""),
+          cell("Phong cấp", pend ? "đang chờ" : "—", pend ? "wait" : ""),
+          cell("Số quân", v ? v.pieces.length : "—"),
+          cell("canAct (view)", v ? String(v.canAct) : "—", v && !v.canAct ? "wait" : ""),
+          cell("Subscribe", unsub ? `bật · ${subCalls} lần` : `tắt · ${subCalls} lần`, unsub ? "good" : ""),
+          cell("onError", `${ctlErrors} lần`, ctlErrors ? "bad" : ""),
+          cell("Hiển thị", uiMode ? (uiState === "ok" ? "UI thật" : uiState === "fail" ? "UI thật (lỗi)" : "UI thật…") : "bàn cờ test", uiState === "fail" ? "bad" : ""),
         ].join("");
-        $("btn-sub").textContent = unsub
-          ? "off() — hủy subscribe"
-          : "subscribe()";
+        $("btn-sub").textContent = unsub ? "off() — hủy subscribe" : "subscribe()";
       }
 
       function renderHover() {
-        const st = curState();
-        const piece =
-          hoverSq && st ? st.board.pieceAt(hoverSq.row, hoverSq.col) : null;
+        const v = V();
+        const piece = hoverSq && v ? pieceAtV(v, hoverSq.row, hoverSq.col) : null;
         $("hover").textContent = hoverSq
           ? `${sqName(hoverSq)} (row ${hoverSq.row}, col ${hoverSq.col}) · ` +
-            (piece
-              ? `${sideName(piece.side)} ${typeName(piece.type)} id=${piece.id}`
-              : "ô trống")
+            (piece ? `${sideName(piece.side)} ${typeName(piece.type)} id=${piece.id}` : "ô trống")
           : "Rê chuột vào bàn cờ để xem thông tin ô";
-        $("mouseInfo").textContent = lastMouse
-          ? safeStringify(lastMouse, 2)
-          : "(chưa có sự kiện chuột)";
+        $("mouseInfo").textContent = lastMouse ? safeStringify(lastMouse, 2) : "(chưa có sự kiện chuột)";
       }
 
-      function renderProbes(st) {
-        if (!st) {
-          $("probes").innerHTML = `<p class="muted">(không có state)</p>`;
+      function renderProbes(v) {
+        if (!v) {
+          $("probes").innerHTML = `<p class="muted">(chưa có view)</p>`;
           return;
         }
         const rows = [];
@@ -2483,51 +2034,195 @@
           let out,
             cls = "";
           try {
-            const v = f();
-            out = Array.isArray(v)
-              ? `${v.length} phần tử · ${brief(snap(v), 100)}`
-              : brief(snap(v), 120);
+            const x = f();
+            out = Array.isArray(x) ? `${x.length} phần tử · ${brief(snap(x), 100)}` : brief(snap(x), 120);
           } catch (err) {
             out = `✖ ${err.message}`;
             cls = "st-error";
           }
-          rows.push(
-            `<tr><td>${esc(label)}</td><td class="${cls}">${esc(out)}</td></tr>`,
-          );
+          rows.push(`<tr><td>${esc(label)}</td><td class="${cls}">${esc(out)}</td></tr>`);
         };
-        add("evaluateOutcome(game)", () => E("evaluateOutcome")(st));
-        add("hasLegalMove(game)", () => E("hasLegalMove")(st));
-        add("getAllLegalMoves(game)", () => E("getAllLegalMoves")(st));
-        for (const [n, s] of [
-          ["WHITE", Side.WHITE],
-          ["BLACK", Side.BLACK],
-        ]) {
-          add(`isInCheck(board, ${n})`, () => E("isInCheck")(st.board, s));
-          add(`findKing(board, ${n})`, () => E("findKing")(st.board, s));
-        }
-        add("state.result", () => st.result);
-        add("đang chờ phong cấp?", () => detectPromotion(st));
+        add("view.turn", () => sideName(v.turn));
+        add("view.result", () => (v.result ? resultText(v.result) : null));
+        add("view.checkedKing", () => (v.checkedKing ? sqName(v.checkedKing) : null));
+        add("view.promotion", () =>
+          v.promotion
+            ? { square: sqName(v.promotion), side: sideName(v.promotion.side), options: (v.promotion.options ?? []).map(typeName) }
+            : null,
+        );
+        add("view.canAct", () => v.canAct);
+        add("view.selectedId", () => v.selectedId);
+        add("view.targets", () => v.targets.map((m) => sqName(m) + (m.capture ? "x" : "")));
+        add("view.pieces (số lượng · id duy nhất?)", () => `${v.pieces.length} · ${new Set(v.pieces.map((p) => p.id)).size === v.pieces.length}`);
+        add("view.lastMove", () => ("lastMove" in v ? v.lastMove : "(view chưa có lastMove)"));
+        add("Side / PieceType lấy từ", () => legend?.from ?? "(chưa suy ra được)");
         $("probes").innerHTML =
-          `<table><thead><tr><th>gọi</th><th>kết quả</th></tr></thead><tbody>${rows.join("")}</tbody></table>`;
+          `<table><thead><tr><th>đọc</th><th>giá trị</th></tr></thead><tbody>${rows.join("")}</tbody></table>`;
+      }
+
+      // Mục 7 + 8 + 9 của tab Trạng thái
+      function renderCtlView(v) {
+        $("viewJson").textContent = v
+          ? safeStringify({ ...v, pieces: `[${v.pieces.length} quân — xem mục 5]` }, 2)
+          : "(chưa có controller)";
+
+        const need = (cond, msg) => {
+          if (!cond) throw new Error(msg);
+          return true;
+        };
+        // [nhãn, hàm kiểm tra → true | false | null (chưa kiểm được)]
+        const deps = [
+          ["import ../index.js (cửa duy nhất của plugin)", () => {
+            if (pluginError) throw pluginError;
+            return !!plugin;
+          }],
+          ["plugin: id, title, create(), loadUI()", () =>
+            !!plugin &&
+            typeof plugin.id === "string" &&
+            typeof plugin.title === "string" &&
+            typeof plugin.create === "function" &&
+            typeof plugin.loadUI === "function"],
+          ["index.js export GameMode (LOCAL, VS_BOT, BOT, ONLINE)", () =>
+            !!GameMode && ["LOCAL", "VS_BOT", "BOT", "ONLINE"].every((k) => k in GameMode)],
+          ["controller: getView / subscribe / onError / destroy", () =>
+            !!ctl && ["getView", "subscribe", "onError", "destroy"].every(hasCtl)],
+          ["controller.actions: clickSquare / promote / restart", () =>
+            ["clickSquare", "promote", "restart"].every(hasAction)],
+          ["view có đủ: rows, cols, pieces, turn, selectedId, targets, checkedKing, promotion, result, canAct", () =>
+            !!v &&
+            ["rows", "cols", "pieces", "turn", "selectedId", "targets", "checkedKing", "promotion", "result", "canAct"].every((k) => k in v)],
+          ["view.pieces[i] có id, type, side, row, col (id duy nhất)", () =>
+            need(v, "chưa có view") &&
+            v.pieces.every((p) => ["id", "type", "side", "row", "col"].every((k) => k in p)) &&
+            new Set(v.pieces.map((p) => p.id)).size === v.pieces.length],
+          ["view.targets[i] có row, col, capture", () =>
+            !v || !v.targets.length ? null : v.targets.every((t) => ["row", "col", "capture"].every((k) => k in t))],
+          ["view.promotion có pieceId, side, row, col, options (không rỗng)", () =>
+            !v?.promotion
+              ? null
+              : ["pieceId", "side", "row", "col", "options"].every((k) => k in v.promotion) &&
+                Array.isArray(v.promotion.options) &&
+                v.promotion.options.length > 0],
+          ["Side / PieceType dùng được (enums hoặc suy ra từ thế ban đầu)", () => !!legend],
+        ];
+        $("ctlDeps").innerHTML =
+          `<table><thead><tr><th>phụ thuộc</th><th>kết quả</th></tr></thead><tbody>` +
+          deps
+            .map(([label, f]) => {
+              let r = false,
+                msg = "";
+              try {
+                r = f();
+              } catch (err) {
+                r = false;
+                msg = ` — ${err.message}`;
+              }
+              const shown =
+                r === null
+                  ? `<span class="st-pending">⏳ chưa kiểm được lúc này (chọn quân / tạo thế phong cấp rồi xem lại)</span>`
+                  : r
+                    ? `<span class="st-ok">✅ có</span>`
+                    : `<span class="st-error">❌ thiếu / sai${esc(msg)}</span>`;
+              return `<tr><td>${esc(label)}</td><td>${shown}</td></tr>`;
+            })
+            .join("") +
+          `</tbody></table>`;
+
+        // Những thứ UI muốn dùng. Kiểm tra trả true | false | null | chuỗi (chuỗi = có, kèm ghi chú)
+        const wanted = [
+          [
+            "controller.loadUI()",
+            "nút “Chuyển sang UI thật” gọi controller để lấy component",
+            () => hasCtl("loadUI"),
+            "gọi plugin.loadUI() (index.js)",
+          ],
+          [
+            "ui/index.js: mount(container, controller) → hàm hủy | { destroy }",
+            "vẽ component thật vào #ui-host",
+            () =>
+              uiState === "ok"
+                ? `${uiInfo.mounter}${uiInfo.hasUnmount ? "" : " · UI không trả hàm hủy"}`
+                : uiState === "fail"
+                  ? false
+                  : null,
+            () => (uiState === "fail" ? uiErr : "bấm “Chuyển sang UI thật” để kiểm"),
+          ],
+          [
+            "controller.enums hoặc view.enums = { Side, PieceType }",
+            "UI biết WHITE/BLACK, QUEEN… mà không import core/",
+            () => !!(ctl?.enums ?? v?.enums)?.Side,
+            "suy ra từ thế ban đầu (32 quân, hàng 7 = trắng)",
+          ],
+          [
+            "actions.clearSelection()",
+            "Esc / chuột phải bỏ chọn",
+            () => hasAction("clearSelection"),
+            "bấm lại đúng quân đang chọn (clickSquare)",
+          ],
+          [
+            "actions.move(id, row, col)",
+            "gửi nước trực tiếp để test onError vẫn qua controller",
+            () => hasAction("move"),
+            "tùy chọn “Ép gửi nước sai” không chạy (không bỏ qua controller)",
+          ],
+          [
+            "view.lastMove = { from:{row,col}, to:{row,col} } | null",
+            "tô nước vừa đi, kể cả nước của bot",
+            () => (v ? "lastMove" in v : null),
+            "UI tự nhớ nước người vừa đi → nước của bot không được tô",
+          ],
+          [
+            "view.targets[i].kind",
+            "nhãn CASTLE / EP / PROMO trên ô đích",
+            () => (!v || !v.targets.length ? null : v.targets.some((t) => "kind" in t)),
+            "chỉ hiện PROMO (suy ra từ vị trí tốt), không phân biệt nhập thành / bắt tốt qua đường",
+          ],
+          [
+            "emit(listeners, view)",
+            "listener nhận view luôn, khỏi gọi getView()",
+            () => listenerView,
+            "listener gọi ctl.getView()",
+          ],
+        ];
+        $("ctlWanted").innerHTML =
+          `<table><thead><tr><th>cần</th><th>để làm gì</th><th>hiện tại</th><th>UI đang dùng cách tạm / ghi chú</th></tr></thead><tbody>` +
+          wanted
+            .map(([name, why, f, fb]) => {
+              let r = null;
+              try {
+                r = f();
+              } catch {
+                r = false;
+              }
+              const shown =
+                r === null
+                  ? `<span class="st-pending">⏳ chưa biết (thao tác / chọn một quân rồi xem lại)</span>`
+                  : r
+                    ? `<span class="st-ok">✅ có${typeof r === "string" ? ` · ${esc(r)}` : ""}</span>`
+                    : `<span class="st-error">❌ chưa có</span>`;
+              const fallback = typeof fb === "function" ? fb() : fb;
+              return `<tr><td><code>${esc(name)}</code></td><td>${esc(why)}</td><td>${shown}</td><td class="muted">${r ? "—" : esc(fallback)}</td></tr>`;
+            })
+            .join("") +
+          `</tbody></table>`;
       }
 
       function renderInspector() {
         if ($("tab-state").hidden) return;
-        const st = curState();
+        const v = V();
         $("selInfo").textContent = selected
           ? safeStringify(
               {
                 piece: selected.piece,
-                getLegalMoves: selected.legal.map((m) => sqName(m)),
-                moves: selected.legal.map((m) => withSquare(m)),
-                error: selected.error,
+                "view.targets": selected.legal.map((m) => sqName(m) + (m.capture ? " (ăn quân)" : "")),
+                "chi tiết": selected.legal.map((m) => withSquare(m)),
               },
               2,
             )
           : "(chưa chọn quân — click một quân trên bàn cờ)";
-        renderProbes(st);
-        $("boardText").textContent = st ? boardToText(st) : "(không có state)";
-        const ps = listPieces(st);
+        renderProbes(v);
+        $("boardText").textContent = v ? boardToText(v) : "(chưa có view)";
+        const ps = listPieces(v);
         $("pieces").innerHTML =
           `<table><thead><tr><th>id</th><th>loại</th><th>bên</th><th>square</th><th>row</th><th>col</th></tr></thead><tbody>` +
           ps
@@ -2538,14 +2233,15 @@
             .join("") +
           `</tbody></table>`;
         $("stateJson").textContent =
-          $("stateDetails").open && st
-            ? safeStringify({ summary: summarize(st), pieces: ps, raw: st }, 2)
+          $("stateDetails").open && v
+            ? safeStringify({ summary: summarize(v), pieces: ps, raw: v }, 2)
             : "(mở mục này để xem)";
+        renderCtlView(v);
       }
       $("stateDetails").addEventListener("toggle", renderInspector);
 
       function updateAll() {
-        curState();
+        syncSelected();
         renderStat();
         renderBoard();
         renderInspector();
@@ -2554,30 +2250,24 @@
       }
 
       function renderBanner() {
-        const bad = ENGINE_FILES.filter((f) => !resolved[f].ns);
-        $("banner").hidden = !bad.length;
-        if (!bad.length) return;
+        $("banner").hidden = !pluginError;
+        if (!pluginError) return;
         $("banner").innerHTML =
-          `<b>Không import được ${bad.length} file hàm engine</b> — các hàm tương ứng sẽ báo lỗi khi gọi. Sửa <code>ENGINE_DIRS</code> / <code>ENGINE_FILES</code> ở đầu script.` +
-          bad
-            .map(
-              (f) =>
-                `<div style="margin-top:6px"><b>${esc(f)}</b><br><small>${resolved[f].tried.map(esc).join("<br>")}</small></div>`,
-            )
-            .join("");
+          `<b>Không nạp được ../index.js</b> — HTML chỉ import file này.` +
+          `<div style="margin-top:6px"><small>${esc(pluginError.name)}: ${esc(pluginError.message)}</small></div>` +
+          `<div style="margin-top:6px"><small>Nếu lỗi nằm ở một file con (Side.js, createController.js…) thì sửa file đó rồi tải lại trang.</small></div>`;
       }
 
       /* ---------- Tab ---------- */
       function showTab(name) {
         for (const b of document.querySelectorAll("#tabs button"))
           b.classList.toggle("on", b.dataset.tab === name);
-        for (const p of document.querySelectorAll(".tabpane"))
-          p.hidden = p.id !== `tab-${name}`;
+        for (const p of document.querySelectorAll(".tabpane")) p.hidden = p.id !== `tab-${name}`;
         if (name === "log") {
           lastSig = "";
           renderLog();
         }
-        if (name === "fns") renderFns();
+        if (name === "fns") renderCtlApi();
         if (name === "state") renderInspector();
       }
       $("tabs").addEventListener("click", (ev) => {
@@ -2595,14 +2285,10 @@
         switch (e.kind) {
           case "call": {
             if (e.status === "pending") return "…";
-            const a = e.before?.stateId,
-              b = e.after?.stateId;
+            const a = e.before?.viewId,
+              b = e.after?.viewId;
             const ids =
-              e.before && e.after
-                ? a === b
-                  ? ` · state #${a} (giữ nguyên)`
-                  : ` · state #${a}→#${b}`
-                : "";
+              e.before && e.after ? (a === b ? ` · view #${a} (giữ nguyên)` : ` · view #${a}→#${b}`) : "";
             const body =
               e.status === "error"
                 ? `✖ ${esc(e.error?.message ?? "lỗi")}`
@@ -2612,7 +2298,7 @@
           case "mouse":
             return `→ ${esc(e.result ?? "")}`;
           case "callback":
-            return `state #${e.after?.stateId ?? "?"}`;
+            return `view #${e.after?.viewId ?? "?"}`;
           case "check":
             return e.status === "pass" ? "✅ PASS" : "❌ FAIL";
           default:
@@ -2631,15 +2317,12 @@
       }
 
       function visibleEntries() {
-        const kinds = new Set(
-          [...document.querySelectorAll(".kind:checked")].map((x) => x.value),
-        );
+        const kinds = new Set([...document.querySelectorAll(".kind:checked")].map((x) => x.value));
         const q = $("q").value.trim().toLowerCase();
         const onlyBad = $("onlyBad").checked;
         return events.filter((e) => {
           if (!kinds.has(e.kind)) return false;
-          if (onlyBad && e.status !== "error" && e.status !== "fail")
-            return false;
+          if (onlyBad && e.status !== "error" && e.status !== "fail") return false;
           if (q) {
             const hay =
               `${e.label} ${e.fn ?? ""} ${e.source} ${safeStringify(e.args) ?? ""} ${safeStringify(e.result) ?? ""}`.toLowerCase();
@@ -2661,8 +2344,7 @@
         const box = $("logbox"),
           list = $("log");
         const follow = $("follow").checked;
-        const nearBottom =
-          box.scrollHeight - box.scrollTop - box.clientHeight < 40;
+        const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 40;
         const all = visibleEntries();
         const shown = all.slice(-VIEW_LIMIT);
         if (follow && shown.length) selectedId = shown.at(-1).id;
@@ -2683,11 +2365,9 @@
           html += rowHtml(e, depth);
         }
         list.innerHTML = html || `<li class="empty">Chưa có sự kiện nào</li>`;
-        $("logCount").textContent =
-          `hiển thị ${shown.length}/${all.length} · đã lưu ${events.length}`;
+        $("logCount").textContent = `hiển thị ${shown.length}/${all.length} · đã lưu ${events.length}`;
         $("tabcount").textContent = events.length;
         if (follow || nearBottom) box.scrollTop = box.scrollHeight;
-        renderStat();
         renderDetail();
       }
 
@@ -2696,23 +2376,21 @@
         $("follow").checked = false;
         lastSig = "";
         renderLog();
-        $("log")
-          .querySelector(".row.sel")
-          ?.scrollIntoView({ block: "nearest" });
+        $("log").querySelector(".row.sel")?.scrollIntoView({ block: "nearest" });
       }
 
       function pre(v) {
-        if (v && v.__state) {
+        if (v && v.__view) {
           const { board, ...rest } = v;
           return `<pre>${esc(jsonText(rest))}</pre><pre style="margin-top:4px">${esc(board)}</pre>`;
         }
         return `<pre>${esc(jsonText(v))}</pre>`;
       }
       const kv = (k, v) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`;
-      const stateBox = (title, s) =>
+      const viewBox = (title, s) =>
         s
-          ? `<div><small>${title}: state #${s.stateId} · lượt ${esc(s.turn)} · ${s.pieces} quân · kết quả ${esc(s.result ? JSON.stringify(s.result) : "chưa có")}</small><pre>${esc(s.board)}</pre></div>`
-          : `<div><small>${title}: (không có state)</small></div>`;
+          ? `<div><small>${title}: view #${s.viewId} · lượt ${esc(s.turn)} · ${s.pieces} quân · chọn ${esc(s.selected ?? "—")} · kết quả ${esc(s.result ? JSON.stringify(s.result) : "chưa có")}</small><pre>${esc(s.board)}</pre></div>`
+          : `<div><small>${title}: (không có view)</small></div>`;
       const SECTION = {
         call: ["Tham số truyền vào", "Giá trị trả về"],
         mouse: ["Thông số sự kiện chuột", "Giao diện đã xử lý ra sao"],
@@ -2730,20 +2408,13 @@
           return;
         }
         const kids = events.filter((x) => x.parent === e.id);
-        const sig = [
-          e.id,
-          e.status,
-          e.ms ?? "",
-          e.result === undefined ? 0 : 1,
-          kids.length,
-        ].join("|");
+        const sig = [e.id, e.status, e.ms ?? "", e.result === undefined ? 0 : 1, kids.length].join("|");
         if (sig === lastSig) return;
         lastSig = sig;
 
         const d = new Date(e.time);
         const parent = e.parent ? events.find((x) => x.id === e.parent) : null;
-        const link = (x) =>
-          `<a href="#" data-goto="${x.id}">#${x.id} ${esc(x.fn || x.label)}</a>`;
+        const link = (x) => `<a href="#" data-goto="${x.id}">#${x.id} ${esc(x.fn || x.label)}</a>`;
         const [h1, h2] = SECTION[e.kind] ?? SECTION.info;
         const p = [];
         p.push(
@@ -2756,13 +2427,10 @@
         p.push(
           `<dl class="kv">${kv("loại", e.kind)}${kv("nguồn", e.source)}${kv("thời điểm", d.toLocaleString("vi-VN") + "." + pad(d.getMilliseconds(), 3))}` +
             `${kv("ms từ khi load trang", e.t)}${e.ms !== undefined ? kv("thời gian chạy", e.ms + " ms") : ""}` +
-            `${e.sameState !== undefined ? kv("state giữ nguyên object?", e.sameState ? "CÓ (===)" : "không (object mới)") : ""}</dl>`,
+            `${e.sameView !== undefined ? kv("view giữ nguyên tham chiếu?", e.sameView ? "CÓ (===)" : "không (object mới)") : ""}</dl>`,
         );
         if (e.args !== undefined) p.push(`<h4>1 · ${h1}</h4>${pre(e.args)}`);
-        if (
-          e.status !== "pending" &&
-          (e.result !== undefined || e.kind === "call")
-        )
+        if (e.status !== "pending" && (e.result !== undefined || e.kind === "call"))
           p.push(`<h4>2 · ${h2}</h4>${pre(e.result)}`);
         if (e.error)
           p.push(
@@ -2770,11 +2438,9 @@
           );
         if (e.before || e.after)
           p.push(
-            `<h4>3 · State trước → sau</h4><div class="cols">${stateBox("Trước", e.before)}${stateBox("Sau", e.after)}</div>`,
+            `<h4>3 · View trước → sau</h4><div class="cols">${viewBox("Trước", e.before)}${viewBox("Sau", e.after)}</div>`,
           );
-        p.push(
-          `<details><summary>JSON gốc của sự kiện</summary>${pre(e)}</details>`,
-        );
+        p.push(`<details><summary>JSON gốc của sự kiện</summary>${pre(e)}</details>`);
         box.innerHTML = p.join("");
       }
 
@@ -2795,205 +2461,245 @@
           ev.target.textContent = "Đã copy ✓";
         });
       });
-      for (const el of document.querySelectorAll(
-        ".kind, #onlyBad, #q, #follow",
-      ))
+      for (const el of document.querySelectorAll(".kind, #onlyBad, #q, #follow"))
         el.addEventListener("input", () => {
           lastSig = "";
           scheduleLog();
         });
 
       /* =====================================================================
-       * 9. Tab "Hàm engine": danh sách hàm + mô tả, đối chiếu với import thật
+       * 9. Tab "Controller API": danh sách hàm UI cần, đối chiếu với controller thật
        * ===================================================================== */
-      function fnCard(x, ex) {
-        const live = !ex
-          ? `<span class="live st-error">❌ chưa export</span>`
-          : ex.file !== x.file
-            ? `<span class="live st-pending">⚠ nằm ở ${esc(ex.file)}</span>`
-            : `<span class="live st-ok">✅ đã export</span>`;
-        const eff =
-          x.effect === "write"
-            ? `<span class="eff w" title="Có thể ghi vào game truyền vào — nên bật Sandbox khi gọi thử">⚠ ghi vào game</span>`
-            : `<span class="eff r">chỉ đọc</span>`;
-        const real = ex ? `(${esc(paramsOf(ex.fn))})` : "—";
+      const CTL_API = [
+        {
+          group: "plugin (index.js)",
+          name: "plugin.create",
+          sig: "({ mode, botDelay })",
+          need: "required",
+          fn: () => plugin?.create,
+          id: "plugin:create",
+          desc: "Tạo controller mới theo chế độ chơi. Nút “plugin.create() → controller mới” gọi hàm này.",
+          example: '[{"mode":"$GameMode.LOCAL"}]',
+        },
+        {
+          group: "plugin (index.js)",
+          name: "plugin.loadUI",
+          sig: "()",
+          need: "required",
+          fn: () => plugin?.loadUI,
+          id: "plugin:loadUI",
+          desc: "Import động ui/index.js (lazy). Dùng làm phương án dự phòng khi controller chưa có loadUI().",
+          example: "[]",
+          run: true,
+        },
+        {
+          group: "controller",
+          name: "controller.getView",
+          sig: "()",
+          need: "required",
+          fn: () => ctl?.getView,
+          id: "ctl:getView",
+          desc: "View hiện tại. Cùng tham chiếu cho tới khi game hoặc lựa chọn đổi.",
+          example: "[]",
+          run: true,
+        },
+        {
+          group: "controller",
+          name: "controller.subscribe",
+          sig: "(fn) → off",
+          need: "required",
+          fn: () => ctl?.subscribe,
+          desc: "Đăng ký listener, gọi mỗi khi view đổi. Dùng nút subscribe() ở cột trái.",
+        },
+        {
+          group: "controller",
+          name: "controller.onError",
+          sig: "(fn) → off",
+          need: "required",
+          fn: () => ctl?.onError,
+          desc: "Đăng ký listener nhận GameError (nước sai, phong cấp sai…). HTML đã tự đăng ký để đếm “onError”.",
+        },
+        {
+          group: "controller",
+          name: "controller.destroy",
+          sig: "()",
+          need: "required",
+          fn: () => ctl?.destroy,
+          id: "ctl:destroy",
+          desc: "Hủy controller + room. Gọi lần 2 không ném lỗi.",
+          example: "[]",
+        },
+        {
+          group: "controller.actions",
+          name: "actions.clickSquare",
+          sig: "(row, col)",
+          need: "required",
+          fn: () => ctl?.actions?.clickSquare,
+          id: "ctl:actions.clickSquare",
+          desc: "Người dùng bấm một ô: chọn / bỏ chọn quân hoặc đi nước.",
+          example: "[6,4]",
+        },
+        {
+          group: "controller.actions",
+          name: "actions.promote",
+          sig: "(pieceType)",
+          need: "required",
+          fn: () => ctl?.actions?.promote,
+          id: "ctl:actions.promote",
+          desc: "Chọn quân phong cấp khi view.promotion có giá trị.",
+          example: '["$PieceType.QUEEN"]',
+        },
+        {
+          group: "controller.actions",
+          name: "actions.restart",
+          sig: "()",
+          need: "required",
+          fn: () => ctl?.actions?.restart,
+          id: "ctl:actions.restart",
+          desc: "Ván mới, xóa lựa chọn.",
+          example: "[]",
+        },
+        {
+          group: "UI cần (mục 9)",
+          name: "controller.loadUI",
+          sig: "()",
+          need: "wanted",
+          fn: () => ctl?.loadUI,
+          id: "ctl:loadUI",
+          desc: "Trả module / component UI. Nút “Chuyển sang UI thật” gọi hàm này; chưa có thì dùng plugin.loadUI().",
+          example: "[]",
+          run: true,
+        },
+        {
+          group: "UI cần (mục 9)",
+          name: "actions.clearSelection",
+          sig: "()",
+          need: "wanted",
+          fn: () => ctl?.actions?.clearSelection,
+          id: "ctl:actions.clearSelection",
+          desc: "Bỏ chọn quân (Esc, chuột phải, bấm ra ngoài bàn).",
+          example: "[]",
+        },
+        {
+          group: "UI cần (mục 9)",
+          name: "actions.move",
+          sig: "(id, row, col)",
+          need: "wanted",
+          fn: () => ctl?.actions?.move,
+          id: "ctl:actions.move",
+          desc: "Gửi nước đi trực tiếp (không cần chọn quân trước). Dùng cho “Ép gửi nước sai” và test onError.",
+          example: '["@e2.id",4,4]',
+        },
+      ];
+
+      function apiCard(x) {
+        const fn = safe(x.fn);
+        const ok = typeof fn === "function";
+        const live = ok
+          ? `<span class="live st-ok">✅ có</span>`
+          : x.need === "required"
+            ? `<span class="live st-error">❌ thiếu (bắt buộc)</span>`
+            : `<span class="live st-pending">⚪ chưa có (UI cần — mục 9)</span>`;
+        const tag = x.need === "required" ? `<span class="eff r">bắt buộc</span>` : `<span class="eff w">UI cần</span>`;
+        const real = ok ? `(${esc(paramsOf(fn))})` : "—";
+        const canFill = x.id && targets.has(x.id);
         return (
-          `<div class="fn"><div class="fh"><b>${esc(x.name)}</b><span class="sig">${esc(x.sig)}</span>${eff}${live}</div>` +
+          `<div class="fn"><div class="fh"><b>${esc(x.name)}</b><span class="sig">${esc(x.sig)}</span>${tag}${live}</div>` +
           `<p>${esc(x.desc)}</p>` +
-          `<div class="meta"><small>Trả về (dự đoán):</small> ${esc(x.returns)}</div>` +
           `<div class="meta"><small>Tham số thực tế:</small> <code>${real}</code></div>` +
-          `<div class="meta"><small>Ví dụ tham số:</small> <code>${esc(x.example)}</code>${x.note ? ` <small>· ${esc(x.note)}</small>` : ""}</div>` +
-          `<div class="btns"><button data-fill="${esc(x.name)}">Điền sẵn vào ô gọi hàm</button>` +
-          (x.effect === "write"
-            ? ""
-            : `<button data-run="${esc(x.name)}">Gọi ngay ▶</button>`) +
-          `</div></div>`
+          (x.example ? `<div class="meta"><small>Ví dụ tham số:</small> <code>${esc(x.example)}</code></div>` : "") +
+          (canFill
+            ? `<div class="btns"><button data-fill="${esc(x.id)}" data-ex="${esc(x.example ?? "[]")}">Điền sẵn vào ô gọi hàm</button>` +
+              (x.run ? `<button data-run="${esc(x.id)}" data-ex="${esc(x.example ?? "[]")}">Gọi ngay ▶</button>` : "") +
+              `</div>`
+            : "") +
+          `</div>`
         );
       }
 
-      function renderFns() {
+      function renderCtlApi() {
         const q = $("fn-q").value.trim().toLowerCase();
-        const exported = new Map();
-        for (const f of ENGINE_FILES) {
-          const r = resolved[f];
-          if (r.ns)
-            for (const [k, v] of Object.entries(r.ns))
-              if (typeof v === "function") exported.set(k, { file: f, fn: v });
-        }
-        const known = new Set(FN_CATALOG.map((x) => x.name));
-        const missing = FN_CATALOG.filter((x) => !exported.has(x.name));
-        const extra = [...exported]
-          .filter(([k]) => !known.has(k))
-          .map(([k, v]) => `${k} (${v.file})`);
+        const v = V();
         $("fn-sum").innerHTML =
           `<div class="flow">` +
-          `<div><small>Import</small> ${ENGINE_FILES.map((f) => (resolved[f].ns ? `<span class="st-ok">✅ ${esc(f)}</span>` : `<span class="st-error">❌ ${esc(f)}</span>`)).join(" · ")}</div>` +
-          `<div><small>Thiếu</small> ${missing.length ? `<span class="st-error">${esc(missing.map((m) => m.name).join(", "))}</span>` : "không"}</div>` +
-          `<div><small>Xuất thêm</small> ${extra.length ? esc(extra.join(", ")) : "không"}</div>` +
-          `<div><small>MoveKind</small> ${MoveKind ? `✅ ${esc(mkRes.path)} · ${esc(Object.keys(MoveKind).join(", "))}` : "không tìm thấy (chỉ để hiện tên loại nước đi)"}</div>` +
-          `<div><small>Action</small> ${esc(
-            Object.getOwnPropertyNames(Action)
-              .filter((k) => typeof Action[k] === "function")
-              .join(", ") || "—",
-          )}</div></div>`;
-
-        let html = "";
-        for (const [file, about] of Object.entries(FN_FILES)) {
-          const items = FN_CATALOG.filter(
-            (x) =>
-              x.file === file &&
-              (!q || `${x.name} ${x.desc} ${x.sig}`.toLowerCase().includes(q)),
-          );
-          if (!items.length) continue;
-          const r = resolved[file];
-          html +=
-            `<details class="mod" open><summary><b>${esc(file)}</b> <small>· ${r.ns ? esc(r.path) : "không import được"} · ${items.length} hàm</small></summary>` +
-            `<p class="muted" style="margin:6px 0 0">${esc(about)}</p>` +
-            items.map((x) => fnCard(x, exported.get(x.name))).join("") +
-            `</details>`;
+          `<div><small>plugin</small> ${plugin ? `✅ ../index.js · id=${esc(plugin.id)} · title=${esc(plugin.title)} · mode: ${esc(Object.keys(GM).join(", "))}` : `<span class="st-error">❌ ${esc(pluginError?.message ?? "?")}</span>`}</div>` +
+          `<div><small>controller</small> ${ctl ? `✅ mode ${esc(curMode)} · ${esc(Object.keys(ctl).join(", "))}` : "chưa có"}</div>` +
+          `<div><small>actions</small> ${ctl?.actions ? esc(Object.keys(ctl.actions).join(", ")) : "—"}</div>` +
+          `<div><small>view</small> ${v ? esc(Object.keys(v).join(", ")) : "—"}</div></div>`;
+        const groups = new Map();
+        for (const x of CTL_API) {
+          if (q && !`${x.name} ${x.desc} ${x.sig}`.toLowerCase().includes(q)) continue;
+          if (!groups.has(x.group)) groups.set(x.group, []);
+          groups.get(x.group).push(x);
         }
         $("fn-list").innerHTML =
-          html || `<p class="muted">Không có hàm nào khớp bộ lọc.</p>`;
+          [...groups]
+            .map(
+              ([g, items]) =>
+                `<details class="mod" open><summary><b>${esc(g)}</b> <small>· ${items.length} hàm</small></summary>${items.map(apiCard).join("")}</details>`,
+            )
+            .join("") || `<p class="muted">Không có hàm nào khớp bộ lọc.</p>`;
       }
-      $("fn-q").addEventListener("input", renderFns);
+      $("fn-q").addEventListener("input", renderCtlApi);
       $("fn-list").addEventListener("click", (ev) => {
         const b = ev.target.closest("button[data-fill],button[data-run]");
         if (!b) return;
-        const name = b.dataset.fill || b.dataset.run;
-        if (fillApi(name) && b.dataset.run) runApi();
+        const id = b.dataset.fill || b.dataset.run;
+        if (!targets.has(id)) return;
+        $("api-target").value = id;
+        syncApiHint();
+        $("api-args").value = b.dataset.ex ?? "[]";
+        showTab("call");
+        if (b.dataset.run) runApi();
       });
 
       /* =====================================================================
-       * 10. Tab "Gọi hàm": quét export + gọi thử
+       * 10. Tab "Gọi hàm": chỉ plugin + controller
        * ===================================================================== */
-      const targets = new Map(); // id → { group, label, params, needsThis, invoke(args, self) }
-      const apiCatalog = [];
-      let apiLoaded = false;
-      const addTarget = (id, t) => {
-        targets.set(id, t);
-        return id;
-      };
+      const targets = new Map(); // id → { group, label, params, main, invoke(args) }
+      const addTarget = (id, t) => targets.set(id, t);
 
-      function apiRoom() {
-        if (!$("api-sandbox").checked) return room;
-        try {
-          return (sandbox ??= new Room(reduce));
-        } catch {
-          return null;
-        }
-      }
-      const apiState = () =>
-        $("api-sandbox").checked ? peekState(apiRoom()) : curState();
-
-      function buildRoomTargets() {
-        for (const m of membersOf(Room.prototype)) {
-          const base = {
-            group: "room (instance hiện tại)",
-            label: `room.${m.name}`,
-          };
-          if (m.kind === "method")
-            addTarget(`room:${m.name}`, {
-              ...base,
-              params: m.params,
-              invoke: (a) => apiRoom()[m.name](...a),
-            });
-          else if (m.kind === "accessor")
-            addTarget(`room:${m.name}`, {
-              ...base,
-              params: "(getter)",
-              invoke: () => apiRoom()[m.name],
+      function buildTargets() {
+        targets.clear();
+        if (plugin) {
+          addTarget("plugin:create", {
+            group: "plugin (index.js)",
+            label: "plugin.create",
+            params: "{ mode }",
+            invoke: (a) => plugin.create(...a),
+          });
+          if (typeof plugin.loadUI === "function")
+            addTarget("plugin:loadUI", {
+              group: "plugin (index.js)",
+              label: "plugin.loadUI",
+              params: "",
+              invoke: () => plugin.loadUI(),
             });
         }
-      }
-
-      function indexExport(path, ex) {
-        if (ex.kind === "function")
-          ex.id = addTarget(`fn:${path}:${ex.name}`, {
-            group: path,
-            label: ex.name,
-            params: ex.params,
-            invoke: (a) => ex.value(...a),
-          });
-        if (ex.kind === "class") {
-          ex.newId = addTarget(`new:${path}:${ex.name}`, {
-            group: path,
-            label: `new ${ex.name}`,
-            params: ex.params,
-            invoke: (a) => new ex.value(...a),
-          });
-          for (const m of ex.statics)
-            if (m.kind === "method")
-              m.id = addTarget(`static:${path}:${ex.name}:${m.name}`, {
-                group: path,
-                label: `${ex.name}.${m.name}`,
-                params: m.params,
-                invoke: (a) => ex.value[m.name](...a),
-              });
-          for (const m of ex.methods) {
-            if (m.kind !== "method") continue;
-            if (ex.value === Room) m.id = `room:${m.name}`;
-            else
-              m.id = addTarget(`inst:${path}:${ex.name}:${m.name}`, {
-                group: path,
-                label: `${ex.name}#${m.name}`,
-                params: m.params,
-                needsThis: true,
-                invoke: (a, self) => self[m.name](...a),
+        if (ctl) {
+          const group = "controller (instance hiện tại)";
+          for (const [k, val] of Object.entries(ctl)) {
+            if (k === "actions" || k === "subscribe" || k === "onError") continue; // cần callback → dùng nút bên trái
+            if (typeof val === "function")
+              addTarget(`ctl:${k}`, {
+                group,
+                label: `controller.${k}`,
+                params: paramsOf(val),
+                invoke: (a) => ctl[k](...a),
               });
           }
+          for (const [k, val] of Object.entries(ctl.actions ?? {}))
+            if (typeof val === "function")
+              addTarget(`ctl:actions.${k}`, {
+                group,
+                label: `controller.actions.${k}`,
+                params: paramsOf(val),
+                invoke: (a) => ctl.actions[k](...a),
+              });
         }
-      }
-
-      function scanModule(path, ns) {
-        const exports = Object.entries(ns).map(([name, value]) =>
-          describeExport(name, value),
-        );
-        exports.forEach((ex) => indexExport(path, ex));
-        apiCatalog.push({ path, exports });
-      }
-
-      async function loadApi() {
-        for (const file of ENGINE_FILES) {
-          const r = resolved[file];
-          if (r.ns) scanModule(r.path, r.ns);
-          else
-            apiCatalog.push({
-              path: `../core/engine/${file}`,
-              error: r.tried.join("\n"),
-            });
-        }
-        if (mkRes.ns) scanModule(mkRes.path, mkRes.ns);
-        for (const path of SCAN_PATHS) {
-          try {
-            scanModule(path, await import(path));
-          } catch (err) {
-            apiCatalog.push({ path, error: `${err.name}: ${err.message}` });
-          }
-        }
-        apiLoaded = true;
         buildSelect();
         renderApi();
-        renderFns();
+        if (!$("tab-fns").hidden) renderCtlApi();
       }
 
       function buildSelect() {
@@ -3007,7 +2713,7 @@
         sel.innerHTML = [...groups]
           .map(
             ([g, items]) =>
-              `<optgroup label="${esc(g.replace("../core/", ""))}">${items.map(([id, t]) => `<option value="${esc(id)}">${esc(t.label)}</option>`).join("")}</optgroup>`,
+              `<optgroup label="${esc(g)}">${items.map(([id, t]) => `<option value="${esc(id)}">${esc(t.label)}</option>`).join("")}</optgroup>`,
           )
           .join("");
         if (keep && targets.has(keep)) sel.value = keep;
@@ -3017,121 +2723,39 @@
       function syncApiHint() {
         const t = targets.get($("api-target").value);
         $("api-sig").textContent = t ? `${t.label}(${t.params})` : "";
-        $("api-this-wrap").hidden = !(t && t.needsThis);
       }
       $("api-target").addEventListener("change", syncApiHint);
 
-      function selectApiTarget(id) {
-        if (!targets.has(id)) return;
-        $("api-target").value = id;
-        syncApiHint();
-        $("api-args").focus();
-      }
-
-      function targetIdOf(name) {
-        const f = engineSrc[name];
-        return f ? `fn:${resolved[f].path}:${name}` : null;
-      }
-
-      function fillApi(name) {
-        const item = FN_CATALOG.find((f) => f.name === name);
-        const id = targetIdOf(name);
-        if (!item || !id || !targets.has(id)) {
-          note(
-            `${name}() chưa import được hoặc chưa quét xong → chưa gọi thử được`,
-            "error",
-            { source: "console" },
-          );
-          return false;
-        }
-        $("api-target").value = id;
-        syncApiHint();
-        $("api-args").value = item.example;
-        if (item.effect === "write") $("api-sandbox").checked = true; // hàm ghi: mặc định chạy trên Room phụ
-        showTab("call");
-        return true;
-      }
-
       function renderApi() {
-        const fmt = (v) => {
-          try {
-            return esc(brief(snap(v), 48));
-          } catch {
-            return "?";
-          }
-        };
-        const row = (id, tag, html) =>
-          `<div class="mem${id ? " pick" : ""}"${id ? ` data-target="${esc(id)}"` : ""}><span class="tag">${tag}</span>${html}</div>`;
-        const sig = (owner, sep, m) =>
-          `${esc(owner)}${sep}<b>${esc(m.name)}</b>` +
-          (m.kind === "method"
-            ? `(${esc(m.params)})`
-            : m.kind === "value"
-              ? ` = ${fmt(m.value)}`
-              : "");
-        const tagOf = (m) => (m.kind === "accessor" ? "getter" : m.kind);
-
-        const roomMembers = membersOf(Room.prototype);
-        const roomRows = roomMembers
-          .map((m) =>
-            row(
-              targets.has(`room:${m.name}`) ? `room:${m.name}` : null,
-              tagOf(m),
-              sig("room", ".", m),
-            ),
-          )
-          .join("");
-        let html = `<details class="mod" open><summary>room (instance hiện tại) <small>· ${roomMembers.length} thành viên public</small></summary>${roomRows || `<div class="muted">(không có)</div>`}</details>`;
-
-        for (const c of apiCatalog) {
-          const name = c.path.replace("../core/", "");
-          if (c.error) {
-            html += `<details class="mod"><summary>${esc(name)} <span class="st-error">✖ không import được</span></summary><pre class="err">${esc(c.error)}</pre></details>`;
-            continue;
-          }
-          const body = c.exports
-            .map((ex) => {
-              if (ex.kind === "function")
-                return row(
-                  ex.id,
-                  "function",
-                  `<b>${esc(ex.name)}</b>(${esc(ex.params)})`,
-                );
-              if (ex.kind === "class")
-                return (
-                  row(
-                    ex.newId,
-                    "class",
-                    `<b>${esc(ex.name)}</b> <small>constructor(${esc(ex.params)})</small>`,
-                  ) +
-                  ex.statics
-                    .map((m) => row(m.id, "static", sig(ex.name, ".", m)))
-                    .join("") +
-                  ex.methods
-                    .map((m) => row(m.id, tagOf(m), sig(ex.name, "#", m)))
-                    .join("")
-                );
-              if (ex.kind === "object")
-                return row(
-                  null,
-                  "object",
-                  `<b>${esc(ex.name)}</b> { ${ex.entries.map(([k, v]) => `${esc(k)}: ${fmt(v)}`).join(", ")} }`,
-                );
-              return row(
-                null,
-                ex.kind,
-                `<b>${esc(ex.name)}</b> = ${fmt(ex.value)}`,
-              );
-            })
+        const rows = (items) =>
+          items
+            .map(
+              ([id, t]) =>
+                `<div class="mem pick" data-target="${esc(id)}"><span class="tag">method</span><b>${esc(t.label)}</b>(${esc(t.params)})</div>`,
+            )
             .join("");
-          html += `<details class="mod"><summary>${esc(name)} <small>· ${c.exports.length} export</small></summary>${body || `<div class="muted">(không có export)</div>`}</details>`;
+        const groups = new Map();
+        for (const e of targets) {
+          if (!groups.has(e[1].group)) groups.set(e[1].group, []);
+          groups.get(e[1].group).push(e);
         }
-        if (!apiLoaded) html += `<p class="muted">Đang quét các module…</p>`;
+        const v = V();
+        let html =
+          [...groups]
+            .map(
+              ([g, items]) =>
+                `<details class="mod" open><summary>${esc(g)} <small>· ${items.length} hàm</small></summary>${rows(items)}</details>`,
+            )
+            .join("") || `<p class="muted">(chưa có controller)</p>`;
+        html += `<details class="mod"><summary>view hiện tại <small>· ${v ? Object.keys(v).length : 0} trường</small></summary><div class="mem">${v ? esc(Object.keys(v).join(", ")) : "(chưa có)"}</div></details>`;
         $("api-tree").innerHTML = html;
       }
       $("api-tree").addEventListener("click", (ev) => {
         const el = ev.target.closest("[data-target]");
-        if (el) selectApiTarget(el.dataset.target);
+        if (!el || !targets.has(el.dataset.target)) return;
+        $("api-target").value = el.dataset.target;
+        syncApiHint();
+        $("api-args").focus();
       });
 
       // ---- Giải các mã đặc biệt trong tham số ----
@@ -3141,106 +2765,78 @@
             `$${root} chưa có giá trị${root === "ret" ? " (hãy gọi hàm khác trước)" : root === "sel" ? " (hãy click chọn một quân)" : ""}`,
           );
         for (const k of path.split(".").filter(Boolean)) {
-          if (v == null)
-            throw new Error(`"${k}" không tồn tại (giá trị đang là ${v})`);
+          if (v == null) throw new Error(`"${k}" không tồn tại (giá trị đang là ${v})`);
           v = v[k];
           if (v === undefined) throw new Error(`"${k}" không tồn tại`);
         }
         return v;
       }
-      function selRoot() {
-        if (!selected) return undefined;
-        const p = apiState()?.board.pieceAt(
-          selected.square.row,
-          selected.square.col,
-        );
-        return {
-          piece: p,
-          row: selected.square.row,
-          col: selected.square.col,
-          square: sqName(selected.square),
-        };
-      }
       function tokenRoots() {
-        const st = apiState();
+        const v = V();
+        const sel = v && v.selectedId != null ? pieceById(v, v.selectedId) : null;
         return {
-          state: st,
-          board: st?.board,
-          turn: st?.turn,
+          view: v,
+          turn: v?.turn,
           ret: lastRet,
-          room: apiRoom(),
-          sel: selRoot(),
-          Side,
-          PieceType,
-          MoveKind,
+          sel: sel ? { id: sel.id, row: sel.row, col: sel.col, square: sqName(sel), piece: sel } : undefined,
+          Side: legend?.Side,
+          PieceType: legend?.PieceType,
+          GameMode: GM,
         };
       }
-      function resolveToken(v, roots) {
-        if (typeof v === "string") {
+      function resolveToken(val, roots) {
+        if (typeof val === "string") {
           let m;
-          if ((m = /^@([a-h][1-8])((?:\.[\w$]+)*)$/.exec(v))) {
+          if ((m = /^@([a-h][1-8])((?:\.[\w$]+)*)$/.exec(val))) {
             const s = sq(m[1]);
-            const p = apiState()?.board.pieceAt(s.row, s.col);
+            const p = pieceAtV(V(), s.row, s.col);
             if (!p) throw new Error(`Ô ${m[1]} trống`);
             return walk(p, m[2], m[1]);
           }
           if (
-            (m = /^\$([A-Za-z]\w*)((?:\.[\w$]+)*)$/.exec(v)) &&
+            (m = /^\$([A-Za-z]\w*)((?:\.[\w$]+)*)$/.exec(val)) &&
             Object.prototype.hasOwnProperty.call(roots, m[1])
           )
             return walk(roots[m[1]], m[2], m[1]);
-          return v;
+          return val;
         }
-        if (Array.isArray(v)) return v.map((x) => resolveToken(x, roots));
-        if (v && typeof v === "object")
-          return Object.fromEntries(
-            Object.entries(v).map(([k, x]) => [k, resolveToken(x, roots)]),
-          );
-        return v;
+        if (Array.isArray(val)) return val.map((x) => resolveToken(x, roots));
+        if (val && typeof val === "object")
+          return Object.fromEntries(Object.entries(val).map(([k, x]) => [k, resolveToken(x, roots)]));
+        return val;
       }
 
-      function runApi() {
+      async function runApi() {
         const t = targets.get($("api-target").value);
-        if (!t)
-          return note("Chưa chọn hàm để gọi", "error", { source: "console" });
-        let args, self;
+        if (!t) return note("Chưa chọn hàm để gọi", "error", { source: "console" });
+        let args;
         try {
-          const roots = tokenRoots();
           let raw = JSON.parse($("api-args").value.trim() || "[]");
           if (!Array.isArray(raw)) raw = [raw];
-          args = resolveToken(raw, roots);
-          if (t.needsThis)
-            self = resolveToken(($("api-this").value || "$ret").trim(), roots);
+          args = resolveToken(raw, tokenRoots());
         } catch (err) {
-          return note(`Không đọc được tham số: ${err.message}`, "error", {
-            source: "console",
-          });
+          return note(`Không đọc được tham số: ${err.message}`, "error", { source: "console" });
         }
-        const sb = $("api-sandbox").checked;
-        const r = trace(
-          sb ? `${t.label}  // sandbox` : t.label,
-          args,
-          () => t.invoke(args, self),
-          { source: "console", target: apiRoom },
-        );
+        const r = await traceAsync(t.label, args, () => t.invoke(args), {
+          source: "console",
+          show: (x) => (x && typeof x.getView === "function" ? "[controller]" : snap(x)),
+        });
         if (r.ok) {
           lastRet = r.value;
-          $("api-ret").textContent = jsonText(snap(r.value));
-        } else
-          $("api-ret").textContent = `✖ ${r.error?.name}: ${r.error?.message}`;
-        if (!sb) {
-          if (r.ok && t.label === "room.destroy") destroyed = true;
-          if (r.ok && t.label === "room.restart") {
-            lastMove = null;
-            moveLog = [];
-          }
-          if (r.entry.sameState === false) selected = null;
+          $("api-ret").textContent = jsonText(
+            r.value && typeof r.value.getView === "function" ? "[controller]" : snap(r.value),
+          );
+        } else $("api-ret").textContent = `✖ ${r.error?.name}: ${r.error?.message}`;
+        if (r.ok && t.label === "controller.destroy") destroyed = true;
+        if (r.ok && t.label === "controller.actions.restart") {
+          lastMove = null;
+          moveLog = [];
         }
         updateAll();
       }
 
       /* =====================================================================
-       * 11. Test tự động (chạy trên Room riêng)
+       * 11. Test tự động: mọi thứ đi qua plugin.create() + controller
        * ===================================================================== */
       function renderTestResults(results) {
         const checks = results.filter((r) => "pass" in r);
@@ -3268,255 +2864,352 @@
 
       function runAutoTests() {
         const SRC = "auto-test";
-        let r = null,
-          calls = 0,
-          lastSeen = null;
         const results = [];
-        const T = (fn, args, run, opts = {}) =>
-          trace(fn, args, run, { source: SRC, target: () => r, ...opts });
-        const S = () => {
-          try {
-            return (lastSeen = r.getState());
-          } catch {
-            return lastSeen;
-          }
-        };
-        const at = (state, s) => state.board.pieceAt(sq(s).row, sq(s).col);
+        let c = null; // controller đang test
+        let L = null; // Side / PieceType (legend) của controller đang test
+
         const group = (title) => {
           results.push({ group: title });
           begin("info", title, { source: SRC });
         };
         const check = (label, cond) => {
-          const e = begin("check", label, {
-            source: SRC,
-            status: cond ? "pass" : "fail",
-          });
+          const e = begin("check", label, { source: SRC, status: cond ? "pass" : "fail" });
           results.push({ label, pass: !!cond, id: e.id });
         };
-        const tmove = (text) => {
-          const from = sq(text.slice(0, 2)),
-            to = sq(text.slice(2, 4));
-          const piece = S()?.board.pieceAt(from.row, from.col);
-          if (!piece) {
-            note(`Không có quân ở ${text.slice(0, 2)}`, "error", {
-              source: SRC,
-            });
-            return { ok: false };
-          }
-          const meta = { square: text.slice(2, 4), from: text.slice(0, 2) };
-          const a = T(
-            "Action.move",
-            { pieceId: piece.id, row: to.row, col: to.col, ...meta },
-            () => Action.move(piece.id, to.row, to.col),
+        const T = (fn, args, run, opts = {}) =>
+          trace(fn, args, run, { source: SRC, target: () => c, ...opts });
+        const CV = () => c.getView();
+        const P = (s) => pieceAtV(CV(), sq(s).row, sq(s).col);
+        const clk = (s) =>
+          T(
+            `controller.actions.clickSquare(${s})`,
+            { square: s },
+            () => c.actions.clickSquare(sq(s).row, sq(s).col),
+            { show: () => viewBrief(CV()) },
           );
-          if (!a.ok) return a;
-          return T("room.dispatch", { action: a.value, ...meta }, () =>
-            r.dispatch(a.value),
-          );
+        const restart = () =>
+          T("controller.actions.restart()", [], () => c.actions.restart(), { show: () => viewBrief(CV()) });
+        // đi 1 nước bằng 2 lần clickSquare, trả về true nếu quân đã nằm ở ô đích
+        const mv = (text) => {
+          const a = text.slice(0, 2),
+            b = text.slice(2, 4);
+          const p0 = P(a);
+          clk(a);
+          clk(b);
+          return !!p0 && P(b)?.id === p0.id;
         };
-        const tpromote = (type) => {
-          const m = findPromoteMaker();
-          if (!m) {
-            note("Action không có hàm nào có chữ “promot”", "error", {
-              source: SRC,
-            });
-            return { ok: false };
-          }
-          const meta = { pieceType: typeName(type), value: type };
-          const a = T(`Action.${m}`, meta, () => Action[m](type));
-          if (!a.ok) return a;
-          return T("room.dispatch", { action: a.value, ...meta }, () =>
-            r.dispatch(a.value),
-          );
+        const names = (list) => list.map((m) => sqName(m)).sort().join();
+        const open = (mode = "LOCAL") => {
+          const r = trace(`plugin.create({ mode: ${mode} })`, { mode }, () => plugin.create({ mode: GM[mode] }), {
+            source: SRC,
+            target: () => null,
+            show: () => "[controller]",
+          });
+          c = r.ok ? r.value : null;
+          return r;
         };
-        const read = (fn, args, run) => T(fn, args, run).value;
-
-        const promoCase = (key, target, side, sideLabel) => {
-          const sc = SCENARIOS[key];
-          group(
-            `${sc.title}: ${sc.setup.length} nước dựng thế rồi ${sc.final}`,
-          );
-          T("room.restart", [], () => r.restart());
-          check(
-            "các nước dựng thế đều được chấp nhận",
-            sc.setup.map((m) => tmove(m)).every((x) => x.ok),
-          );
-          check(
-            `${sc.final} (tốt ăn quân, tới hàng cuối) được chấp nhận`,
-            tmove(sc.final).ok,
-          );
-          const pend = detectPromotion(S());
-          const q0 = at(S(), target);
-          check(
-            "tốt tới hàng cuối → engine chờ phong cấp, hoặc đã tự đổi thành quân khác",
-            pend !== null || (!!q0 && q0.type !== PieceType.PAWN),
-          );
-          if (pend) {
-            check(
-              "Action.promote(Hậu) + dispatch được chấp nhận",
-              tpromote(PieceType.QUEEN).ok,
-            );
-            const q = at(S(), target);
-            check(
-              `${target} là Hậu ${sideLabel}`,
-              q?.type === PieceType.QUEEN && q.side === side,
-            );
-            check("hết chờ phong cấp", detectPromotion(S()) === null);
-            check(
-              `tới lượt ${side === Side.WHITE ? "đen" : "trắng"}`,
-              S().turn === (side === Side.WHITE ? Side.BLACK : Side.WHITE),
-            );
-          }
+        const close = () => {
+          if (c) safe(() => c.destroy());
         };
 
         const head = begin(
           "info",
-          "▶ Bắt đầu bộ test tuyến tính (Room riêng, không ảnh hưởng bàn cờ bên trái)",
+          "▶ Bắt đầu bộ test tuyến tính (controller riêng cho từng nhóm, không ảnh hưởng bàn cờ bên trái)",
           { source: SRC },
         );
         try {
-          group("1. Khởi tạo");
-          T(
-            "new Room(reduce)",
-            { reducer: "reduce" },
-            () => (r = new Room(reduce)),
-            { show: () => "[Room instance]" },
-          );
-          const off = T("room.subscribe", { listener: "<function>" }, () =>
-            r.subscribe((...cb) => {
-              calls++;
-              begin("callback", `listener (auto-test) lần ${calls}`, {
-                source: SRC,
-                args: snap(cb),
-                after: summarize(peekState(r)),
-              });
-            }),
-          ).value;
-          const start = T("room.getState", [], () => r.getState()).value;
-          check("có 32 quân", start.board.pieces.length === 32);
-          check("trắng đi trước", start.turn === Side.WHITE);
-          check("chưa có kết quả", start.result === null);
-          const e2 = at(start, "e2");
-          const legal = read(
-            "getLegalMoves",
-            { state: `#${stateId(start)}`, piece: describePiece(e2, sq("e2")) },
-            () => E("getLegalMoves")(start, e2),
+          /* ---------- 1 ---------- */
+          group("1. plugin + khởi tạo controller (LOCAL)");
+          check("nạp được ../index.js", !!plugin);
+          if (!plugin) throw new Error("không có plugin → dừng bộ test");
+          check(
+            "plugin: id = 'chess', có create() và loadUI()",
+            plugin.id === "chess" && typeof plugin.create === "function" && typeof plugin.loadUI === "function",
           );
           check(
-            "tốt e2 có đúng 2 nước (e3, e4)",
-            normMoves(legal)
-              .map((m) => sqName(m))
-              .sort()
-              .join() === "e3,e4",
+            "GameMode có LOCAL, VS_BOT, BOT, ONLINE",
+            !!GameMode && ["LOCAL", "VS_BOT", "BOT", "ONLINE"].every((k) => k in GameMode),
+          );
+          open("LOCAL");
+          check(
+            "plugin.create({ mode: LOCAL }) trả controller có getView / subscribe / onError / destroy / actions",
+            !!c && ["getView", "subscribe", "onError", "destroy"].every((k) => typeof c[k] === "function") && !!c.actions,
+          );
+          if (!c) throw new Error("không tạo được controller → dừng bộ test");
+          const v0 = CV();
+          L = buildLegend(v0);
+          const W = L?.Side.WHITE,
+            Bk = L?.Side.BLACK;
+          check("lấy được Side / PieceType (enums hoặc suy ra từ thế ban đầu)", !!L);
+          check(
+            "view ban đầu: 8x8, 32 quân, lượt trắng, chưa chọn, canAct = true",
+            v0.rows === 8 && v0.cols === 8 && v0.pieces.length === 32 && v0.turn === W && v0.selectedId === null && v0.canAct === true,
           );
           check(
-            "hasLegalMove(game) = true ở thế ban đầu",
-            read("hasLegalMove", { state: `#${stateId(start)}` }, () =>
-              E("hasLegalMove")(start),
-            ) === true,
+            "view ban đầu: không chiếu, không phong cấp, chưa có kết quả",
+            v0.checkedKing === null && v0.promotion === null && v0.result === null,
           );
+          check("getView() trả cùng tham chiếu khi không có gì đổi", c.getView() === v0);
+
+          /* ---------- 2 ---------- */
+          group("2. Chọn quân → view.targets");
+          let ticks = 0;
+          c.subscribe(() => ticks++);
+          clk("e5");
+          check("bấm ô trống: view giữ nguyên tham chiếu, listener không bị gọi", CV() === v0 && ticks === 0);
+          const e2id = P("e2").id;
+          clk("e2");
+          const v1 = CV();
+          check("bấm e2: selectedId = id tốt e2", v1.selectedId === e2id);
           check(
-            "isInCheck(board, trắng) = false ở thế ban đầu",
-            read("isInCheck", { side: "WHITE" }, () =>
-              E("isInCheck")(start.board, Side.WHITE),
-            ) === false,
+            "bấm e2: targets = e3, e4 (không phải nước ăn quân)",
+            names(v1.targets) === "e3,e4" && v1.targets.every((t) => t.capture === false),
+          );
+          check("bấm e2: listener gọi đúng 1 lần, view là object mới", ticks === 1 && v1 !== v0);
+          clk("e2");
+          check("bấm lại e2: bỏ chọn", CV().selectedId === null);
+          clk("e2");
+          clk("e5");
+          check(
+            "bấm e2 rồi ô không hợp lệ e5: bỏ chọn, quân không di chuyển",
+            CV().selectedId === null && P("e2")?.id === e2id && !P("e5"),
           );
 
-          group("2. Đi 7 nước: e4 e5 Nf3 Nc6 Bc4 Nf6 O-O");
-          const okAll = [
-            "e2e4",
-            "e7e5",
-            "g1f3",
-            "b8c6",
-            "f1c4",
-            "g8f6",
-            "e1g1",
-          ].map((m) => tmove(m));
-          check(
-            "cả 7 nước đều được chấp nhận",
-            okAll.every((x) => x.ok),
-          );
-          const state = S();
-          check("subscribe được gọi 7 lần", calls === 7);
-          check("tới lượt đen", state.turn === Side.BLACK);
+          /* ---------- 3 ---------- */
+          group("3. Đi 7 nước qua clickSquare: e4 e5 Nf3 Nc6 Bc4 Nf6 O-O");
+          const okAll = ["e2e4", "e7e5", "g1f3", "b8c6", "f1c4", "g8f6", "e1g1"].map((m) => mv(m));
+          check(`cả 7 nước đều đi được (${okAll.map((x) => (x ? "✓" : "✗")).join("")})`, okAll.every(Boolean));
+          const vs = CV();
+          check("tới lượt đen, canAct = true, chưa chọn", vs.turn === Bk && vs.canAct === true && vs.selectedId === null);
           check(
             "vua trắng ở g1, xe ở f1 (đã nhập thành)",
-            at(state, "g1")?.type === PieceType.KING &&
-              at(state, "f1")?.type === PieceType.ROOK,
+            !!L && L.typeName(P("g1")?.type) === "KING" && L.typeName(P("f1")?.type) === "ROOK",
           );
-          check("id quân không đổi sau khi đi", e2.id === at(state, "e4")?.id);
+          check("id quân không đổi sau khi đi (tốt e2 → e4)", P("e4")?.id === e2id);
+          check("listener được gọi trong lúc đi", ticks > 1);
 
-          group("3. Nước sai: state phải giữ nguyên");
-          const before = S(),
-            callsBefore = calls;
-          for (const [m, why] of [
-            ["a2a3", "quân trắng khi tới lượt đen"],
-            ["a8a5", "xe đen bị tốt a7 chặn"],
-            ["e5e3", "tốt đi 2 ô khi đã đi rồi"],
-          ])
-            check(`${m} bị từ chối (${why})`, !tmove(m).ok);
-          check("state giữ nguyên đúng object cũ", S() === before);
-          check("subscribe không bị gọi thêm", calls === callsBefore);
+          /* ---------- 4 ---------- */
+          group("4. Thao tác sai: bị bỏ qua, không phá thế cờ");
+          const v4 = CV();
+          clk("a2");
+          check("bấm quân trắng khi tới lượt đen: view giữ nguyên tham chiếu", CV() === v4);
+          clk("a8");
+          clk("a5");
+          check(
+            "xe a8 không tới được a5: bỏ chọn, quân vẫn ở a8",
+            !!P("a8") && !P("a5") && CV().turn === Bk && CV().selectedId === null,
+          );
+          clk("e5");
+          clk("e3");
+          check("tốt đen e5 không đi lùi được e3", !!P("e5") && !P("e3") && CV().turn === Bk && CV().selectedId === null);
 
-          group("4. Hủy đăng ký");
-          T("off()  // hàm do subscribe trả về", [], () => off());
-          tmove("d7d6");
+          /* ---------- 5 ---------- */
+          group("5. Hủy đăng ký + listener lỗi");
+          let n1 = 0;
+          const off1 = c.subscribe(() => n1++);
+          clk("d7");
+          check("subscribe: listener được gọi khi chọn quân", n1 === 1);
+          T("off()  // hàm do subscribe trả về", [], () => off1());
+          clk("d7");
+          check("sau off(): listener không được gọi nữa", n1 === 1);
+          let good = 0;
+          const offBad = c.subscribe(() => {
+            throw new Error("listener lỗi (cố ý để test)");
+          });
+          const offGood = c.subscribe(() => good++);
+          clk("d7");
+          check("listener ném lỗi không làm hỏng listener khác", good === 1);
+          offBad();
+          offGood();
+          clk("d7");
+
+          /* ---------- 6 ---------- */
+          group("6. Restart");
+          restart();
+          const v6 = CV();
+          check("restart: 32 quân, lượt trắng, hết chọn", v6.pieces.length === 32 && v6.turn === W && v6.selectedId === null);
+          clk("e2");
+          check("(chuẩn bị) chọn e2 sau restart", CV().selectedId !== null);
+          restart();
+          check("restart xóa lựa chọn thủ công (id quân giữ nguyên qua ván mới)", CV().selectedId === null && CV().turn === W);
+
+          /* ---------- 7 ---------- */
+          group("7. Chiếu hết (Fool's Mate)");
+          const fm = ["f2f3", "e7e5", "g2g4", "d8h4"].map((m) => mv(m));
+          check("4 nước Fool's Mate đều đi được", fm.every(Boolean));
+          const vm = CV();
+          check("view.result = checkmate, đen thắng", vm.result?.type === "checkmate" && vm.result.winner === Bk);
+          check("view.checkedKing = e1 (vua trắng bị chiếu hết)", !!vm.checkedKing && sqName(vm.checkedKing) === "e1");
+          check("hết ván: canAct = false", vm.canAct === false);
+          clk("a2");
+          check("hết ván: bấm tiếp không đổi gì (view giữ nguyên tham chiếu)", CV() === vm);
+
+          /* ---------- 8 ---------- */
+          const promoCase = (key, target, side, label) => {
+            const sc = SCENARIOS[key];
+            group(`8. Phong cấp (${label}): ${sc.setup.length} nước dựng thế rồi ${sc.final}`);
+            restart();
+            const okS = sc.setup.map((m) => mv(m));
+            check(`${sc.title}: ${sc.setup.length} nước dựng thế đều đi được`, okS.every(Boolean));
+            check(`${sc.final} (tốt ăn quân, tới hàng cuối) đi được`, mv(sc.final));
+            const vp = CV();
+            check(
+              `view.promotion tại ${target}, bên ${label}`,
+              !!vp.promotion && sqName(vp.promotion) === target && vp.promotion.side === side,
+            );
+            if (!vp.promotion) return;
+            const o = vp.promotion.options ?? [];
+            const PT = L?.PieceType ?? {};
+            check(
+              "promotion.options có Hậu, Xe, Tượng, Mã; không có Vua, Tốt",
+              PROMO_NAMES.every((k) => o.includes(PT[k])) && !o.includes(PT.KING) && !o.includes(PT.PAWN),
+            );
+            check("chờ phong cấp: không có quân đang chọn, targets rỗng", vp.selectedId === null && vp.targets.length === 0);
+            clk("e1");
+            check("chờ phong cấp: bấm bàn cờ bị bỏ qua", CV() === vp);
+
+            const errs = [];
+            const offErr = c.onError((e) => errs.push(e));
+            const bad = T("controller.actions.promote(loại sai)", { value: "__khong_ton_tai__" }, () =>
+              c.actions.promote("__khong_ton_tai__"),
+            );
+            check("promote(loại sai): không ném ra ngoài, báo qua onError", bad.ok && errs.length === 1);
+            check("promote(loại sai): vẫn đang chờ phong cấp", !!CV().promotion);
+            offErr();
+
+            T("controller.actions.promote(QUEEN)", { value: PT.QUEEN }, () => c.actions.promote(PT.QUEEN), {
+              show: () => viewBrief(CV()),
+            });
+            const vq = CV();
+            const bq = P(target);
+            check(
+              `promote(Hậu): ${target} là Hậu ${label}, hết chờ phong cấp, đổi lượt`,
+              L?.typeName(bq?.type) === "QUEEN" && bq.side === side && vq.promotion === null && vq.turn !== side,
+            );
+            T("controller.actions.promote(QUEEN)  // khi không chờ", [], () => c.actions.promote(PT.QUEEN));
+            check("promote khi không có tốt chờ: bị bỏ qua, view giữ nguyên", CV() === vq);
+          };
+          promoCase("white", "b8", W, "trắng");
+          promoCase("black", "b1", Bk, "đen");
+
+          /* ---------- 9 ---------- */
+          group("9. Bắt tốt qua đường (kiểm gián tiếp game.enPassantTarget)");
+          restart();
+          const ep = ["e2e4", "a7a6", "e4e5", "d7d5"].map((m) => mv(m));
+          check("4 nước chuẩn bị đi được", ep.every(Boolean));
+          clk("e5");
           check(
-            "sau khi hủy đăng ký, subscribe không được gọi nữa",
-            calls === callsBefore,
+            "targets của e5 có d6 với capture = true (nước bắt tốt qua đường)",
+            CV().targets.find((t) => sqName(t) === "d6")?.capture === true,
+          );
+          clk("d6");
+          check(
+            "exd6 e.p.: tốt trắng ở d6, tốt đen d5 bị ăn (còn 31 quân)",
+            L?.typeName(P("d6")?.type) === "PAWN" && P("d6")?.side === W && !P("d5") && CV().pieces.length === 31,
           );
 
-          group("5. Restart và chiếu hết (Fool's Mate)");
-          T("room.restart", [], () => r.restart());
-          check(
-            "restart về thế ban đầu",
-            S().board.pieces.length === 32 && S().turn === Side.WHITE,
-          );
-          for (const m of ["f2f3", "e7e5", "g2g4", "d8h4"]) tmove(m);
-          const mated = S();
-          check(
-            "chiếu hết, đen thắng",
-            mated.result?.type === "checkmate" &&
-              mated.result.winner === Side.BLACK,
-          );
-          check(
-            "isInCheck(board, trắng) = true sau Fool's Mate",
-            read("isInCheck", { side: "WHITE" }, () =>
-              E("isInCheck")(mated.board, Side.WHITE),
-            ) === true,
-          );
-          check(
-            "hasLegalMove(game) = false sau chiếu hết",
-            read("hasLegalMove", { state: `#${stateId(mated)}` }, () =>
-              E("hasLegalMove")(mated),
-            ) === false,
-          );
-          const oc = read(
-            "evaluateOutcome",
-            { state: `#${stateId(mated)}` },
-            () => E("evaluateOutcome")(mated),
-          );
-          check(
-            "evaluateOutcome(game) khớp state.result",
-            JSON.stringify(snap(oc)) === JSON.stringify(snap(mated.result)),
-          );
-          check("hết ván thì không nhận nước nào nữa", !tmove("a2a3").ok);
+          /* ---------- 10 ---------- */
+          group("10. Chế độ chơi (plugin.create): BOT, VS_BOT, ONLINE, mode lạ");
+          close();
+          open("BOT");
+          check("BOT: tạo được controller, canAct = false (không có người chơi)", !!c && CV().canAct === false);
+          if (c) {
+            const vb = CV();
+            clk("e2");
+            check("BOT: bấm e2 bị bỏ qua (view giữ nguyên tham chiếu)", CV() === vb);
+          }
+          close();
+          open("VS_BOT");
+          check("VS_BOT: tạo được controller", !!c);
+          if (c) {
+            const vv = CV(),
+              can = vv.canAct;
+            check("VS_BOT: canAct là boolean", typeof can === "boolean");
+            clk("e2");
+            check(
+              can
+                ? "VS_BOT: người chơi cầm Trắng → bấm e2 chọn được"
+                : "VS_BOT: người chơi cầm Đen, lượt trắng của bot → bấm e2 bị bỏ qua",
+              can ? CV().selectedId !== null : CV() === vv,
+            );
+            note("VS_BOT / BOT: attachBot đang comment trong index.js nên bot chưa tự đi", "info", { source: SRC });
+          }
+          close();
+          const onl = trace("plugin.create({ mode: ONLINE })", { mode: "ONLINE" }, () => plugin.create({ mode: GM.ONLINE }), {
+            source: SRC,
+            target: () => null,
+          });
+          check("ONLINE: ném lỗi vì cần phòng ghép từ server", !onl.ok);
+          const unk = trace("plugin.create({ mode: 'XYZ' })", { mode: "XYZ" }, () => plugin.create({ mode: "XYZ" }), {
+            source: SRC,
+            target: () => null,
+          });
+          check("mode lạ: ném lỗi", !unk.ok);
 
-          promoCase("white", "b8", Side.WHITE, "trắng");
-          promoCase("black", "b1", Side.BLACK, "đen");
+          /* ---------- 11 ---------- */
+          group("11. destroy");
+          open("LOCAL");
+          let afterN = 0;
+          c.subscribe(() => afterN++);
+          T("controller.destroy()", [], () => c.destroy());
+          const vd = CV();
+          clk("e2");
+          T("controller.actions.restart()  // sau destroy", [], () => c.actions.restart());
+          check("sau destroy: bấm / restart không làm view đổi, listener không được gọi", CV() === vd && afterN === 0);
+          check("destroy lần 2 không ném lỗi", T("controller.destroy()  // lần 2", [], () => c.destroy()).ok);
 
-          group("8. Destroy");
-          T("room.destroy", [], () => r.destroy());
-          check("sau destroy, dispatch bị từ chối", !tmove("e2e4").ok);
+          /* ---------- 12 ---------- */
+          group("12. Hàm bổ sung (chỉ kiểm khi controller đã có — mục 9)");
+          close();
+          open("LOCAL");
+          const L2 = buildLegend(CV());
+          const extra = [];
+          if (typeof c.actions.clearSelection === "function") {
+            clk("e2");
+            T("controller.actions.clearSelection()", [], () => c.actions.clearSelection(), { show: () => viewBrief(CV()) });
+            check("actions.clearSelection: bỏ chọn quân", CV().selectedId === null);
+          } else extra.push("actions.clearSelection");
+          if (typeof c.actions.move === "function") {
+            const id = P("e2").id;
+            T("controller.actions.move(e2→e4)", { id, row: 4, col: 4 }, () => c.actions.move(id, 4, 4), { show: () => viewBrief(CV()) });
+            check("actions.move: đi e2→e4 được", P("e4")?.id === id && CV().turn === L2?.Side.BLACK);
+            const errs = [];
+            const offErr = c.onError((e) => errs.push(e));
+            const vb = CV();
+            const bad = T("controller.actions.move(a7→a4, nước sai)", [], () => c.actions.move(P("a7").id, 4, 0));
+            check("actions.move(nước sai): không ném ra ngoài, báo onError, quân không đổi", bad.ok && errs.length === 1 && !!P("a7") && !P("a4"));
+            offErr();
+          } else extra.push("actions.move");
+          if ("lastMove" in CV()) {
+            restart();
+            mv("e2e4");
+            const lm = CV().lastMove;
+            check("view.lastMove = e2→e4", sqName(lm?.from) === "e2" && sqName(lm?.to) === "e4");
+          } else extra.push("view.lastMove");
+          restart();
+          clk("e2");
+          if (CV().targets.some((t) => "kind" in t)) check("view.targets[i].kind có giá trị cho mọi ô", CV().targets.every((t) => t.kind !== undefined));
+          else extra.push("view.targets[i].kind");
+          let arg;
+          c.subscribe((x) => (arg = x));
+          clk("e2");
+          if (isView(arg)) check("emit(listeners, view): listener nhận view mới nhất", arg === CV());
+          else extra.push("emit(listeners, view)");
+          const en = c.enums ?? CV().enums;
+          if (en?.Side) check("enums: có Side.WHITE / Side.BLACK và PieceType.QUEEN", !!en.Side.WHITE && !!en.Side.BLACK && en.PieceType?.QUEEN !== undefined);
+          else extra.push("controller.enums / view.enums");
+          if (typeof c.loadUI === "function") check("controller.loadUI(): trả về module / component", true);
+          else extra.push("controller.loadUI");
+          if (extra.length) note(`Chưa có (UI đang dùng cách tạm, không tính FAIL): ${extra.join(", ")}`, "info", { source: SRC });
+          close();
         } catch (err) {
           check(`bộ test ném lỗi ngoài dự kiến: ${err.message}`, false);
           console.error(err);
+          close();
         }
         const failed = results.filter((x) => x.pass === false).length;
         head.status = failed ? "error" : "ok";
-        head.result = failed
-          ? `${failed} KIỂM TRA THẤT BẠI`
-          : "TẤT CẢ ĐỀU PASS";
+        head.result = failed ? `${failed} KIỂM TRA THẤT BẠI` : "TẤT CẢ ĐỀU PASS";
         touch();
         document.title = failed === 0 ? "✅ Room test" : "❌ Room test";
         renderTestResults(results);
@@ -3529,21 +3222,21 @@
       function buildPromoUi() {
         $("opt-promo").innerHTML =
           `<option value="ask">hỏi tôi (bấm nút chọn quân)</option>` +
-          PROMO_TYPES.map(
-            ([k]) =>
-              `<option value="auto:${esc(k)}">tự phong ${esc(k)}</option>`,
-          ).join("") +
+          PROMO_NAMES.map((k) => `<option value="auto:${k}">tự phong ${k}</option>`).join("") +
           `<option value="none">không xử lý (chỉ ghi log)</option>`;
         const saved = localStorage.getItem(PROMO_MODE_KEY);
-        if (saved && [...$("opt-promo").options].some((o) => o.value === saved))
-          $("opt-promo").value = saved;
-        $("promo-pick").innerHTML = PROMO_TYPES.map(
-          ([k, v]) =>
-            `<button data-ptype="${esc(k)}"><span class="pcs w">${esc((LETTER[v] ?? "?").toUpperCase())}</span>${esc(k)}</button>`,
+        if (saved && [...$("opt-promo").options].some((o) => o.value === saved)) $("opt-promo").value = saved;
+        $("promo-pick").innerHTML = PROMO_NAMES.map(
+          (k) => `<button data-ptype="${k}"><span class="pcs w">${LETTER[k].toUpperCase()}</span>${k}</button>`,
         ).join("");
         $("sc-hint").innerHTML = Object.values(SCENARIOS)
           .map((s) => `<b>${esc(s.title)}:</b> ${esc(s.hint)}`)
           .join("<br>");
+      }
+      function buildModeSelect() {
+        $("opt-mode").innerHTML = Object.keys(GM)
+          .map((k) => `<option value="${esc(k)}"${k === "LOCAL" ? " selected" : ""}>${esc(k)}</option>`)
+          .join("");
       }
       $("opt-promo").addEventListener("change", () => {
         localStorage.setItem(PROMO_MODE_KEY, $("opt-promo").value);
@@ -3553,43 +3246,34 @@
       $("promo-pick").addEventListener("click", (ev) => {
         const b = ev.target.closest("button[data-ptype]");
         if (!b || replaying) return;
-        doPromote(PieceType[b.dataset.ptype], "ui");
+        doPromote(b.dataset.ptype, "ui");
         updateAll();
       });
       $("sc-white").onclick = () => runScenario("white");
       $("sc-black").onclick = () => runScenario("black");
+      $("btn-ui").onclick = toggleUI;
 
       $("btn-state").onclick = () => {
-        trace("room.getState", [], () => room.getState());
+        if (!ctl) return note("Chưa có controller", "error");
+        trace("controller.getView", [], () => ctl.getView());
         updateAll();
       };
       $("btn-restart").onclick = () => doRestart();
       $("btn-destroy").onclick = doDestroy;
-      $("btn-new").onclick = () => newRoom();
+      $("btn-new").onclick = () => newController();
       $("btn-sub").onclick = () => {
         unsub ? unsubscribe() : subscribe();
         updateAll();
       };
       $("btn-move").onclick = () => consoleMove($("in-move").value);
-      $("btn-legal").onclick = () => consoleLegal($("in-sq").value);
+      $("btn-legal").onclick = () => consoleSquare($("in-sq").value);
       $("btn-replay").onclick = replay;
       $("btn-auto").onclick = runAutoTests;
       $("api-run").onclick = runApi;
-      $("api-sb-reset").onclick = () => {
-        sandbox = null;
-        note(
-          "Đã tạo lại sandbox (Room phụ) — lần gọi tới sẽ dùng Room mới",
-          "info",
-          { source: "console" },
-        );
-      };
       $("opt-flip").addEventListener("change", renderBoard);
       $("opt-label").addEventListener("change", renderBoard);
       $("opt-size").addEventListener("input", (ev) =>
-        document.documentElement.style.setProperty(
-          "--cell",
-          ev.target.value + "px",
-        ),
+        document.documentElement.style.setProperty("--cell", ev.target.value + "px"),
       );
       for (const [inp, btn] of [
         ["in-move", "btn-move"],
@@ -3600,9 +3284,7 @@
         });
 
       $("btn-export").onclick = () => {
-        const blob = new Blob([JSON.stringify(events, null, 2)], {
-          type: "application/json",
-        });
+        const blob = new Blob([JSON.stringify(events, null, 2)], { type: "application/json" });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
         a.download = `room-test-history-${Date.now()}.json`;
@@ -3622,21 +3304,23 @@
        * ===================================================================== */
       renderBanner();
       buildPromoUi();
-      newRoom();
+      buildModeSelect();
+      applyUiVisibility();
       renderTestResults([]);
-      buildRoomTargets();
-      buildSelect();
-      renderApi();
-      renderFns();
-      loadApi().catch((err) =>
-        note(`Quét API thất bại: ${err.message}`, "error"),
-      );
+      await newController();
+      renderCtlApi();
       showTab("log");
 
-      // Tiện gõ thử trong DevTools console: t.room, t.engine, t.events, t.trace(...)
+      // Tiện gõ thử trong DevTools console: t.ctl, t.plugin, t.events, t.trace(...)
       window.t = {
-        get room() {
-          return room;
+        get ctl() {
+          return ctl;
+        },
+        get view() {
+          return V();
+        },
+        get legend() {
+          return legend;
         },
         get events() {
           return events;
@@ -3644,18 +3328,15 @@
         get ret() {
           return lastRet;
         },
-        engine,
-        resolved,
-        MoveKind,
-        E,
+        plugin,
+        GameMode: GM,
         trace,
         snap,
-        Action,
-        Side,
-        PieceType,
         sq,
         sqName,
-        detectPromotion,
+        viewBrief,
+        mountUI,
+        unmountUI,
       };
     </script>
   </body>

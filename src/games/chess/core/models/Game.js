@@ -80,7 +80,6 @@ export class Game {
   with(changes) {
     return new Game({ ...this, ...changes });
   }
-
   //Random
   /**
    * Tạo ván cờ ngẫu nhiên nhưng cân bằng cho hai bên:

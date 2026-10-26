@@ -18,8 +18,6 @@ export const GameMode = Object.freeze({
   ONLINE: "ONLINE", // human x human
 });
 
-//
-
 /**
  * DEV NOTE
  * Luôn để quân Trắng đi trước, còn random bên sẽ quyết định người chơi nào được cầm quân Trắng
@@ -37,16 +35,14 @@ export default {
    * Nút "Ván mới" gọi controller.actions.restart().
    *
    * @param {object} [options]
-   * @param {GameMode[keyof typeof GameMode]} [options.mode=GameMode.VS_BOT]
+   * @param {(typeof GameMode)[keyof typeof GameMode]} [options.mode=GameMode.VS_BOT]
    * @param {number} [options.botDelay=400]
    */
   create(options = {}) {
     const { mode = GameMode.VS_BOT, botDelay = 400 } = options;
 
-
-
-    let humanSides = [];
-    let botSides = [];
+    /** @type {typeof Side[keyof typeof Side][]} */ let humanSides = [];
+    /** @type {typeof Side[keyof typeof Side][]} */ let botSides = [];
 
     switch (mode) {
       case GameMode.VS_BOT: {
@@ -74,28 +70,31 @@ export default {
       default:
         throw new Error(`Unsupported game mode: ${mode}`);
     }
-    
-    const room = new Room();
-    let bot = null;
 
+    const room = new Room();
+    // INIT BOT
+    // let bot = null;
+    // END
     const controller = createController({
       room,
-      humanSides,
+      sides: humanSides,
       dispose: () => {
-        bot?.stop();
+        // bot?.stop();
         room.destroy();
       },
     });
-
-    if (botSides.length > 0) {
-      bot = attachBot(room, {
-        sides: botSides,
-        delay: botDelay,
-      });
-    }
+    // INIT BOT
+    // if (botSides.length > 0) {
+    //   bot = attachBot(room, {
+    //     sides: botSides,
+    //     delay: botDelay,
+    //   });
+    // }
+    // END
 
     return controller;
   },
 
+  // @ts-ignore
   loadUI: () => import("./ui/index.js"), // lazy
 };

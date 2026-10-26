@@ -8,10 +8,10 @@
   <body style="background-color: black"></body>
   <script type="module">
     import chess,{GameMode } from "../index.js";
-
-    console.log(chess);
-    chess = chess.create({ mode: GameMode.VS_BOT });
-    console.log(chess);
+    console.log("01:",chess);
+    const game = chess.create({ mode: GameMode.VS_BOT });
+    console.log(game);
+    
   </script>
   <!-- BOARD 8x8 (0-7)
 .   A   B   C   D   E   F   G   H
