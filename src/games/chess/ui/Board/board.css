@@ -1,0 +1,19 @@
+.chess-root .board {
+  display: grid;
+  /* grid-template-columns do JS đặt inline theo cols */
+  width: min(100%, 640px);
+  aspect-ratio: 1;
+
+  user-select: none;
+  cursor: pointer;
+}
+
+.chess-root .board>*:focus-visible {
+  outline: 2px solid var(--frame);
+  outline-offset: -2px;
+}
+
+.chess-root .board.locked {
+  filter: saturate(0.6) brightness(0.95);
+  cursor: default;
+}

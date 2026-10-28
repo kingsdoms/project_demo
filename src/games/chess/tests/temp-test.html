@@ -5,13 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
-  <body style="background-color: black"></body>
+  <body style="background-color: black">
+    <div id="ui-host"></div>
+  </body>
   <script type="module">
     import chess, { GameMode } from "../index.js";
-    const controller = chess.create({ mode: GameMode.VS_BOT });
-    console.log(chess.loadUI());
+    const controller = chess.create({ mode: GameMode.LOCAL });
 
-
-
+    const container = document.getElementById("ui-host");
+    if (!container) console.error("Missing #ui-host element");
+    else {
+      const ui = await chess.loadUI();
+      ui.mount(container, controller);
+    }
+    console.log("tf");
+    
   </script>
-  </html>
+</html>
+<!-- 
+npm run dev
+http://localhost:5173/src/games/chess/tests/temp-test.html
+-->

@@ -10,7 +10,6 @@ import { toView } from "./toview.js";
 import { Room } from "../core/engine/room.js";
 import { Side } from "../core/constants/Side.js";
 import { Game } from "../core/models/Game.js";
-import { PieceType } from "../core/constants/PieceType.js";
 /**
  * @typedef {Readonly<{
  *   selectedId: string | null

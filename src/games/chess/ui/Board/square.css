@@ -1,0 +1,160 @@
+.chess-root .board-cell {
+  position: relative;
+  aspect-ratio: 1;
+  min-width: 0;
+  isolation: isolate;
+
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+/* Bảng màu kem - xanh rêu */
+.chess-root .board-cell--light {
+  background: var(--chess-light, #E9DFC9);
+}
+
+.chess-root .board-cell--dark {
+  background: var(--chess-dark, #688875);
+}
+
+/* Hover: viền vàng dịu, không đổi màu nền ô */
+.chess-root .board-cell:hover:not(.selected) {
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 250, 232, 0.55),
+    inset 0 0 0 4px rgba(218, 177, 78, 0.75);
+}
+
+/* Ô đang chọn */
+.chess-root .board-cell.selected {
+  background: var(--chess-selected, #EAC66D);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 252, 236, 0.85),
+    inset 0 0 0 5px rgba(155, 116, 38, 0.48);
+}
+
+/* Không hiển thị hover khi bàn cờ bị khóa */
+.chess-root .board.locked .board-cell:hover {
+  box-shadow: none;
+}
+
+/* Trạng thái focus cho thao tác bằng bàn phím */
+.chess-root .board-cell:focus-visible {
+  outline: 3px solid var(--chess-focus, #F0C96B);
+  outline-offset: -3px;
+  z-index: 2;
+}
+
+/* Nước đi hợp lệ: chấm tròn nhỏ ở giữa ô */
+.chess-root .board-cell.target::after {
+  content: "";
+  position: absolute;
+  inset: 37%;
+  border-radius: 50%;
+  background: rgba(35, 57, 43, 0.53);
+  border: 2px solid rgba(255, 250, 231, 0.75);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Có thể ăn quân: chỉ hiển thị 4 góc */
+.chess-root .board-cell.capture::after {
+  content: "";
+  position: absolute;
+  inset: 6%;
+  --corner-size: 28%;
+  --corner-thickness: clamp(2px, 0.55vw, 4px);
+  --corner-color: rgba(190, 74, 65, 0.9);
+
+  background:
+    /* Góc trên trái */
+    linear-gradient(var(--corner-color), var(--corner-color))
+      top left / var(--corner-size) var(--corner-thickness) no-repeat,
+    linear-gradient(var(--corner-color), var(--corner-color))
+      top left / var(--corner-thickness) var(--corner-size) no-repeat,
+
+    /* Góc trên phải */
+    linear-gradient(var(--corner-color), var(--corner-color))
+      top right / var(--corner-size) var(--corner-thickness) no-repeat,
+    linear-gradient(var(--corner-color), var(--corner-color))
+      top right / var(--corner-thickness) var(--corner-size) no-repeat,
+
+    /* Góc dưới trái */
+    linear-gradient(var(--corner-color), var(--corner-color))
+      bottom left / var(--corner-size) var(--corner-thickness) no-repeat,
+    linear-gradient(var(--corner-color), var(--corner-color))
+      bottom left / var(--corner-thickness) var(--corner-size) no-repeat,
+
+    /* Góc dưới phải */
+    linear-gradient(var(--corner-color), var(--corner-color))
+      bottom right / var(--corner-size) var(--corner-thickness) no-repeat,
+    linear-gradient(var(--corner-color), var(--corner-color))
+      bottom right / var(--corner-thickness) var(--corner-size) no-repeat;
+
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Chuyển động ngắn, nhẹ khi xuất hiện dấu nước đi */
+@media (prefers-reduced-motion: no-preference) {
+  .chess-root .board-cell.target::after {
+    animation: chess-target-in 150ms ease-out;
+  }
+
+  .chess-root .board-cell.capture::after {
+    animation: chess-capture-in 180ms ease-out;
+  }
+}
+
+@keyframes chess-target-in {
+  from {
+    opacity: 0;
+    transform: scale(0.65);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes chess-capture-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+.chess-root .board-cell.check {
+  animation: chess-check-flash 800ms ease-in-out infinite;
+}
+
+@keyframes chess-check-flash {
+  0%, 100% {
+    background-color: rgba(220, 53, 69, 0.18);
+    box-shadow: inset 0 0 0 2px rgba(220, 53, 69, 0.65);
+  }
+
+  50% {
+    background-color: rgba(220, 53, 69, 0.65);
+    box-shadow:
+      inset 0 0 0 4px rgba(190, 35, 50, 0.95),
+      inset 0 0 12px rgba(220, 53, 69, 0.3);
+  }
+}
+
+/* Tôn trọng cài đặt giảm chuyển động của hệ thống */
+@media (prefers-reduced-motion: reduce) {
+  .chess-root .board-cell.check {
+    animation: none;
+    background-color: rgba(220, 53, 69, 0.35);
+    box-shadow: inset 0 0 0 3px rgba(190, 35, 50, 0.9);
+  }
+}

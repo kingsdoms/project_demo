@@ -1,0 +1,24 @@
+/* ô là container để quân tự co theo kích thước ô */
+.chess-root .board-cell {
+  container-type: inline-size;
+}
+
+.chess-root .piece {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80cqw;       /* theo chiều rộng của ô */
+  line-height: 1;
+}
+
+.chess-root .piece--white {
+  color: #fff;
+  -webkit-text-stroke: 0.5px #222;
+}
+
+.chess-root .piece--black {
+  color: #222;
+  -webkit-text-stroke: 0px #000;
+}
