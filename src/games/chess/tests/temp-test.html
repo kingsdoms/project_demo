@@ -10,7 +10,7 @@
   </body>
   <script type="module">
     import chess, { GameMode } from "../index.js";
-    const controller = chess.create({ mode: GameMode.LOCAL });
+    const controller = chess.create({ mode: GameMode.BOT });
 
     const container = document.getElementById("ui-host");
     if (!container) console.error("Missing #ui-host element");

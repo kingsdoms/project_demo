@@ -14,6 +14,7 @@ import { getAllLegalMoves } from "../core/engine/legalMoves.js";
 /**
  * @typedef {import("../core/models/Game.js").Game} Game
  * @typedef {import("../core/models/Action.js").Action} ActionT
+ * @typedef {{ id: string, row: number, col: number, kind: string }} Move
  */
 
 /**
@@ -21,12 +22,13 @@ import { getAllLegalMoves } from "../core/engine/legalMoves.js";
  * ở ô đích mà nằm cùng hàng với tốt đi, cùng cột với ô đích.
  *
  * @param {Game} game
- * @param {{ id: string, row: number, col: number, kind: string }} move
+ * @param {Move} move
  * @returns {number}
  */
 function captureValue(game, move) {
   const board = game.board;
-  if (move.kind === MoveKind.EN_PASSANT) return PIECE_DEFS[PieceType.PAWN].value;
+  if (move.kind === MoveKind.EN_PASSANT)
+    return PIECE_DEFS[PieceType.PAWN].value;
   const target = board.pieceAt(move.row, move.col);
   return target === null ? 0 : PIECE_DEFS[target.type].value;
 }
@@ -38,6 +40,10 @@ function captureValue(game, move) {
  * @returns {(game: Game) => ActionT | null}
  */
 export function createSimpleBot({ rng = Math.random } = {}) {
+  /**
+   * @param {Move[]} list
+   * @returns {Move}
+   */
   const pick = (list) => list[Math.floor(rng() * list.length)];
 
   return function chooseBotAction(game) {
@@ -50,6 +56,7 @@ export function createSimpleBot({ rng = Math.random } = {}) {
     if (moves.length === 0) return null;
 
     let best = 0;
+    /** @type {Move[]} */
     let bestMoves = [];
     for (const m of moves) {
       const v = captureValue(game, m);

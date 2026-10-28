@@ -11,6 +11,8 @@ import { Room } from "./core/engine/room.js";
 import { Side, randomSide, OPPONENT } from "./core/constants/Side.js";
 import { createController } from "./controller/createController.js";
 import { PieceType } from "./core/constants/PieceType.js";
+import { createSimpleBot, chooseBotAction } from "./bot/simpleBot.js";
+import { attachBot } from "./bot/attachBot.js";
 
 export const GameMode = Object.freeze({
   VS_BOT: "VS_BOT", // human x bot
@@ -71,27 +73,23 @@ export default {
       default:
         throw new Error(`Unsupported game mode: ${mode}`);
     }
-
     const room = new Room();
-    // INIT BOT
-    // let bot = null;
-    // END
+    let bot = null;
     const controller = createController({
       room,
       sides: humanSides,
       dispose: () => {
-        // bot?.stop();
+        bot?.stop();
         room.destroy();
       },
     });
-    // INIT BOT
-    // if (botSides.length > 0) {
-    //   bot = attachBot(room, {
-    //     sides: botSides,
-    //     delay: botDelay,
-    //   });
-    // }
-    // END
+
+    if (botSides.length > 0) {
+      bot = attachBot(room, {
+        sides: botSides,
+        delay: botDelay,
+      });
+    }
 
     return controller;
   },
