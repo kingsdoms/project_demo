@@ -4,6 +4,7 @@
  */
 
 import { Game } from "../models/Game.js";
+import { Action } from "../models/Action.js";
 import { GameError } from "../../utils/GameError.js";
 import { ErrorCode } from "../constants/ErrorCode.js";
 import { reduce } from "./reduce.js";
@@ -13,7 +14,7 @@ import { reduce } from "./reduce.js";
  * khi state thay đổi.
  *
  * Room không trực tiếp xử lý luật cờ vua. Luật được thực thi bởi hàm
- * reduce(game, action) được truyền từ bên ngoài.
+ * reduce(game, action) (xem reduce.js).
  *
  * Luồng xử lý của room.dispatch(action):
  * 1. Kiểm tra room còn hoạt động và action đúng kiểu Action.
@@ -28,16 +29,23 @@ import { reduce } from "./reduce.js";
  * Kết quả ván cờ được lưu trong game.result và do reduce cập nhật.
  */
 export class Room {
+  /** @type {Game} */
   #game;
   #reduce;
   #listeners = new Set();
   #alive = true;
 
+  /** Tạo phòng với ván cờ chuẩn ở trạng thái ban đầu. */
   constructor() {
     this.#reduce = reduce;
     this.#game = Game.initialStandard();
   }
 
+  /**
+   * Lấy trạng thái ván cờ hiện tại.
+   *
+   * @returns {Game} Game hiện tại, bất biến.
+   */
   getState() {
     return this.#game;
   }
@@ -45,7 +53,7 @@ export class Room {
   /**
    * Phân phối action để cập nhật trạng thái game.
    *
-   * @param {import("../models/Action.js").Action} action - Hành động cần thực hiện.
+   * @param {Action} action - Hành động cần thực hiện.
    */
   dispatch(action) {
     this.#assertAlive();
@@ -57,8 +65,8 @@ export class Room {
   /**
    * Đăng ký hàm lắng nghe khi trạng thái game thay đổi.
    *
-   * @param {() => void} fn - Hàm được gọi khi có cập nhật.
-   * @returns {() => void} Hàm dùng để hủy đăng ký lắng nghe.
+   * @param {(game: Game) => void} fn - Hàm được gọi với game mới khi có cập nhật.
+   * @returns {() => boolean} Hàm dùng để hủy đăng ký lắng nghe.
    */
   subscribe(fn) {
     this.#assertAlive();
@@ -66,17 +74,19 @@ export class Room {
     return () => this.#listeners.delete(fn);
   }
 
+  /** Đặt lại ván cờ chuẩn ban đầu và thông báo cho subscriber. */
   restart() {
     this.#assertAlive();
     this.#game = Game.initialStandard();
     this.#notify();
   }
 
+  /** Đóng phòng: xoá toàn bộ subscriber, mọi thao tác sau đó đều ném lỗi. */
   destroy() {
     this.#alive = false;
     this.#listeners.clear();
   }
-  
+
   /**
    * Thông báo cho tất cả listener đã đăng ký khi state thay đổi.
    *

@@ -9,11 +9,26 @@ import { PIECE_DEFS } from "../constants/PieceDefs.js";
 
 import { Board } from "./Board.js";
 import { Piece } from "./Piece.js";
+import { Square } from "./Square.js";
+
 import {
   BACK_RANK,
   STANDARD_ROWS,
   STANDARD_COLS,
 } from "../constants/StandardDef.js";
+
+/**
+ * @typedef {import("../constants/Side.js").SideValue} SideValue
+ * 
+ * @typedef {Object} EnPassantTarget
+ * @property {number} row - Hàng của ô mà tốt đối phương có thể bắt qua đường.
+ * @property {number} col - Cột của ô mà tốt đối phương có thể bắt qua đường.
+
+ * @typedef {Object} OutcomeResult
+ * @property {import("../constants/OutcomeType.js").OutcomeTypeValue} type - Loại kết quả, ví dụ "checkmate", "stalemate".
+ * @property {SideValue | null} winner - Phe thắng, hoặc `null` nếu hoà.
+ */
+
 /**
  * Trạng thái hiện tại của một ván cờ.
  *
@@ -25,10 +40,10 @@ export class Game {
   /**
    * @param {object} options
    * @param {Board} options.board
-   * @param {Side[keyof typeof Side]} [options.turn=Side.WHITE]
-   * @param {{ row: number, col: number } | null} [options.enPassantTarget=null]
+   * @param {SideValue} [options.turn=Side.WHITE]
+   * @param {Square | null} [options.enPassantTarget=null]
    * @param {string | null} [options.pendingPromotion=null]
-   * @param {{ type: string, winner: typeof Side[keyof typeof Side] | null } | null} [options.result=null]
+   * @param {OutcomeResult | null} [options.result=null]
    */
   constructor({
     board,
@@ -43,6 +58,23 @@ export class Game {
     this.pendingPromotion = pendingPromotion;
     this.result = result;
     Object.freeze(this);
+  }
+
+  /**
+   * Trả về Game mới với các trường được cập nhật.
+   * Không thay đổi Game hiện tại.
+   *
+   * @param {Partial<{
+   *   board: Board,
+   *   turn: SideValue,
+   *   enPassantTarget: Square | null,
+   *   pendingPromotion: string | null,
+   *   result: OutcomeResult | null
+   * }>} changes
+   * @returns {Game}
+   */
+  with(changes) {
+    return new Game({ ...this, ...changes });
   }
 
   // Tạo ván mới ở thế ban đầu. room.restart() gọi hàm này.
@@ -64,22 +96,6 @@ export class Game {
     return new Game({ board: new Board(STANDARD_ROWS, STANDARD_COLS, pieces) });
   }
 
-  /**
-   * Trả về Game mới với các trường được cập nhật.
-   * Không thay đổi Game hiện tại.
-   *
-   * @param {Partial<{
-   *   board: Board,
-   *   turn: typeof Side[keyof typeof Side],
-   *   enPassantTarget: { row: number, col: number } | null,
-   *   pendingPromotion: string | null,
-   *   result: { type: string, winner: typeof Side[keyof typeof Side] | null } | null
-   * }>} changes
-   * @returns {Game}
-   */
-  with(changes) {
-    return new Game({ ...this, ...changes });
-  }
   //Random
   /**
    * Tạo ván cờ ngẫu nhiên nhưng cân bằng cho hai bên:
@@ -100,7 +116,7 @@ export class Game {
   } = {}) {
     const maxPieces = BACK_RANK.length * 2;
     const minSize = Math.min(Math.max(minPieces, 2), maxPieces);
- 
+
     const MAX_PER_TYPE = new Map([
       [PieceType.QUEEN, 2],
       [PieceType.ROOK, 3],
@@ -108,7 +124,7 @@ export class Game {
       [PieceType.KNIGHT, 3],
       [PieceType.PAWN, STANDARD_COLS],
     ]);
- 
+
     /**
      * Số nguyên ngẫu nhiên trong đoạn [min, max] (gồm cả hai đầu).
      * @param {number} min Giá trị nhỏ nhất.
@@ -116,7 +132,7 @@ export class Game {
      * @returns {number}
      */
     const randInt = (min, max) => min + Math.floor(rng() * (max - min + 1));
- 
+
     /**
      * Xáo trộn mảng tại chỗ (Fisher-Yates) và trả về chính mảng đó.
      * @template T
@@ -130,7 +146,7 @@ export class Game {
       }
       return arr;
     };
- 
+
     /**
      * Tổng điểm của một đội quân, lấy từ PIECE_DEFS.
      * @param {(typeof PieceType)[keyof typeof PieceType][]} types Danh sách loại quân.
@@ -138,7 +154,7 @@ export class Game {
      */
     const armyValue = (types) =>
       types.reduce((sum, t) => sum + PIECE_DEFS[t].value, 0);
- 
+
     /**
      * Lấy ra một cột trống từ danh sách (đã xáo trộn); báo lỗi nếu hết chỗ.
      * @param {number[]} cols Danh sách cột còn trống (bị pop trực tiếp).
@@ -149,7 +165,7 @@ export class Game {
       if (col === undefined) throw new Error("Không còn cột trống để đặt quân");
       return col;
     };
- 
+
     /**
      * Tạo danh sách loại quân cho 1 bên: luôn có 1 vua + (size - 1) quân rút
      * ngẫu nhiên từ "túi" có giới hạn theo MAX_PER_TYPE.
@@ -165,7 +181,7 @@ export class Game {
       shuffle(bag);
       return [PieceType.KING, ...bag.slice(0, size - 1)];
     };
- 
+
     /**
      * Tạo hai đội quân cùng số lượng và có tổng điểm chênh nhau <= tolerance.
      * Nếu thử 200 lần mà không đạt thì bên thứ hai dùng đúng thành phần quân của bên thứ nhất.
@@ -180,7 +196,7 @@ export class Game {
       }
       return [a, shuffle([...a])];
     };
- 
+
     /**
      * Đặt quân của 1 bên vào hai hàng của mình:
      *  - Vua: luôn ở hàng sau.
@@ -195,10 +211,10 @@ export class Game {
       const frontRow = side === Side.BLACK ? 1 : STANDARD_ROWS - 2;
       const freeBack = shuffle([...Array(STANDARD_COLS).keys()]);
       const freeFront = shuffle([...Array(STANDARD_COLS).keys()]);
- 
+
       /** @type {Piece[]} */
       const pieces = [];
- 
+
       /**
        * Tạo một quân và thêm vào danh sách kết quả.
        * @param {(typeof PieceType)[keyof typeof PieceType]} type Loại quân.
@@ -209,13 +225,13 @@ export class Game {
       const put = (type, row, col) => {
         pieces.push(new Piece({ type, side, row, col }));
       };
- 
+
       put(PieceType.KING, backRow, takeCol(freeBack));
- 
+
       for (const type of types) {
         if (type === PieceType.PAWN) put(type, frontRow, takeCol(freeFront));
       }
- 
+
       const slots = [
         ...freeBack.map((col) => ({ row: backRow, col })),
         ...freeFront.map((col) => ({ row: frontRow, col })),
@@ -226,13 +242,13 @@ export class Game {
         if (!slot) throw new Error("Không còn ô trống để đặt quân");
         put(type, slot.row, slot.col);
       }
- 
+
       return pieces;
     };
- 
+
     const size = randInt(minSize, maxPieces);
     const [whiteTypes, blackTypes] = balancedArmies(size);
- 
+
     const pieces = [
       ...placeArmy(blackTypes, Side.BLACK),
       ...placeArmy(whiteTypes, Side.WHITE),

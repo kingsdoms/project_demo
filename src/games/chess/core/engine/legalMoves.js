@@ -3,75 +3,82 @@
  * @author tuanca
  */
 
-// Nước đi hợp lệ: chạy đúng các rule mà reduce dùng, nên "hợp lệ ở đây" và "reduce chấp nhận"
-// luôn khớp nhau. Chỉ đọc, không đổi state. UI và bot import các hàm ở file này.
+// Nước đi hợp lệ: chạy đúng `validate` mà reduce dùng, nên "hợp lệ ở đây" và
+// "reduce chấp nhận" luôn khớp nhau. Chỉ đọc, không đổi state.
+// UI và bot import các hàm ở file này.
 
-import { MoveKind } from "../constants/MoveKind.js";
-import { PieceType } from "../constants/PieceType.js";
-import { buildMoveInput, classifyMove } from "./buildMoves.js";
-import { RULES_BY_KIND, passes } from "./ruleset.js";
-import { movementSquares } from "./squaresMoves.js";
+import { MOVES, findMove, validate } from "../moves/index.js";
 
 /**
  * @typedef {import("../models/Piece.js").Piece} Piece
  * @typedef {import("../models/Game.js").Game} Game
- * @typedef {import("../models/Board.js").Board} Board
+ * @typedef {import("../moves/index.js").Move} Move
+ * @typedef {import("../moves/index.js").Position} Position
+ * @typedef {import("../constants/MoveKind.js").MoveKindValue} MoveKindValue
  */
 
 /**
- * Tạo danh sách các ô đích ứng viên cho một quân cờ.
+ * Một nước đi hợp lệ của một quân.
  *
- * Bao gồm các ô đi theo quy tắc di chuyển thông thường, các ô đích nhập
- * thành của vua và ô đích bắt tốt qua đường của tốt khi có thể áp dụng.
- * Đây chỉ là tập hợp ứng viên; tính hợp lệ thực tế của từng nước đi
- * được xác định bởi hệ thống rule.
+ * @typedef {Object} LegalMove
+ * @property {number} row - Hàng của ô đích.
+ * @property {number} col - Cột của ô đích.
+ * @property {MoveKindValue} kind - Loại nước đi.
+ */
+
+/**
+ * Một nước đi hợp lệ kèm id quân thực hiện.
+ *
+ * @typedef {LegalMove & { id: string }} LegalMoveWithId
+ */
+
+/**
+ * Gom các ô đích ứng viên của một quân từ `candidates` của từng loại nước đi,
+ * bỏ ô trùng và ô nằm ngoài bàn.
+ *
+ * Đây chỉ là tập ứng viên; tính hợp lệ thực tế của từng nước đi được xác định
+ * bởi `validate`.
  *
  * @param {Game} game - Trạng thái ván cờ hiện tại.
  * @param {Piece} piece - Quân cờ cần tìm các ô đích ứng viên.
- * @returns {{ row: number, col: number }[]} Danh sách tọa độ các ô đích ứng viên.
+ * @param {Move[]} moves - Bộ nước đi được sử dụng.
+ * @returns {Position[]} Danh sách tọa độ các ô đích ứng viên, không trùng.
  */
-function candidateSquares(game, piece) {
+function candidateSquares(game, piece, moves) {
   const board = game.board;
+  /** @type {Set<string>} */
   const seen = new Set();
-  /** @type {{ row: number, col: number }[]} */
+  /** @type {Position[]} */
   const out = [];
-  // @ts-ignore
-  const add = (row, col) => {
-    const key = `${row},${col}`;
-    if (seen.has(key) || !board.inBounds(row, col)) return;
-    seen.add(key);
-    out.push({ row, col });
-  };
 
-  for (const sq of movementSquares(board, piece)) add(sq.row, sq.col);
-
-  if (piece.type === PieceType.KING) {
-    add(piece.row, piece.col - 2);
-    add(piece.row, piece.col + 2);
+  for (const move of moves) {
+    for (const { row, col } of move.candidates(game, piece)) {
+      const key = `${row},${col}`;
+      if (seen.has(key) || !board.inBounds(row, col)) continue;
+      seen.add(key);
+      out.push({ row, col });
+    }
   }
-  if (piece.type === PieceType.PAWN && game.enPassantTarget !== null)
-    add(game.enPassantTarget.row, game.enPassantTarget.col);
   return out;
 }
 
 /**
  * Sinh lần lượt các nước đi hợp lệ của một quân cờ trong trạng thái game hiện tại.
  *
- * Duyệt các ô đích ứng viên, phân loại từng nước đi và dùng hệ thống rule
- * để kiểm tra tính hợp lệ. Dùng generator để mỗi nước đi được trả về khi
- * cần, thay vì tạo toàn bộ danh sách cùng lúc.
+ * Với mỗi ô ứng viên: tìm loại nước đi khớp bằng `findMove`, rồi xác thực bằng
+ * `validate` (check chung trước, check riêng của loại nước đi sau). Dùng
+ * generator để mỗi nước đi được trả về khi cần, thay vì tạo toàn bộ danh sách.
  *
  * @param {Game} game - Trạng thái ván cờ hiện tại.
  * @param {Piece} piece - Quân cờ cần tìm nước đi hợp lệ.
- * @yields {Action} Mỗi hành động di chuyển hợp lệ của quân cờ.
+ * @param {Move[]} moves - Bộ nước đi được sử dụng.
+ * @returns {Generator<LegalMove, void, undefined>} Mỗi nước đi hợp lệ của quân cờ.
  */
-function* iterateLegalMoves(game, piece) {
-  for (const { row, col } of candidateSquares(game, piece)) {
-    const kind = classifyMove(game, piece, row, col);
-    if (
-      passes(RULES_BY_KIND[kind], buildMoveInput(game, piece, row, col, kind))
-    )
-      yield { row, col, kind };
+function* iterateLegalMoves(game, piece, moves) {
+  for (const { row, col } of candidateSquares(game, piece, moves)) {
+    const move = findMove(game, piece, row, col, moves);
+    if (move !== undefined && validate(move, game, piece, row, col) === null)
+      yield { row, col, kind: move.kind };
   }
 }
 
@@ -83,28 +90,30 @@ function* iterateLegalMoves(game, piece) {
  *
  * @param {Game} game - Trạng thái ván cờ hiện tại.
  * @param {Piece} piece - Quân cờ cần lấy các nước đi hợp lệ.
- * @returns {{ row: number, col: number, kind: typeof MoveKind[keyof typeof MoveKind] }[]}
- * Danh sách nước đi hợp lệ, mỗi phần tử gồm tọa độ đích và loại nước đi.
+ * @param {Move[]} [moves=MOVES] - Bộ nước đi được sử dụng.
+ * @returns {LegalMove[]} Danh sách nước đi hợp lệ, mỗi phần tử gồm tọa độ đích và loại nước đi.
  */
-export function getLegalMoves(game, piece) {
-  return [...iterateLegalMoves(game, piece)];
+export function getLegalMoves(game, piece, moves = MOVES) {
+  return [...iterateLegalMoves(game, piece, moves)];
 }
 
 /**
  * Lấy toàn bộ nước đi hợp lệ của bên đang tới lượt.
  *
  * Duyệt các quân thuộc bên đang tới lượt và tổng hợp những nước đi
- * hợp lệ của từng quân. Mỗi nước đi bao gồm ID quân cờ, tọa độ đích
+ * hợp lệ của từng quân. Mỗi nước đi bao gồm id quân cờ, tọa độ đích
  * và loại nước đi.
  *
  * @param {Game} game - Trạng thái ván cờ hiện tại.
- * @returns {{ id: string, row: number, col: number, kind: typeof MoveKind[keyof typeof MoveKind] }[]}
- * Danh sách toàn bộ nước đi hợp lệ của bên đang tới lượt.
+ * @param {Move[]} [moves=MOVES] - Bộ nước đi được sử dụng.
+ * @returns {LegalMoveWithId[]} Danh sách toàn bộ nước đi hợp lệ của bên đang tới lượt.
  */
-export function getAllLegalMoves(game) {
+export function getAllLegalMoves(game, moves = MOVES) {
   return game.board.pieces
     .filter((p) => p.side === game.turn)
-    .flatMap((p) => getLegalMoves(game, p).map((m) => ({ id: p.id, ...m })));
+    .flatMap((p) =>
+      getLegalMoves(game, p, moves).map((m) => ({ id: p.id, ...m })),
+    );
 }
 
 /**
@@ -114,12 +123,13 @@ export function getAllLegalMoves(game) {
  * các nước đi có thể có.
  *
  * @param {Game} game - Trạng thái ván cờ hiện tại.
+ * @param {Move[]} [moves=MOVES] - Bộ nước đi được sử dụng.
  * @returns {boolean} `true` nếu còn ít nhất một nước đi hợp lệ, ngược lại là `false`.
  */
-export function hasLegalMove(game) {
+export function hasLegalMove(game, moves = MOVES) {
   for (const piece of game.board.pieces) {
     if (piece.side !== game.turn) continue;
-    if (!iterateLegalMoves(game, piece).next().done) return true;
+    if (!iterateLegalMoves(game, piece, moves).next().done) return true;
   }
   return false;
 }

@@ -3,10 +3,20 @@
  * @author tuanca
  */
 
-import { Square } from "./Square.js"; // tạm thời chưa dùng
 import { ErrorCode } from "../constants/ErrorCode.js";
 import { GameError } from "../../utils/GameError.js";
 import { isInt } from "../../utils/validation.js";
+
+/**
+ * @typedef {import("./Piece.js").Piece} Piece
+ *
+ * Một ô nằm trên đường duyệt của `ray`.
+ * @typedef {Object} RayCell
+ * @property {number} row - Hàng của ô.
+ * @property {number} col - Cột của ô.
+ * @property {Piece | null} piece - Quân đang đứng trên ô, hoặc `null` nếu ô trống.
+ */
+
 /**
  * Bàn cờ, quản lý kích thước và danh sách quân cờ.
  *
@@ -21,7 +31,7 @@ export class Board {
   /**
    * @param {number} rows - Số hàng của bàn cờ.
    * @param {number} cols - Số cột của bàn cờ.
-   * @param {import("./Piece.js").Piece[]} [pieces=[]] - Danh sách quân cờ ban đầu.
+   * @param {Piece[]} [pieces=[]] - Danh sách quân cờ ban đầu.
    */
   constructor(rows, cols, pieces = []) {
     this.#validate(rows, cols, pieces);
@@ -35,7 +45,7 @@ export class Board {
   /**
    * @param {number} rows
    * @param {number} cols
-   * @param {import("./Piece.js").Piece[]} pieces
+   * @param {Piece[]} pieces
    */
   #validate(rows, cols, pieces) {
     if (!isInt(rows) || rows <= 0)
@@ -82,7 +92,7 @@ export class Board {
    * Tìm quân cờ tại tọa độ, trả về null nếu không có quân.
    * @param {number} row
    * @param {number} col
-   * @returns {import("./Piece.js").Piece | null}
+   * @returns {Piece | null}
    */
   pieceAt(row, col) {
     return this.pieces.find((p) => p.row === row && p.col === col) ?? null;
@@ -91,7 +101,7 @@ export class Board {
   /**
    * Tìm quân cờ theo ID, trả về null nếu không tìm thấy.
    * @param {string} id
-   * @returns {import("./Piece.js").Piece | null}
+   * @returns {Piece | null}
    */
   pieceById(id) {
     return this.pieces.find((p) => p.id === id) ?? null;
@@ -106,7 +116,7 @@ export class Board {
    * @param {number} dRow
    * @param {number} dCol
    * @param {number} [maxSteps=Infinity]
-   * @returns {{ row: number, col: number, piece: import("./Piece.js").Piece | null }[]}
+   * @returns {RayCell[]}
    */
   ray(sRow, sCol, dRow, dCol, maxSteps = Infinity) {
     if (!this.inBounds(sRow, sCol))
@@ -143,7 +153,7 @@ export class Board {
 
   /**
    * Trả về Board mới có thêm quân cờ, không thay đổi Board hiện tại.
-   * @param {import("./Piece.js").Piece} piece
+   * @param {Piece} piece
    * @returns {Board}
    */
   add(piece) {
@@ -154,7 +164,7 @@ export class Board {
    * Trả về Board mới, thay quân cờ có cùng ID bằng piece.
    * Ném lỗi nếu ô đích đang bị chiếm bởi quân cờ khác.
    *
-   * @param {import("./Piece.js").Piece} piece
+   * @param {Piece} piece
    * @returns {Board}
    */
   replace(piece) {

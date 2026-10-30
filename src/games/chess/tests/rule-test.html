@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiểm thử luật cờ</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f7fa;--sf:#fff;--ink:#14202e;--mu:#5b6b7c;--ln:#d6dee8;--ac:#2f5bd8;--ok:#0b7f63;--okb:#dff3ec;--bad:#c0332b;--badb:#fbe6e4;--wn:#8a5a00;--wnb:#fff1d6;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0e141b;--sf:#151d27;--ink:#e6edf4;--mu:#93a3b5;--ln:#27323f;--ac:#8aa9ff;--ok:#4fd1ad;--okb:#0f302a;--bad:#ff8d85;--badb:#3a1a18;--wn:#f2c46b;--wnb:#33280f;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.55 "Be Vietnam Pro",system-ui,sans-serif}
+nav{position:sticky;top:0;z-index:5;background:var(--sf);border-bottom:1px solid var(--ln);display:flex;gap:4px;padding:8px 16px;overflow-x:auto}
+nav a{color:var(--mu);text-decoration:none;padding:6px 14px;border-radius:999px;font-weight:500;font-size:14px;white-space:nowrap}
+nav a:hover,nav a:focus-visible{color:var(--ink);background:var(--bg);outline:2px solid var(--ac)}
+main{max-width:1040px;margin:0 auto;padding:28px 16px 64px}
+h1{font-size:clamp(24px,5vw,32px);margin:0 0 4px}
+h2{font-size:21px;margin:48px 0 12px;scroll-margin-top:60px}
+h3{font-size:14px;color:var(--mu);font-weight:500;margin:24px 0 8px}
+h4{font:700 13px ui-monospace,Consolas,monospace;margin:0 0 8px;word-break:break-all}
+.mu{color:var(--mu);margin:0}
+.panel{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:16px;overflow-x:auto}
+.mermaid{margin:0;text-align:center;min-width:560px}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+th,td{padding:6px 10px;border-bottom:1px solid var(--ln);text-align:center}
+th:first-child,td:first-child{text-align:left;font-family:ui-monospace,Consolas,monospace}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:12px}
+textarea{width:100%;min-height:110px;resize:vertical;background:var(--bg);color:var(--ink);border:1px solid var(--ln);border-radius:8px;padding:8px;font:12px/1.45 ui-monospace,Consolas,monospace}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+button,select{font:500 12.5px "Be Vietnam Pro",system-ui,sans-serif;color:var(--ink);background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:6px 10px;cursor:pointer}
+button:hover{border-color:var(--ac)}
+button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ac)}
+button.main{background:var(--ac);border-color:var(--ac);color:var(--bg)}
+button.ok{border-color:var(--ok);color:var(--ok)}
+button.bad{border-color:var(--bad);color:var(--bad)}
+.pill{display:inline-block;font-weight:700;font-size:12px;padding:2px 10px;border-radius:999px}
+.p-pass{background:var(--okb);color:var(--ok)}.p-fail{background:var(--badb);color:var(--bad)}.p-err{background:var(--wnb);color:var(--wn)}.p-skip{background:var(--bg);color:var(--mu)}
+.res{font-size:13px;min-height:22px}
+.res code{font-size:11px;color:var(--mu)}
+ol.steps{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:6px;font-size:13px}
+ol.steps li{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.note{font-size:12.5px;color:var(--mu);margin-top:32px}
+
+.stage .bar{position:sticky;top:46px;z-index:4;background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.sp{flex:1}
+svg .edge{fill:none;stroke:var(--ln);stroke-width:1.5}
+svg .edge.on{stroke:var(--ac);stroke-width:2.2;stroke-dasharray:6 5;animation:dash .7s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-11}}
+@media (prefers-reduced-motion:reduce){svg .edge.on{animation:none}}
+.nd rect,.nd polygon{fill:var(--sf);stroke:var(--ln);stroke-width:1.5}
+.nd text{fill:var(--ink);font:600 12.5px "Be Vietnam Pro",system-ui,sans-serif;text-anchor:middle}
+.nd .s{fill:var(--mu);font-weight:400;font-size:10.5px}
+.nd.c text{font:500 10px ui-monospace,Consolas,monospace}
+.nd.now rect,.nd.now polygon{stroke:var(--ac);stroke-width:3;filter:drop-shadow(0 0 6px var(--ac))}
+.nd.pass rect,.nd.pass polygon{stroke:var(--ok);fill:var(--okb)}
+.nd.fail rect,.nd.fail polygon{stroke:var(--bad);fill:var(--badb)}
+.nd.hit rect{stroke:var(--wn);fill:var(--wnb)}
+.nd.miss rect{stroke-dasharray:4 3}
+.nd.miss text{fill:var(--mu)}
+.dot{fill:var(--ac);filter:drop-shadow(0 0 5px var(--ac))}
+#dots.bad .dot{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.lbl{font:500 11px "Be Vietnam Pro",system-ui,sans-serif;fill:var(--mu)}
+.rail{fill:none;stroke:var(--ln);stroke-dasharray:5 4}
+.mini{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px}
+.mini b{border:1px solid var(--ln);border-radius:8px;padding:4px 10px;font-weight:500}
+.mini b.x{color:var(--bad);border-color:var(--bad)}.mini b.g{color:var(--ok);border-color:var(--ok)}
+.mini i{color:var(--mu);font-style:normal}
+pre#trace{margin:8px 0 0;font:12px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap}
+details summary{cursor:pointer}
+</style>
+</head>
+<body>
+<nav>
+  <a href="#luong">Luồng reduce</a>
+  <a href="#rule-kind">Rule theo kind</a>
+  <a href="#chay-kind">Chạy theo kind</a>
+  <a href="#tung-rule">Test từng rule</a>
+  <a href="#tat-ca">Chạy tất cả</a>
+</nav>
+<main>
+<h1>Kiểm thử luật cờ</h1>
+<p class="mu">Sơ đồ <code>reduce</code> và bộ <code>Rule</code>, kèm nút test từng rule.</p>
+
+<h2 id="luong">Luồng reduce</h2>
+<p class="mu" style="margin-bottom:12px">Chọn một tình huống. Nốt sáng chạy qua các node liên quan, dùng rule thật để quyết định đi tiếp hay dừng.</p>
+<div id="scn"></div>
+<div class="stage">
+  <div class="bar" role="status" aria-live="polite">
+    <span id="bst" class="pill p-skip">CHƯA CHẠY</span><span id="bmsg" class="mu">Chọn một tình huống ở trên.</span>
+    <span class="sp"></span>
+    <label for="spd" class="mu">Tốc độ</label>
+    <select id="spd"><option value="300">Chậm</option><option value="600">Vừa</option><option value="1000" selected>Nhanh</option></select>
+    <button id="again">Chạy lại</button><button id="clr">Xóa</button>
+  </div>
+  <div class="panel" style="padding:8px"><svg id="flow" viewBox="0 0 900 1150" role="img" aria-label="Sơ đồ động luồng reduce" style="width:100%;min-width:760px;display:block"></svg></div>
+  <details class="panel" style="margin-top:12px"><summary>Input và đường đi của lần chạy</summary><pre id="trace"></pre></details>
+</div>
+<h3>Một rule được kiểm tra thế nào</h3>
+<div class="panel mini"><b>input</b><i>→</i><b>Đủ key bắt buộc?</b><i>thiếu →</i><b class="x">INVALID_ARGUMENT: missing key</b><i>·</i><i>đủ →</i><b>Constraint nào không đạt?</b><i>có →</i><b class="x">GameError(message)</b><i>không →</i><b class="g">Đạt</b></div>
+
+<h2 id="rule-kind">Rule theo kind</h2>
+<div class="panel"><div id="matrix"></div></div>
+
+<h2 id="chay-kind">Chạy theo kind</h2>
+<p class="mu" style="margin-bottom:12px">Chạy các rule theo đúng thứ tự reduce, dừng ở rule đầu tiên không đạt.</p>
+<div class="panel">
+  <div class="row">
+    <label for="kind">Kind</label><select id="kind"></select>
+    <button id="kLoad">Nạp mẫu hợp lệ</button>
+    <button id="kRun" class="main">Chạy</button>
+  </div>
+  <textarea id="kIn" style="min-height:200px"></textarea>
+  <div class="row" style="margin-top:8px">
+    <label for="kBreak">Gây lỗi</label><select id="kBreak"></select>
+    <button id="kApply" class="bad">Áp dụng và chạy</button>
+  </div>
+  <ol class="steps" id="kOut"></ol>
+</div>
+
+<h2 id="tung-rule">Test từng rule</h2>
+<div id="cards"></div>
+
+<h2 id="tat-ca">Chạy tất cả</h2>
+<div class="panel">
+  <div class="row"><button id="runAll" class="main">Chạy mọi mẫu</button><span id="sum" class="mu"></span></div>
+  <ol class="steps" id="allOut"></ol>
+</div>
+
+<p class="note">Các hằng số (PieceType, PROMOTION_RANK, PROMOTION_TARGETS, OutcomeType, MoveKind, ErrorCode) là giả định tạm, cần thay bằng file thật. Input của rule viết tay, chưa lấy từ buildMoves.js. Thứ tự outcome rules và việc evaluateOutcome gọi rule nào cũng là giả định.</p>
+</main>
+
+<script>
+
+/* ===== GIẢ ĐỊNH: thay bằng file thật ===== */
+const ErrorCode={INVALID_ARGUMENT:"INVALID_ARGUMENT",SELF_CHECK:"SELF_CHECK"};
+class GameError extends Error{constructor(code,msg){super(msg);this.code=code}}
+const PieceType={PAWN:"pawn",KNIGHT:"knight",BISHOP:"bishop",ROOK:"rook",QUEEN:"queen",KING:"king"};
+const PROMOTION_RANK={white:0,black:7};
+const PROMOTION_TARGETS=["queen","rook","bishop","knight"];
+const OutcomeType={CHECKMATE:"CHECKMATE",STALEMATE:"STALEMATE",INSUFFICIENT_MATERIAL:"INSUFFICIENT_MATERIAL",KING_MOVE_LIMIT:"KING_MOVE_LIMIT"};
+const MoveKind={NORMAL:"NORMAL",CASTLE:"CASTLE",EN_PASSANT:"EN_PASSANT"};
+
+/* ===== Rule.js (rút gọn, giữ logic check/test) ===== */
+class Rule{
+  #c=[];#keys=new Set();
+  setType(field,enumObj,message=`${field} không hợp lệ`){return this.#add({kind:"type",keys:[field],field,value:enumObj,message})}
+  setValueEqual(field,value,message=`${field} phải là ${value}`){return this.#add({kind:"equal",keys:[field],field,value,message})}
+  setValueIn(field,list,message=`${field} không nằm trong danh sách cho phép`){return this.#add({kind:"in",keys:[field],field,value:list,message})}
+  setCheck(keys,fn,message="Điều kiện không đạt"){return this.#add({kind:"check",keys,fn,message})}
+  check(input){
+    const m=this.#missing(input);
+    if(m!==null)throw new GameError(ErrorCode.INVALID_ARGUMENT,`missing key: ${m}`);
+    const f=this.#first(input);
+    if(f!==null)throw new GameError(ErrorCode.SELF_CHECK,f);
+  }
+  test(input){
+    const m=this.#missing(input);
+    if(m!==null)throw new GameError(ErrorCode.INVALID_ARGUMENT,`missing key: ${m}`);
+    return this.#first(input)===null;
+  }
+  #add(c){this.#c.push(c);for(const k of c.keys)this.#keys.add(k);return this}
+  #read(o,f){return f.split(".").reduce((x,k)=>x===null||typeof x!=="object"?undefined:x[k],o)}
+  #missing(i){for(const k of this.#keys)if(this.#read(i,k)===undefined)return k;return null}
+  #first(i){const f=this.#c.find(c=>!this.#holds(c,i));return f?f.message:null}
+  #holds(c,i){
+    switch(c.kind){
+      case"type":return Object.values(c.value).includes(this.#read(i,c.field));
+      case"equal":return this.#read(i,c.field)===c.value;
+      case"in":return c.value.includes(this.#read(i,c.field));
+      case"check":return c.fn(i);
+      default:throw new Error(`Unknown constraint kind: ${c.kind}`)
+    }
+  }
+}
+class RuleSet{
+  #r=new Map();
+  add(k,r){if(this.#r.has(k))throw new Error(`Rule "${k}" đã tồn tại`);this.#r.set(k,r);return this}
+  get(k){if(!this.#r.has(k))throw new Error(`Không có rule "${k}"`);return this.#r.get(k)}
+  entries(){return[...this.#r.entries()]}
+}
+
+/* ===== gameRules / boardRules / pieceRules / outcomeRules ===== */
+function gameRules(rs){
+  rs.add("GAME.TURN",new Rule().setCheck(["piece","turn"],({piece,turn})=>piece.side===turn,"Không phải lượt của bạn"));
+  rs.add("GAME.NOT_OVER",new Rule().setValueEqual("state.result",null,"Ván đã kết thúc"));
+  rs.add("GAME.PROMOTION_PENDING",new Rule().setValueEqual("move.blockedByPromotion",false,"Phải phong cấp quân trước"));
+}
+function boardRules(rs){
+  rs.add("BOARD.INSIDE",new Rule().setValueEqual("move.inBoard",true,"Ô đích nằm ngoài bàn"));
+  rs.add("BOARD.PATTERN",new Rule().setValueEqual("move.reachable",true,"Quân này không đi tới ô đó"));
+  rs.add("BOARD.NOT_ALLY_TARGET",new Rule().setValueEqual("move.targetIsAlly",false,"Không được ăn quân cùng bên"));
+  rs.add("BOARD.NOT_SELF_CHECK",new Rule().setValueEqual("move.exposesKing",false,"Nước đi này để vua bị chiếu"));
+  rs.add("BOARD.CASTLE",new Rule()
+    .setValueEqual("piece.hasMoved",false,"Vua đã đi nên không nhập thành được")
+    .setValueEqual("rook.hasMoved",false,"Xe đã đi nên không nhập thành được")
+    .setValueEqual("castle.pathEmpty",true,"Giữa vua và xe còn quân")
+    .setValueEqual("castle.inCheck",false,"Không nhập thành khi đang bị chiếu")
+    .setValueEqual("castle.passesAttacked",false,"Vua không được đi qua hoặc tới ô bị chiếu"));
+  rs.add("BOARD.EN_PASSANT",new Rule()
+    .setValueEqual("passant.targetMatches",true,"Bắt qua đường chỉ áp dụng cho ô vừa được bỏ qua")
+    .setValueEqual("passant.capturedPawnJustDoubled",true,"Tốt bị bắt phải vừa đi hai ô"));
+}
+function pieceRules(rs){
+  rs.add("PIECE.PROMOTE",new Rule()
+    .setType("pieceType",PieceType)
+    .setValueEqual("pieceType",PieceType.PAWN,"Chỉ tốt được phong cấp")
+    .setCheck(["piece"],({piece})=>piece.row===PROMOTION_RANK[piece.side],"Tốt chưa tới hàng cuối")
+    .setValueIn("newPieceType",PROMOTION_TARGETS,"Không được phong thành quân này"));
+}
+function outcomeRules(rs){
+  rs.add(OutcomeType.CHECKMATE,new Rule().setValueEqual("position.inCheck",true).setValueEqual("position.hasLegalMove",false));
+  rs.add(OutcomeType.STALEMATE,new Rule().setValueEqual("position.inCheck",false).setValueEqual("position.hasLegalMove",false));
+  rs.add(OutcomeType.INSUFFICIENT_MATERIAL,new Rule().setValueEqual("position.insufficientMaterial",true));
+  rs.add(OutcomeType.KING_MOVE_LIMIT,new Rule().setValueEqual("position.kingMoveLimitExceeded",true));
+}
+
+/* ===== ruleset.js ===== */
+const ruleSet=new RuleSet();
+boardRules(ruleSet);gameRules(ruleSet);outcomeRules(ruleSet);pieceRules(ruleSet);
+const COMMON=["GAME.NOT_OVER","GAME.PROMOTION_PENDING","GAME.TURN"];
+const RULES_BY_KIND={
+  [MoveKind.NORMAL]:[...COMMON,"BOARD.INSIDE","BOARD.PATTERN","BOARD.NOT_ALLY_TARGET","BOARD.NOT_SELF_CHECK"],
+  [MoveKind.CASTLE]:[...COMMON,"BOARD.INSIDE","BOARD.CASTLE","BOARD.NOT_SELF_CHECK"],
+  [MoveKind.EN_PASSANT]:[...COMMON,"BOARD.INSIDE","BOARD.EN_PASSANT","BOARD.NOT_SELF_CHECK"]
+};
+const PROMOTE_RULES=["PIECE.PROMOTE"];
+const KINDS={...RULES_BY_KIND,PROMOTE:PROMOTE_RULES};
+
+/* ===== Mẫu test: ok = đạt, bad = [nhãn, patch gộp vào ok] ===== */
+const SAMPLES={
+  "GAME.TURN":{ok:{piece:{side:"white"},turn:"white"},bad:[["Sai lượt",{turn:"black"}]]},
+  "GAME.NOT_OVER":{ok:{state:{result:null}},bad:[["Ván đã xong",{state:{result:"CHECKMATE"}}]]},
+  "GAME.PROMOTION_PENDING":{ok:{move:{blockedByPromotion:false}},bad:[["Chờ phong cấp",{move:{blockedByPromotion:true}}]]},
+  "BOARD.INSIDE":{ok:{move:{inBoard:true}},bad:[["Ngoài bàn",{move:{inBoard:false}}]]},
+  "BOARD.PATTERN":{ok:{move:{reachable:true}},bad:[["Không tới được",{move:{reachable:false}}]]},
+  "BOARD.NOT_ALLY_TARGET":{ok:{move:{targetIsAlly:false}},bad:[["Ăn quân mình",{move:{targetIsAlly:true}}]]},
+  "BOARD.NOT_SELF_CHECK":{ok:{move:{exposesKing:false}},bad:[["Lộ vua",{move:{exposesKing:true}}]]},
+  "BOARD.CASTLE":{ok:{piece:{hasMoved:false},rook:{hasMoved:false},castle:{pathEmpty:true,inCheck:false,passesAttacked:false}},
+    bad:[["Vua đã đi",{piece:{hasMoved:true}}],["Xe đã đi",{rook:{hasMoved:true}}],["Còn quân giữa",{castle:{pathEmpty:false}}],["Đang bị chiếu",{castle:{inCheck:true}}],["Qua ô bị chiếu",{castle:{passesAttacked:true}}]]},
+  "BOARD.EN_PASSANT":{ok:{passant:{targetMatches:true,capturedPawnJustDoubled:true}},
+    bad:[["Sai ô",{passant:{targetMatches:false}}],["Tốt không đi hai ô",{passant:{capturedPawnJustDoubled:false}}]]},
+  "PIECE.PROMOTE":{ok:{pieceType:"pawn",piece:{side:"white",row:0},newPieceType:"queen"},
+    bad:[["Không phải tốt",{pieceType:"queen"}],["Chưa tới hàng cuối",{piece:{row:3}}],["Phong thành vua",{newPieceType:"king"}]]},
+  CHECKMATE:{ok:{position:{inCheck:true,hasLegalMove:false}},bad:[["Còn nước đi",{position:{hasLegalMove:true}}]]},
+  STALEMATE:{ok:{position:{inCheck:false,hasLegalMove:false}},bad:[["Đang bị chiếu",{position:{inCheck:true}}]]},
+  INSUFFICIENT_MATERIAL:{ok:{position:{insufficientMaterial:true}},bad:[["Còn đủ quân",{position:{insufficientMaterial:false}}]]},
+  KING_MOVE_LIMIT:{ok:{position:{kingMoveLimitExceeded:true}},bad:[["Chưa quá giới hạn",{position:{kingMoveLimitExceeded:false}}]]}
+};
+
+/* ===== Tiện ích ===== */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const clone=o=>JSON.parse(JSON.stringify(o));
+function merge(a,b){const o=clone(a);(function m(t,s){for(const k in s){if(s[k]&&typeof s[k]==="object"&&!Array.isArray(s[k])){if(!t[k]||typeof t[k]!=="object")t[k]={};m(t[k],s[k])}else t[k]=s[k]}})(o,b);return o}
+const pretty=o=>JSON.stringify(o,null,2);
+function run(key,input){
+  try{ruleSet.get(key).check(input);return{s:"pass"}}
+  catch(e){return{s:e.code===ErrorCode.INVALID_ARGUMENT?"err":"fail",m:e.message,c:e.code||"Error"}}
+}
+const LBL={pass:"PASS",fail:"FAIL",err:"LỖI INPUT",skip:"BỎ QUA"};
+const pill=s=>`<span class="pill p-${s}">${LBL[s]}</span>`;
+const detail=r=>r.m?` ${esc(r.m)} <code>${esc(r.c)}</code>`:"";
+function parse(text){try{return{v:JSON.parse(text)}}catch(e){return{e:"JSON sai: "+e.message}}}
+function kindOk(kind){return KINDS[kind].reduce((acc,k)=>SAMPLES[k]?merge(acc,SAMPLES[k].ok):acc,{})}
+
+/* ===== Ma trận rule x kind ===== */
+(function(){
+  const cols=Object.keys(KINDS);
+  let h="<table><thead><tr><th>Rule</th>"+cols.map(c=>`<th>${c}</th>`).join("")+"</tr></thead><tbody>";
+  for(const [k] of ruleSet.entries()){
+    h+=`<tr><td>${k}</td>`+cols.map(c=>`<td>${KINDS[c].includes(k)?"<b title=\"có\">●</b>":""}</td>`).join("")+"</tr>";
+  }
+  $("matrix").innerHTML=h+"</tbody></table>";
+})();
+
+/* ===== Chạy theo kind ===== */
+(function(){
+  const sel=$("kind"),brk=$("kBreak");
+  sel.innerHTML=Object.keys(KINDS).map(k=>`<option>${k}</option>`).join("");
+  function fillBreaks(){
+    const o=[];
+    KINDS[sel.value].forEach(k=>(SAMPLES[k]?.bad||[]).forEach((b,i)=>o.push(`<option value="${k}|${i}">${k} — ${b[0]}</option>`)));
+    brk.innerHTML=o.join("");
+  }
+  function load(){$("kIn").value=pretty(kindOk(sel.value));fillBreaks();$("kOut").innerHTML=""}
+  function go(){
+    const p=parse($("kIn").value);
+    if(p.e){$("kOut").innerHTML=`<li>${pill("err")} ${esc(p.e)}</li>`;return}
+    let stop=false;
+    $("kOut").innerHTML=KINDS[sel.value].map((k,i)=>{
+      if(stop)return`<li>${pill("skip")}<code>${i+1}. ${k}</code></li>`;
+      const r=run(k,p.v);if(r.s!=="pass")stop=true;
+      return`<li>${pill(r.s)}<code>${i+1}. ${k}</code>${detail(r)}</li>`;
+    }).join("")+(stop?"":`<li>${pill("pass")} Mọi rule đạt, reduce sẽ gọi applyMove / applyPromotion</li>`);
+  }
+  sel.onchange=load;$("kLoad").onclick=load;$("kRun").onclick=go;
+  $("kApply").onclick=()=>{
+    const v=brk.value;if(!v)return;const[k,i]=v.split("|");
+    const p=parse($("kIn").value);if(p.e){go();return}
+    $("kIn").value=pretty(merge(p.v,SAMPLES[k].bad[+i][1]));go();
+  };
+  load();
+})();
+
+/* ===== Card từng rule ===== */
+(function(){
+  const groups={};
+  for(const [k] of ruleSet.entries()){const g=k.includes(".")?k.split(".")[0]:"OUTCOME";(groups[g]=groups[g]||[]).push(k)}
+  const desc={OUTCOME:"Kết quả ván (outcome.js). PASS nghĩa là kết quả này xảy ra."};
+  $("cards").innerHTML=Object.entries(groups).map(([g,keys])=>
+    `<h3>${g}${desc[g]?" — "+desc[g]:""}</h3><div class="grid">`+keys.map(k=>{
+      const s=SAMPLES[k];
+      return`<article class="card" data-k="${k}"><h4>${k}</h4>
+      <textarea spellcheck="false" aria-label="Input cho ${k}">${s?esc(pretty(s.ok)):"{}"}</textarea>
+      <div class="btns"><button class="main" data-a="run">Chạy</button>`+
+      (s?`<button class="ok" data-a="ok">Mẫu hợp lệ</button>`+s.bad.map((b,i)=>`<button class="bad" data-a="bad" data-i="${i}">${b[0]}</button>`).join(""):"")+
+      `</div><div class="res" aria-live="polite"></div></article>`}).join("")+"</div>").join("");
+  $("cards").onclick=e=>{
+    const b=e.target.closest("button");if(!b)return;
+    const card=b.closest(".card"),k=card.dataset.k,ta=card.querySelector("textarea"),s=SAMPLES[k];
+    if(b.dataset.a==="ok")ta.value=pretty(s.ok);
+    if(b.dataset.a==="bad")ta.value=pretty(merge(s.ok,s.bad[+b.dataset.i][1]));
+    const p=parse(ta.value),res=card.querySelector(".res");
+    if(p.e){res.innerHTML=pill("err")+" "+esc(p.e);return}
+    const r=run(k,p.v);res.innerHTML=pill(r.s)+detail(r);
+  };
+})();
+
+/* ===== Chạy tất cả mẫu ===== */
+$("runAll").onclick=()=>{
+  let good=0,tot=0,html="";
+  for(const [k] of ruleSet.entries()){
+    const s=SAMPLES[k];if(!s){html+=`<li>${pill("skip")}<code>${k}</code> chưa có mẫu</li>`;continue}
+    const cases=[["mẫu hợp lệ",s.ok,"pass"],...s.bad.map(b=>[b[0],merge(s.ok,b[1]),"fail"])];
+    for(const [label,inp,want] of cases){
+      const r=run(k,inp);tot++;const hit=r.s===want;if(hit)good++;
+      html+=`<li>${pill(hit?"pass":"fail")}<code>${k}</code> ${esc(label)} → ${LBL[r.s]}${hit?"":" (mong đợi "+LBL[want]+")"}${r.s==="fail"?detail(r):""}</li>`;
+    }
+  }
+  $("sum").textContent=`${good}/${tot} test đúng mong đợi`;
+  $("allOut").innerHTML=html;
+};
+
+/* ===== Sơ đồ động ===== */
+const NS="http://www.w3.org/2000/svg",svg=$("flow");
+const N={},EL={},NG={},DYN=[];
+const addN=(id,cx,cy,w,h,t,sub,shape)=>{N[id]={id,cx,cy,w,h,t,s:sub,shape}};
+addN("ui",450,44,180,44,"UI","bấm quân cờ");
+addN("ctrl",450,114,180,44,"controller","hàm action");
+addN("room",450,184,180,44,"room.dispatch","luôn gọi reduce");
+addN("red",450,254,200,44,"reduce(game, action)");
+addN("typ",450,334,170,64,"action.type?","","d");
+addN("m1",225,424,190,48,"Check cơ bản","quân, row, col");
+addN("m2",225,494,190,48,"classifyMove","ra kind");
+addN("m3",225,564,190,44,"buildMoveInput");
+addN("m4",225,800,190,44,"applyMove");
+addN("p1",675,424,190,48,"Check cơ bản","pieceType, quân chờ phong");
+addN("p2",675,494,190,44,"buildPromoteInput");
+addN("p4",675,800,190,44,"applyPromotion");
+addN("settle",450,880,200,48,"settle","đang chờ phong cấp?");
+addN("ev",450,950,190,44,"evaluateOutcome");
+addN("final",450,1100,230,48,"Game mới","Room lưu state, UI cập nhật");
+const GRID=["GAME.NOT_OVER","GAME.PROMOTION_PENDING","GAME.TURN","BOARD.INSIDE","BOARD.PATTERN","BOARD.NOT_ALLY_TARGET","BOARD.CASTLE","BOARD.EN_PASSANT","BOARD.NOT_SELF_CHECK"];
+GRID.forEach((k,i)=>addN("r:"+k,93+(i%3)*134,645+Math.floor(i/3)*38,126,30,k.split(".")[1],"","c"));
+addN("r:PIECE.PROMOTE",675,564,190,30,"PIECE.PROMOTE","","c");
+const OUT=["CHECKMATE","STALEMATE","INSUFFICIENT_MATERIAL","KING_MOVE_LIMIT"];
+OUT.forEach((k,i)=>addN("r:"+k,229+146*i,1020,140,30,k,"","c"));
+
+const anc=(n,s)=>s==="t"?[n.cx,n.cy-n.h/2]:s==="b"?[n.cx,n.cy+n.h/2]:s==="l"?[n.cx-n.w/2,n.cy]:[n.cx+n.w/2,n.cy];
+const NRM={t:[0,-1],b:[0,1],l:[-1,0],r:[1,0]};
+function pathD(a,as,b,bs,kk){
+  const p=anc(a,as),q=anc(b,bs),k=kk||Math.max(24,Math.hypot(p[0]-q[0],p[1]-q[1])*0.4),u=NRM[as],v=NRM[bs];
+  return `M${p[0]},${p[1]} C${p[0]+u[0]*k},${p[1]+u[1]*k} ${q[0]+v[0]*k},${q[1]+v[1]*k} ${q[0]},${q[1]}`;
+}
+const mk=(t,a,par)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(par||svg).appendChild(e);return e};
+const E=[["ui","b","ctrl","t"],["ctrl","b","room","t"],["room","b","red","t"],["red","b","typ","t"],["typ","l","m1","t"],["typ","r","p1","t"],
+["m1","b","m2","t"],["m2","b","m3","t"],["m3","b","r:GAME.NOT_OVER","t"],["r:BOARD.NOT_SELF_CHECK","b","m4","t"],
+["p1","b","p2","t"],["p2","b","r:PIECE.PROMOTE","t"],["r:PIECE.PROMOTE","b","p4","t"],["m4","b","settle","t"],["p4","b","settle","t"],
+["settle","b","ev","t"],["settle","l","final","l",300],["ev","b","r:CHECKMATE","t"],["r:KING_MOVE_LIMIT","b","final","t"]];
+
+svg.innerHTML='<defs><marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="var(--mu)"/></marker></defs>';
+mk("rect",{class:"rail",x:20,y:604,width:410,height:144,rx:10});
+mk("text",{class:"lbl",x:424,y:618,"text-anchor":"end"}).textContent="RULES_BY_KIND[kind]";
+mk("text",{class:"lbl",x:450,y:992,"text-anchor":"middle"}).textContent="Outcome rules (thứ tự là giả định)";
+mk("text",{class:"lbl",x:355,y:324,"text-anchor":"end"}).textContent="MOVE";
+mk("text",{class:"lbl",x:545,y:324}).textContent="PROMOTE (else)";
+E.forEach(([a,as,b,bs,k])=>{EL[a+">"+b]=mk("path",{class:"edge",d:pathD(N[a],as,N[b],bs,k),"marker-end":"url(#ar)"})});
+const dyn=mk("g",{});
+Object.values(N).forEach(n=>{
+  const g=mk("g",{class:"nd"+(n.shape==="c"?" c":"")});NG[n.id]=g;
+  mk("title",{},g).textContent=n.id.replace(/^r:/,"");
+  if(n.shape==="d")mk("polygon",{points:`${n.cx},${n.cy-n.h/2} ${n.cx+n.w/2},${n.cy} ${n.cx},${n.cy+n.h/2} ${n.cx-n.w/2},${n.cy}`},g);
+  else mk("rect",{x:n.cx-n.w/2,y:n.cy-n.h/2,width:n.w,height:n.h,rx:n.shape==="c"?6:9},g);
+  mk("text",{x:n.cx,y:n.cy+(n.s?-3:4.5)},g).textContent=n.t;
+  if(n.s)mk("text",{class:"s",x:n.cx,y:n.cy+12},g).textContent=n.s;
+});
+const dg=mk("g",{id:"dots"});
+const dots=[6,5,4].map(r=>mk("circle",{class:"dot",r,cx:-20,cy:-20},dg));
+
+function getEdge(a,b){
+  const k=a+">"+b;if(EL[k])return EL[k];
+  const A=N[a],B=N[b],dy=B.cy-A.cy,dx=B.cx-A.cx;
+  const s=Math.abs(dy)>10?(dy>0?["b","t"]:["t","b"]):(dx>0?["r","l"]:["l","r"]);
+  const p=mk("path",{class:"edge",d:pathD(A,s[0],B,s[1]),"marker-end":"url(#ar)"},dyn);
+  EL[k]=p;DYN.push(k);return p;
+}
+const STATES=["now","pass","fail","hit","miss"];
+const mark=(id,st)=>{const c=NG[id].classList;c.remove(...STATES);c.add(st)};
+function reset(){
+  Object.values(NG).forEach(g=>g.classList.remove(...STATES));
+  Object.values(EL).forEach(e=>e.classList.remove("on"));
+  DYN.forEach(k=>{EL[k].remove();delete EL[k]});DYN.length=0;
+  dg.classList.remove("bad");dots.forEach(c=>c.setAttribute("cx",-20));
+}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const reduced=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
+function travel(path,ms,id){
+  return new Promise(res=>{
+    const L=path.getTotalLength(),t0=performance.now();
+    (function f(now){
+      if(id!==runId){res(false);return}
+      const p=Math.min(1,(now-t0)/ms);
+      dots.forEach((c,i)=>{const pt=path.getPointAtLength(L*Math.max(0,p-i*0.08));c.setAttribute("cx",pt.x);c.setAttribute("cy",pt.y);c.style.opacity=1-i*0.3});
+      p<1?requestAnimationFrame(f):res(true);
+    })(t0);
+  });
+}
+function follow(n){
+  const r=svg.getBoundingClientRect(),y=r.top+n.cy*r.height/1150;
+  if(y<150||y>innerHeight-60)scrollBy({top:y-innerHeight/2,behavior:reduced()?"auto":"smooth"});
+}
+function setBar(s,label,msg){$("bst").className="pill p-"+s;$("bst").textContent=label;$("bmsg").textContent=msg}
+
+/* Dựng đường đi từ tình huống, dùng rule thật để quyết định */
+const POS0={inCheck:false,hasLegalMove:true,insufficientMaterial:false,kingMoveLimitExceeded:false};
+function build(sc){
+  const s=sc.flow||"m",kind=sc.kind||(s==="p"?"PROMOTE":"NORMAL");
+  const input=merge(kindOk(kind),sc.patch||{});
+  const route=[["ui","pass"],["ctrl","pass"],["room","pass"],["red","pass"],["typ","pass"]];
+  const fail=(r,at)=>({route,input,res:{s:r.s,m:r.m,c:r.c,at}});
+  if(sc.basic){route.push([s+"1","fail"]);return fail({s:"fail",m:sc.basic[1],c:sc.basic[0]},"Check cơ bản")}
+  route.push([s+"1","pass"],...(s==="m"?[["m2","pass"],["m3","pass"]]:[["p2","pass"]]));
+  for(const k of KINDS[kind]){
+    const r=run(k,input);route.push(["r:"+k,r.s==="pass"?"pass":"fail"]);
+    if(r.s!=="pass")return fail(r,k);
+  }
+  route.push([s+"4","pass"],["settle","pass"]);
+  let m="State mới, ván tiếp tục";
+  if(sc.pending)m="Tốt chờ phong cấp, chưa tính kết quả";
+  else{
+    route.push(["ev","pass"]);
+    const pos=sc.pos||{position:POS0};
+    for(const k of OUT){const hit=run(k,pos).s==="pass";route.push(["r:"+k,hit?"hit":"miss"]);if(hit){m="Kết quả ván: "+k;break}}
+  }
+  route.push(["final","pass"]);
+  return{route,input,res:{s:"pass",m}};
+}
+
+let runId=0,last=null;
+async function play(sc){
+  const id=++runId;last=sc;reset();
+  const b=build(sc);
+  $("trace").textContent="Input:\n"+pretty(b.input)+"\n\nĐường đi:\n"+b.route.map(r=>(r[1]==="fail"?"✗ ":r[1]==="miss"?"· ":"✓ ")+r[0].replace(/^r:/,"")).join("\n");
+  setBar("skip","ĐANG CHẠY",sc.name);
+  const speed=reduced()?4000:+$("spd").value;
+  for(let i=0;i<b.route.length;i++){
+    const[nid,st]=b.route[i],n=N[nid];
+    if(i>0){
+      const e=getEdge(b.route[i-1][0],nid);e.classList.add("on");follow(n);
+      if(!await travel(e,Math.max(160,e.getTotalLength()/speed*1000),id))return;
+    }else follow(n);
+    mark(nid,"now");await sleep(Math.max(40,40000/speed));
+    if(id!==runId)return;
+    mark(nid,st);if(st==="fail")dg.classList.add("bad");
+  }
+  const r=b.res;
+  if(r.s==="pass"){dots.forEach(c=>c.setAttribute("cx",-20));setBar("pass","HỢP LỆ",r.m)}
+  else setBar(r.s==="err"?"err":"fail","TỪ CHỐI",`${r.at}: ${r.m} (${r.c}). Room giữ nguyên state.`);
+}
+
+const sc=(cls,name,o)=>({cls,name,...o});
+const pos=o=>({position:{...POS0,...o}});
+const SC=[
+  sc("ok","Di chuyển thường",{}),
+  sc("ok","Nhập thành",{kind:"CASTLE"}),
+  sc("ok","Bắt qua đường",{kind:"EN_PASSANT"}),
+  sc("ok","Tốt tới hàng cuối",{pending:true}),
+  sc("ok","Phong cấp",{flow:"p"}),
+  sc("ok","Nước chiếu hết",{pos:pos({inCheck:true,hasLegalMove:false})}),
+  sc("ok","Nước gây hòa (hết nước đi)",{pos:pos({hasLegalMove:false})}),
+  sc("bad","Không có quân",{basic:["INVALID_ID","Không có quân p99"]}),
+  sc("bad","Sai lượt",{patch:{turn:"black"}}),
+  sc("bad","Ván đã kết thúc",{patch:{state:{result:"CHECKMATE"}}}),
+  sc("bad","Chưa phong mà đi tiếp",{patch:{move:{blockedByPromotion:true}}}),
+  sc("bad","Ô ngoài bàn",{patch:{move:{inBoard:false}}}),
+  sc("bad","Quân không đi tới ô",{patch:{move:{reachable:false}}}),
+  sc("bad","Ăn quân mình",{patch:{move:{targetIsAlly:true}}}),
+  sc("bad","Lộ vua",{patch:{move:{exposesKing:true}}}),
+  sc("bad","Nhập thành khi bị chiếu",{kind:"CASTLE",patch:{castle:{inCheck:true}}}),
+  sc("bad","Bắt qua đường sai ô",{kind:"EN_PASSANT",patch:{passant:{targetMatches:false}}}),
+  sc("bad","Không có tốt chờ phong",{flow:"p",basic:["BAD_ACTION","Không có tốt nào đang chờ phong cấp"]}),
+  sc("bad","Phong thành vua",{flow:"p",patch:{newPieceType:"king"}})
+];
+$("scn").innerHTML=[["ok","Hợp lệ"],["bad","Bị từ chối"]].map(([c,t])=>`<h3>${t}</h3><div class="btns">`+SC.map((s,i)=>s.cls===c?`<button class="${c}" data-i="${i}">${s.name}</button>`:"").join("")+"</div>").join("");
+$("scn").onclick=e=>{const b=e.target.closest("button");if(b)play(SC[+b.dataset.i])};
+$("again").onclick=()=>{if(last)play(last)};
+$("clr").onclick=()=>{runId++;reset();setBar("skip","CHƯA CHẠY","Chọn một tình huống ở trên.")};
+</script>
+</body>
+</html>

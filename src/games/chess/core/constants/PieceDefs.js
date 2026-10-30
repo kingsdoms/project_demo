@@ -1,48 +1,56 @@
-// @ts-nocheck
 /**
  * @file PieceDefs.js
  * @author tuanca
  */
-
 import { PieceType } from "./PieceType.js";
 
-const P = (pattern) => Object.freeze(pattern);
-//value điểm khi bị bắt
-export const PIECE_DEFS = P({
-  [PieceType.PAWN]: P({
+/**
+ * Định nghĩa tĩnh của một loại quân.
+ *
+ * @typedef {Object} PieceDef
+ * @property {string} name - Tên hiển thị của quân (ví dụ "Tốt").
+ * @property {number} value - Giá trị quân (tốt = 1).
+ * @property {boolean} canPromote - `true` nếu quân có thể phong cấp (chỉ tốt).
+ * @property {boolean} royal - `true` nếu là quân vua (mất quân này là thua).
+ */
+
+/** @type {Readonly<Record<import("./PieceType.js").PieceTypeValue, Readonly<PieceDef>>>} */
+export const PIECE_DEFS = Object.freeze({
+  [PieceType.PAWN]: Object.freeze({
     name: "Tốt",
     value: 1,
     canPromote: true,
     royal: false,
   }),
-  [PieceType.KNIGHT]: P({
+  [PieceType.KNIGHT]: Object.freeze({
     name: "Mã",
     value: 3,
     canPromote: false,
     royal: false,
   }),
-  [PieceType.BISHOP]: P({
+  [PieceType.BISHOP]: Object.freeze({
     name: "Tượng",
     value: 3,
     canPromote: false,
     royal: false,
   }),
-  [PieceType.ROOK]: P({
+  [PieceType.ROOK]: Object.freeze({
     name: "Xe",
     value: 5,
     canPromote: false,
     royal: false,
   }),
-  [PieceType.QUEEN]: P({
+  [PieceType.QUEEN]: Object.freeze({
     name: "Hậu",
     value: 9,
     canPromote: false,
     royal: false,
   }),
-  [PieceType.KING]: P({
+  [PieceType.KING]: Object.freeze({
     name: "Vua",
     value: 0,
     canPromote: false,
     royal: true,
   }),
 });
+

@@ -18,7 +18,39 @@
       const ui = await chess.loadUI();
       ui.mount(container, controller);
     }
-    console.log("tf");
+
+    //////////////////////////////////ROOM TEST
+
+    import { Piece } from "../core/models/Piece.js";
+    import { Board } from "../core/models/Board.js";
+    import { Game } from "../core/models/Game.js";
+    import { PieceType } from "../core/constants/PieceType.js";
+    import { Room } from "../core/engine/room.js";
+    import { getLegalMoves,getAllLegalMoves,hasLegalMove } from "../core/engine/legalMoves.js";
+
+    import { Action } from "../core/models/Action.js";
+    import { Side } from "../core/constants/Side.js";
+
+    // const piece = new Piece(PieceType.PAWN, Side.WHITE, 6, 0);
+    // const board = new Board(8, 8, [piece]);
+    // const room = new Room();
+    // const game = room.getState();
+    // console.log(game);
+    // const act = Action.move("PAWN-WHITE-6-7",4,7)
+    // room.dispatch(act)
+    
+    // console.log(room);
+
+
+    // room.restart();
+    // console.log(room.getState().turn)
+
+    // room.destroy();
+    // room.dispatch(Action.move("x", 1, 1))
+
+
+
+
     
   </script>
 </html>

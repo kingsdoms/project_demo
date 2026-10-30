@@ -78,8 +78,6 @@ export function createPromotion(promotion, opts = {}) {
   }
 
   function finish(type) {
-    console.log(type);
-    
     if (done) return; // chặn bấm + hết giờ cùng lúc
     done = true;
     destroy();

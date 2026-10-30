@@ -33,8 +33,6 @@ export function attachBot(room, { sides, delay = 500, choose = chooseBotAction }
 
   const isBotTurn = () => {
     const game = getGame(room);
-    console.log(game);
-    
     return game.result === null && botSides.has(game.turn);
   };
 
@@ -58,7 +56,6 @@ export function attachBot(room, { sides, delay = 500, choose = chooseBotAction }
         // sau await, ván có thể đã bị hủy hoặc đổi trạng thái
         if (stopped || !isBotTurn() || getGame(room) !== game) return;
         if (action === null) return;
-        console.log("[bot] action:", action, "side:", side);
 
         act(room, side, action);
       } while (!stopped && getGame(room).pendingPromotion !== null && isBotTurn());

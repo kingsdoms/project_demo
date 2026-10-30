@@ -4,10 +4,6 @@
  */
 
 import { ActionType } from "../constants/ActionType.js";
-import { ErrorCode } from "../constants/ErrorCode.js";
-import { PieceType } from "../constants/PieceType.js";
-import { GameError } from "../../utils/GameError.js";
-import { isStr, isInt, hasKey } from "../../utils/validation.js";
 
 /**
  * Tạo một hành động trong game.
@@ -19,47 +15,19 @@ import { isStr, isInt, hasKey } from "../../utils/validation.js";
  */
 export class Action {
   /**
-   *
    * @param {string} type - Loại hành động.
    * @param {string} id - ID quân cờ liên quan đến hành động.
    * @param {number | null} [row=null] - Hàng đích, nếu có.
    * @param {number | null} [col=null] - Cột đích, nếu có.
-   * @param {typeof PieceType[keyof typeof PieceType] | null} [pieceType=null] - Loại quân được chọn khi phong cấp.
+   * @param {import("../constants/PieceType.js").PieceTypeValue | null} [pieceType=null] - Loại quân được chọn khi phong cấp.
    */
   constructor(type, id, row = null, col = null, pieceType = null) {
-    this.#validate(type, id, row, col, pieceType);
     this.type = type;
     this.id = id;
     this.row = row;
     this.col = col;
     this.pieceType = pieceType;
     Object.freeze(this);
-  }
-
-  /**
-   * @param {string} type
-   * @param {string} id
-   * @param {number | null} row
-   * @param {number | null} col
-   * @param {typeof PieceType[keyof typeof PieceType] | null} [pieceType=null]
-   */
-  #validate(type, id, row, col, pieceType) {
-    switch (type) {
-      case ActionType.MOVE:
-        if (!isStr(id))
-          throw new GameError(ErrorCode.INVALID_ID, "Invalid piece id");
-        if (!isInt(row))
-          throw new GameError(ErrorCode.INVALID_POSITION, "Invalid row");
-        if (!isInt(col))
-          throw new GameError(ErrorCode.INVALID_POSITION, "Invalid col");
-        break;
-      case ActionType.PROMOTE:
-        if (!hasKey(PieceType, pieceType))
-          throw new GameError(ErrorCode.INVALID_ARGUMENT, "Invalid piece type");
-        break;
-      default:
-        throw new GameError(ErrorCode.INVALID_ARGUMENT, "Invalid action type");
-    }
   }
 
   /**
@@ -72,7 +40,7 @@ export class Action {
   }
 
   /**
-   * @param {typeof PieceType[keyof typeof PieceType]} pieceType
+   * @param {import("../constants/PieceType.js").PieceTypeValue} pieceType
    */
   static promote(pieceType) {
     return new Action(ActionType.PROMOTE, "", null, null, pieceType);

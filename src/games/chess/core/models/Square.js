@@ -2,6 +2,7 @@
  * @file Square.js
  * @author tuanca
  */
+
 /**
  * Đại diện cho một ô trên bàn cờ.
  *

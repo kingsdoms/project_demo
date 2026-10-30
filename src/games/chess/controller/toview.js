@@ -7,7 +7,7 @@
 // ui chỉ đọc view này, không import core/, nên không cần biết Piece/Board/Game.
 
 import { PieceType } from "../core/constants/PieceType.js";
-import { isInCheck } from "../core/engine/squaresMoves.js";
+import { isInCheck } from "../core/moves/squares.js";
 import { Game } from "../core/models/Game.js";
 import { getLegalMoves } from "../core/engine/legalMoves.js";
 import { PROMOTION_TARGETS } from "../core/constants/StandardDef.js";

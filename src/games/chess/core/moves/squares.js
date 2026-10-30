@@ -1,28 +1,18 @@
 /**
- * @file squaresMoves.js
+ * @file squares.js
  * @author tuanca
  */
-
-// Hình học của bàn cờ: quân đi tới những ô nào, kiểm soát những ô nào, vua có bị chiếu không.
-// Chỉ đọc board và piece. Không biết nhập thành, bắt qua đường, phong cấp hay lượt đi.
-//
-// Quy ước hàng: hàng 0 là phía đen, trắng đi về hàng 0 (xem PROMOTION_RANK).
-// PIECE_MOVE_DEFS viết từ góc nhìn trắng, đọc cho đen thì đảo cả forward lẫn lateral.
-//
-// Ý nghĩa của steps trong PIECE_MOVE_DEFS:
-//   Infinity: đi 1, 2, 3... ô cho tới khi gặp quân hoặc hết bàn
-//   số hữu hạn N: đi đúng N ô, mọi ô ở giữa phải trống
-
 import { GameError } from "../../utils/GameError.js";
 import { ErrorCode } from "../constants/ErrorCode.js";
 import { CaptureMode } from "../constants/CaptureMode.js";
 import { PieceType } from "../constants/PieceType.js";
-import { Side, SIDE_SIGN } from "../constants/Side.js";
-import { movesOf } from "../constants/PieceMoveDefs.js";
+import { SIDE_SIGN } from "../constants/Side.js";
+import { PIECE_MOVE_DEFS } from "../constants/PieceMoveDefs.js";
 
 /**
- * @typedef {import("../models/Piece.js").Piece} Piece
- * @typedef {import("../models/Board.js").Board} Board
+ * @typedef {import("./index.js").Piece} Piece
+ * @typedef {import("./index.js").Board} Board
+ * @typedef {import("../constants/Side.js").SideValue} SideValue
  */
 
 /** @type {{ unmoved: (piece: Piece) => boolean }} */
@@ -36,7 +26,7 @@ const REQUIRES = { unmoved: (piece) => !piece.hasMoved };
  *   hai ô chéo phía trước, kể cả khi các ô đó đang trống.
  * - `forAttack = false`: trả về các ô quân cờ có thể đi tới theo hình học
  *   và luật di chuyển của quân, kể cả ô đang có quân cùng bên. Việc loại
- *   mục tiêu đồng minh được xử lý riêng bởi rule `NOT_ALLY_TARGET`.
+ *   mục tiêu đồng minh được xử lý riêng bởi check `targetNotAlly` của nước đi thường.
  *
  * Hàm chỉ xác định các ô ứng viên theo kiểu quân và trạng thái bàn cờ;
  * không tự quyết định toàn bộ tính hợp lệ của nước đi.
@@ -48,9 +38,10 @@ const REQUIRES = { unmoved: (piece) => !piece.hasMoved };
  */
 function patternSquares(board, piece, forAttack) {
   const s = SIDE_SIGN[piece.side];
+  /** @type {{ row: number, col: number }[]} */
   const squares = [];
 
-  for (const m of movesOf(piece)) {
+  for (const m of PIECE_MOVE_DEFS[piece.type]) {
     // Attack but capture is never
     if (forAttack && m.capture === CaptureMode.NEVER) continue;
     // When contain requires
@@ -156,7 +147,7 @@ function attackedBy(board, row, col, isAttacker) {
  * @param {Board} board - Bàn cờ hiện tại.
  * @param {number} row - Hàng của ô cần kiểm tra.
  * @param {number} col - Cột của ô cần kiểm tra.
- * @param {typeof Side[keyof typeof Side]} bySide - Bên có quân đang xét tấn công.
+ * @param {SideValue} bySide - Bên có quân đang xét tấn công.
  * @returns {boolean} `true` nếu ô bị tấn công, ngược lại là `false`.
  */
 export function isAttacked(board, row, col, bySide) {
@@ -167,7 +158,7 @@ export function isAttacked(board, row, col, bySide) {
  * Tìm quân vua của một bên trên bàn cờ.
  *
  * @param {Board} board - Bàn cờ cần tìm.
- * @param {typeof Side[keyof typeof Side]} side - Bên sở hữu quân vua.
+ * @param {SideValue} side - Bên sở hữu quân vua.
  * @returns {Piece | null} Quân vua nếu tìm thấy, hoặc `null` nếu không có.
  */
 export function findKing(board, side) {
@@ -187,7 +178,7 @@ export function findKing(board, side) {
  * xem như phe đó không bị chiếu.
  *
  * @param {Board} board - Trạng thái bàn cờ hiện tại.
- * @param {typeof Side[keyof typeof Side]} side - Phe cần kiểm tra trạng thái chiếu.
+ * @param {SideValue} side - Phe cần kiểm tra trạng thái chiếu.
  * @returns {boolean} true nếu vua của phe đó đang bị chiếu;
  *                    false nếu không bị chiếu hoặc không tìm thấy vua.
  */

@@ -20,8 +20,6 @@ export function mount(container, controller) {
   root.style.width = "100%";
   root.style.height = "100%";
 
-
-
   const board = createBoard(controller);
 
   root.append(board);
@@ -36,7 +34,7 @@ export function mount(container, controller) {
     if (!mounted || view === lastView) return;
     updateBoard(board, view);
 
-    if (view.promotion) {
+    if (view.promotion && view.canAct) {
       const { el, destroy } = createPromotion(view.promotion, {
         timeoutMs: 10000,
         onPick: (/** @type {any} */ type) => controller.actions.promote(type),
@@ -56,7 +54,9 @@ export function mount(container, controller) {
       console.error(e);
     }),
   ];
+
   render(); // vẽ lần đầu
+
   return function unmount() {
     if (!mounted) return;
     mounted = false;

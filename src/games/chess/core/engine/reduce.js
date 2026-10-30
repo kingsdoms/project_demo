@@ -6,15 +6,13 @@
 import { GameError } from "../../utils/GameError.js";
 import { ActionType } from "../constants/ActionType.js";
 import { ErrorCode } from "../constants/ErrorCode.js";
-import { applyMove, applyPromotion } from "./applyMoves.js";
-import { PROMOTE_RULES, RULES_BY_KIND, ruleSet } from "./ruleset.js";
-
-import {
-  buildMoveInput,
-  buildPromoteInput,
-  classifyMove,
-} from "./buildMoves.js";
 import { evaluateOutcome } from "./outcome.js";
+import {
+  findMove,
+  validate,
+  validatePromotion,
+  applyPromotion,
+} from "../moves/index.js";
 
 /**
  * @typedef {import("../models/Game.js").Game} Game
@@ -30,7 +28,7 @@ import { evaluateOutcome } from "./outcome.js";
  * - Không lưu trữ state nội bộ giữa các lần gọi.
  * - Không thay đổi object game ban đầu.
  * - Trả về một Game mới nếu action hợp lệ.
- * - Ném GameError nếu action vi phạm luật do rule phát hiện.
+ * - Ném GameError nếu action vi phạm luật do `validate` phát hiện.
  *   Khi đó không có Game mới được tạo ra và Room giữ nguyên state hiện tại.
  *
  * Đây là nơi duy nhất chịu trách nhiệm cập nhật game.result,
@@ -40,25 +38,23 @@ import { evaluateOutcome } from "./outcome.js";
  *
  * 1. MOVE:
  *    - Tìm quân cờ cần di chuyển.
- *    - Phân loại nước đi.
- *    - Xây dựng input cho các rule.
- *    - Kiểm tra lần lượt các rule liên quan.
- *    - Áp dụng nước đi bằng applyMove.
+ *    - Tìm loại nước đi phù hợp bằng `findMove`.
+ *    - Xác thực bằng `validate` (check chung, rồi check riêng của loại nước đi).
+ *    - Áp dụng nước đi bằng `move.apply`.
  *    - Tính toán và cập nhật kết quả ván cờ.
  *
  * 2. PROMOTE:
- *    - Tìm quân tốt cần phong cấp.
- *    - Xây dựng input cho rule.
- *    - Kiểm tra rule PROMOTE.
- *    - Áp dụng phong cấp bằng applyPromotion.
+ *    - Tìm quân tốt đang chờ phong cấp.
+ *    - Xác thực bằng `validatePromotion`.
+ *    - Áp dụng phong cấp bằng `applyPromotion`.
  *    - Tính toán và cập nhật kết quả ván cờ.
  *
  * @param {Game} game - Trạng thái game hiện tại.
  * @param {Action} action - Hành động cần thực hiện.
  * @returns {Game} Trạng thái game sau khi áp dụng hành động.
+ * @throws {GameError} Nếu action thiếu dữ liệu hoặc vi phạm luật.
  */
 export function reduce(game, action) {
-  //
   if (action.type == ActionType.MOVE) {
     const piece = game.board.pieceById(action.id);
     if (piece === null)
@@ -70,11 +66,17 @@ export function reduce(game, action) {
         "MOVE action phải có row và col",
       );
 
-    const kind = classifyMove(game, piece, row, col);
-    const input = buildMoveInput(game, piece, row, col, kind);
+    const move = findMove(game, piece, row, col);
+    if (move === undefined)
+      throw new GameError(
+        ErrorCode.BAD_ACTION,
+        "Không có loại nước đi phù hợp",
+      );
 
-    for (const key of RULES_BY_KIND[kind]) ruleSet.get(key).check(input);
-    return settle(applyMove(game, piece, row, col, kind));
+    const error = validate(move, game, piece, row, col);
+    if (error) throw error;
+
+    return settle(move.apply(game, piece, row, col));
   } else {
     const pType = action.pieceType;
     if (pType === null)
@@ -96,10 +98,10 @@ export function reduce(game, action) {
         `Không tìm thấy quân ${id} đang chờ phong cấp`,
       );
 
-    const input = buildPromoteInput(game,piece, action);
-    console.log(input);
-    for (const key of PROMOTE_RULES) ruleSet.get(key).check(input);
-    return settle(applyPromotion(game,piece, pType));
+    const error = validatePromotion(game, piece, pType);
+    if (error) throw error;
+
+    return settle(applyPromotion(game, piece, pType));
   }
 }
 
@@ -107,11 +109,11 @@ export function reduce(game, action) {
  * Tính kết quả ván đấu cho bên sắp đi.
  * Không xác định kết quả khi game đang chờ phong cấp.
  *
- * @param {Game} game
- * @returns {Game}
+ * @param {Game} game - Game sau khi áp dụng hành động.
+ * @returns {Game} Game có `result` nếu ván đã kết thúc, ngược lại giữ nguyên.
  */
 function settle(game) {
   if (game.pendingPromotion !== null) return game;
   const result = evaluateOutcome(game);
-  return result === null ? game : game.with({ result: result });
+  return result === null ? game : game.with({ result });
 }

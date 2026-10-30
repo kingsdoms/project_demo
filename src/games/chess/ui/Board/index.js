@@ -32,8 +32,6 @@ export function createBoard(controller) {
 }
 
 export function updateBoard(el, view) {
-  console.log(view);
-  
   el.classList.toggle("locked", !view.canAct);
 
   const { rows, cols, pieces, selectedId, targets } = view;

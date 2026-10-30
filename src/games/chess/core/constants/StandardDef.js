@@ -1,12 +1,13 @@
-// @ts-nocheck
 /**
  * @file StandardDef.js
  * @author tuanca
  */
+
 import { Side } from "./Side.js";
 import { PieceType } from "./PieceType.js";
 
 export const STANDARD_ROWS = 8;
+
 export const STANDARD_COLS = 8;
 
 export const BACK_RANK = [
@@ -25,6 +26,7 @@ export const PROMOTION_RANK = {
   [Side.BLACK]: 7,
 };
 
+/** @type {import("./PieceType.js").PieceTypeValue[]} */
 export const PROMOTION_TARGETS = [
   PieceType.QUEEN,
   PieceType.ROOK,
