@@ -42,10 +42,10 @@ export function mount(container, controller) {
       root.appendChild(el);
     }
 
-    if (view.result) {
-      root.appendChild(createResult(view.result).el);
-      controller.destroy();
-    }
+    // if (view.result) {
+    //   root.appendChild(createResult(view.result).el);
+    //   controller.destroy();
+    // }
   };
 
   const offs = [

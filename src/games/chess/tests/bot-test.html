@@ -1,0 +1,1482 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bot vs Bot – Dashboard v4</title>
+<style>
+  :root{--bg:#0e1015;--panel:#171a22;--panel2:#1d212c;--line:#2a3040;--fg:#e8ebf2;--mute:#8a93a8;
+        --ok:#4ade80;--err:#f87171;--warn:#fbbf24;--acc:#60a5fa}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+  header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:10}
+  header h1{font-size:16px;margin:0 8px 0 0;white-space:nowrap}
+  header h1 small{color:var(--acc);font-weight:600;margin-left:4px}
+  header .sp{flex:1}
+  #badges{display:flex;flex-wrap:wrap;gap:6px}
+  .badge{padding:2px 10px;border-radius:999px;background:#262c3b;border:1px solid var(--line);font-size:12px;white-space:nowrap}
+  .badge.ok{color:var(--ok);border-color:#1f5f3a}
+  .badge.err{color:var(--err);border-color:#6b2a2a}
+  .badge.warn{color:var(--warn);border-color:#6b5a1f}
+  .badge.acc{color:var(--acc);border-color:#2a4a78}
+  button,select,input{font:inherit;color:var(--fg);background:#232938;border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+  button{cursor:pointer}
+  button:hover{border-color:var(--acc)}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  button.primary{background:#2a4a78;border-color:#3b6cb0}
+  button.danger{background:#5a2323;border-color:#8a3a3a}
+
+  .score{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;padding:12px 12px 0}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+  .stat .lbl{color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  .stat .num{font-size:30px;font-weight:700;line-height:1.15}
+  .stat .sub{color:var(--mute);font-size:12px;min-height:17px}
+  .stat .bar{height:5px;background:#262c3b;border-radius:3px;margin-top:6px;overflow:hidden}
+  .stat .bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}
+  .stat.w .bar i{background:#f1f3f8}.stat.b .bar i{background:#6b7390}.stat.d .bar i{background:var(--ok)}.stat.x .bar i{background:var(--warn)}
+  .stat.w{border-left:4px solid #f1f3f8}.stat.b{border-left:4px solid #3a4054}.stat.d{border-left:4px solid var(--ok)}.stat.x{border-left:4px solid var(--warn)}
+
+  .layout{display:grid;grid-template-columns:minmax(320px,540px) 1fr;gap:12px;padding:12px;align-items:start}
+  @media(max-width:960px){.layout{grid-template-columns:1fr}}
+  .col{display:flex;flex-direction:column;gap:12px;min-width:0}
+  #ui-host{min-height:360px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+  .card h2{font-size:13px;margin:0 0 8px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em;display:flex;gap:8px;align-items:center}
+  .card h2 .sp{flex:1}
+  .meta{text-transform:none;letter-spacing:0;font-weight:400}
+  .muted{color:var(--mute)}
+  .kv{display:grid;grid-template-columns:130px 1fr;gap:4px 10px}
+  .kv .k{color:var(--mute)}
+  .kv .v{word-break:break-word;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+  .chip{display:inline-block;margin:0 4px 4px 0;padding:0 8px;border-radius:4px;font-size:12px;background:#262c3b}
+  .chip.on{background:#14502d;color:var(--ok)}
+  .dot{display:inline-block;width:11px;height:11px;border-radius:50%;border:1px solid #888;margin-right:6px;vertical-align:middle;flex:none}
+  .dot.w{background:#fff}.dot.b{background:#000}
+  .turnbar{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:600;padding:8px 10px;margin-bottom:8px;background:var(--panel2);border-radius:8px;border:1px solid var(--line)}
+  .progress{height:5px;background:#262c3b;border-radius:3px;margin-top:8px;overflow:hidden}
+  .progress i{display:block;height:100%;width:0;background:var(--acc)}
+  .scroll{max-height:280px;overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{text-align:left;padding:3px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{color:var(--mute);font-weight:500;position:sticky;top:0;background:var(--panel)}
+  tr.sel td{background:#223049}
+  tr.click{cursor:pointer}
+  tr.click:hover td{background:#1f2636}
+  td.pick,tr.pick{cursor:pointer}
+  td.pick:hover,tr.pick:hover td{background:#1f2636}
+  td.cur,tr.cur td{outline:2px solid var(--acc);outline-offset:-2px}
+  td .t{color:var(--mute);font-size:11px}
+  td .t.slow{color:var(--warn)}
+  .mc{display:inline-flex;gap:6px;align-items:baseline}
+  .mc .pc{font-size:17px}
+  .mv{font-family:ui-monospace,Menlo,Consolas,monospace}
+  pre{margin:6px 0 0;padding:8px;background:#0b0d12;border-radius:6px;overflow:auto;max-height:300px;font-size:12px}
+  details>summary{cursor:pointer;color:var(--mute);margin-top:6px}
+  .wb{display:inline-block;padding:0 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+  .wb.w{background:#f1f3f8;color:#111}
+  .wb.b{background:#0b0d12;color:#fff;border:1px solid #667}
+  .wb.draw{background:#14502d;color:var(--ok)}
+  .wb.x{background:#5a4a1f;color:var(--warn)}
+  .form{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+  .form label{display:flex;flex-direction:column;gap:2px;font-size:11px;color:var(--mute)}
+  .form label.row{flex-direction:row;align-items:center;gap:6px;font-size:12px;color:var(--fg)}
+  .form input[type=number]{width:105px}
+  #map input{width:100%;font-family:ui-monospace,monospace;font-size:12px}
+  #map td:nth-child(3){font-family:ui-monospace,monospace;font-size:12px;color:var(--mute);word-break:break-all}
+  .filters{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:6px;font-size:12px}
+  .filters label{display:flex;gap:4px;align-items:center;cursor:pointer}
+  .filters input{padding:0}
+
+  /* quân cờ + bàn cờ */
+  .pc{font-family:"Segoe UI Symbol","Noto Sans Symbols 2","Apple Symbols","DejaVu Sans",sans-serif;line-height:1}
+  .pc.w{color:#fff;text-shadow:0 0 1px #000,0 0 2px #000,0 0 3px #000}
+  .pc.b{color:#0b0c10;text-shadow:0 0 1px #fff,0 0 2px rgba(255,255,255,.55)}
+  .board{display:grid;border:2px solid #3a4258;border-radius:4px;overflow:hidden;flex:none}
+  .board .sq{position:relative;display:flex;align-items:center;justify-content:center;line-height:1;user-select:none}
+  .board .sq.lt{background:#e4d8bb}.board .sq.dk{background:#a9825f}
+  .board .sq.from{background:#d8d86a}.board .sq.to{background:#7fd18b}
+  .board .sq i{position:absolute;font-style:normal;font-size:9px;color:#5a4a38;opacity:.85;line-height:1}
+  .board .sq i.rk{top:1px;left:2px}.board .sq i.fl{bottom:1px;right:2px}
+  .live{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+  .replay{display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin-top:8px}
+  .rctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .rctl input[type=range]{width:200px;padding:0}
+  .rcap{font-family:ui-monospace,monospace;font-size:12.5px}
+  .chart{margin-top:8px}
+  .chart small{display:block;color:var(--mute);font-size:11px;margin-top:2px}
+
+  .log-row{display:flex;gap:8px;padding:2px 0;border-bottom:1px solid #20263a;font-size:12.5px;align-items:flex-start}
+  .log-row .t{color:var(--mute);font-family:ui-monospace,monospace;font-size:11.5px;flex:none;padding-top:1px}
+  .log-row .tag{flex:none;width:68px;text-align:center;border-radius:4px;font-size:10px;padding:2px 0;background:#262c3b}
+  .log-row .txt{min-width:0;flex:1;word-break:break-word}
+  .log-row .txt details>summary{margin:0;color:inherit}
+  .log-row.move .tag{background:#2a4a78}
+  .log-row.game .tag{background:#14502d}
+  .log-row.game{border-top:1px solid var(--line);margin-top:3px;padding-top:4px;font-weight:600}
+  .log-row.view{color:var(--mute)}
+  .log-row.action .tag{background:#4a3a78}
+  .log-row.error .tag{background:#6b2a2a}.log-row.error{color:var(--err)}
+  .log-row.warn .tag{background:#6b5a1f}.log-row.warn{color:var(--warn)}
+  #log.hide-move .log-row.move,#log.hide-game .log-row.game,#log.hide-view .log-row.view,
+  #log.hide-sys .log-row.sys,#log.hide-sys .log-row.action{display:none}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>♟ Bot vs Bot <small>v4</small></h1>
+  <div id="badges"></div>
+  <span class="sp"></span>
+  <button id="btn-auto" class="primary">Auto: BẬT</button>
+  <button id="btn-restart">Restart ngay</button>
+  <button id="btn-csv">CSV</button>
+  <button id="btn-export">JSON</button>
+  <button id="btn-destroy" class="danger">destroy()</button>
+</header>
+
+<section class="score">
+  <div class="stat" id="st-total"><div class="lbl">Tổng số ván</div><div class="num">0</div><div class="sub"></div><div class="bar"><i></i></div></div>
+  <div class="stat w" id="st-w"><div class="lbl">⚪ Trắng thắng</div><div class="num">0</div><div class="sub"></div><div class="bar"><i></i></div></div>
+  <div class="stat b" id="st-b"><div class="lbl">⚫ Đen thắng</div><div class="num">0</div><div class="sub"></div><div class="bar"><i></i></div></div>
+  <div class="stat d" id="st-d"><div class="lbl">Hòa</div><div class="num">0</div><div class="sub"></div><div class="bar"><i></i></div></div>
+  <div class="stat x" id="st-x"><div class="lbl">Kẹt / Quá dài / Không rõ</div><div class="num">0</div><div class="sub"></div><div class="bar"><i></i></div></div>
+</section>
+
+<main class="layout">
+  <section class="col">
+    <div id="ui-host"></div>
+
+    <div class="card">
+      <h2>Cấu hình</h2>
+      <div class="form">
+        <label>Chờ trước khi restart (ms)<input id="cfg-delay" type="number" min="0" value="0"></label>
+        <label>Dừng sau N ván (0 = vô hạn)<input id="cfg-max" type="number" min="0" value="0"></label>
+        <label>Giới hạn số nước/ván (0 = tắt)<input id="cfg-maxply" type="number" min="0" value="300"></label>
+        <label>Watchdog kẹt (giây, 0 = tắt)<input id="cfg-wd" type="number" min="0" value="30"></label>
+        <label>Tự xoá log sau mỗi N ván (0 = tắt)<input id="cfg-logclear" type="number" min="0" value="3"></label>
+        <label class="row"><input id="cfg-stuck" type="checkbox" checked> Kẹt thì ghi STUCK và restart</label>
+        <label>botDelay của bot (ms)<input id="cfg-botdelay" type="number" min="0" value="0"></label>
+        <button id="btn-apply-delay" class="primary" title="botDelay chỉ nhận lúc create(), nên cần tải lại trang">Áp dụng &amp; tải lại</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ánh xạ trường <span class="meta muted">(để trống = tự dò, ví dụ nhập <code>game.pieces</code>)</span></h2>
+      <table id="map"></table>
+    </div>
+  </section>
+
+  <section class="col">
+    <div class="card">
+      <h2>Ván đang chạy <span id="lv-title" class="meta muted"></span></h2>
+      <div id="turnbar" class="turnbar"></div>
+      <div class="live">
+        <div class="kv" style="flex:1;min-width:230px">
+          <div class="k">Số nước đã đi</div><div class="v" id="lv-ply">—</div>
+          <div class="k">Nước vừa đi</div><div class="v" id="lv-last">—</div>
+          <div class="k">Bot đang nghĩ</div><div class="v" id="lv-think">—</div>
+          <div class="k">Thời gian ván</div><div class="v" id="lv-elapsed">—</div>
+          <div class="k">TB ms/nước</div><div class="v" id="lv-avg">—</div>
+          <div class="k">Status</div><div class="v" id="lv-status">—</div>
+          <div class="k">Cờ</div><div class="v" id="lv-flags">—</div>
+          <div class="k">view.result</div><div class="v" id="lv-result">chưa có</div>
+          <div class="k">Số lần view đổi</div><div class="v" id="lv-ticks">—</div>
+        </div>
+        <div id="live-board"></div>
+      </div>
+      <div class="progress" title="Số nước / giới hạn"><i id="pg"></i></div>
+      <details id="d-fields"><summary>Tất cả trường của view</summary><div id="fields" style="margin-top:6px"></div></details>
+      <details id="d-raw"><summary>JSON thô</summary><pre id="raw"></pre></details>
+    </div>
+
+    <div class="card">
+      <h2>Lịch sử nước đi (ván đang chạy)</h2>
+      <div id="cur-moves" class="scroll"></div>
+    </div>
+
+    <div class="card">
+      <h2>Thống kê <span class="sp"></span><button id="btn-clear">Xoá lịch sử các ván</button></h2>
+      <div id="stats"></div>
+    </div>
+
+    <div class="card">
+      <h2>Các ván đã chơi <span id="games-meta" class="meta muted"></span><span class="sp"></span>
+        <label class="meta"><input type="checkbox" id="follow" checked> theo dõi ván mới nhất</label></h2>
+      <div id="games" class="scroll" style="max-height:340px"></div>
+    </div>
+
+    <div class="card">
+      <h2>Chi tiết &amp; phát lại ván đã chọn</h2>
+      <div id="detail"><span class="muted">Chọn một ván ở bảng trên.</span></div>
+    </div>
+
+    <div class="card">
+      <h2>Log <span class="sp"></span><button id="clear-log">Xoá</button></h2>
+      <div class="filters" id="filters">
+        <label><input type="checkbox" data-k="move" checked> Nước đi</label>
+        <label><input type="checkbox" data-k="game" checked> Bắt đầu/kết thúc ván</label>
+        <label><input type="checkbox" data-k="sys" checked> Hệ thống</label>
+        <label><input type="checkbox" data-k="view"> View đổi (không phải nước đi)</label>
+      </div>
+      <div id="log" class="scroll" style="max-height:380px"></div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+  import chess, { GameMode } from "../index.js";
+
+  /* ================= CẤU HÌNH ================= */
+  const BOT_DELAY_KEY = "chess-bot-test:v3:botDelay";
+  const BOT_DELAY = (() => {
+    let raw = null;
+    try { raw = localStorage.getItem(BOT_DELAY_KEY); } catch {}
+    const n = Number(raw);
+    return raw != null && raw !== "" && Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0; // mặc định 0
+  })();
+  const CONFIG = { mode: GameMode.BOT, botDelay: BOT_DELAY };   // đổi mode nếu có mode bot-vs-bot riêng
+  const STORE_KEY = "chess-bot-test:v4:games";
+  const MAP_KEY = "chess-bot-test:v3:map";
+  // Nếu giá trị lượt đi là số/enum, khai báo ở đây. Ví dụ: { "0": "w", "1": "b" }
+  const SIDE_ALIASES = {};
+  const NO_RESULT = new Set(["", "none", "ongoing", "playing", "in_progress", "in-progress", "active"]);
+  const isResult = (v) => {
+    if (v == null || v === false) return false;
+    if (typeof v === "string" && NO_RESULT.has(v.trim().toLowerCase())) return false;
+    return true;
+  };
+
+  const AUTO = {
+    turn:     ["turn", "currentTurn", "activeColor", "sideToMove", "toMove", "currentPlayer"],
+    history:  ["history", "moveHistory", "moves", "pgn", "log"],
+    lastMove: ["lastMove", "last"],
+    status:   ["status", "gameStatus", "state", "phase"],
+    fen:      ["fen", "FEN", "position"],
+  };
+  const PIECE_KEYS = ["pieces", "board", "squares", "cells"];
+  const FLAG_KEYS = ["isCheck", "check", "inCheck", "isCheckmate", "checkmate", "isStalemate", "stalemate",
+                     "isDraw", "draw", "isGameOver", "gameOver", "over", "finished",
+                     "thinking", "isThinking", "botThinking", "busy", "loading", "pending"];
+  const MAP_FIELDS = [
+    ["pieces", "Danh sách quân (mặc định: pieces)"],
+    ["turn", "Lượt đi"], ["history", "Lịch sử nước"], ["lastMove", "Nước cuối"],
+    ["status", "Trạng thái"], ["result", "Kết quả (mặc định: result)"],
+  ];
+
+  /* ===== Chuyển view.result → bên thắng. SỬA Ở ĐÂY nếu format result khác ===== */
+  function parseResult(r, ctx = {}) {
+    const normSide = (x) => {
+      if (x == null) return null;
+      const s = String(x).toLowerCase().trim();
+      if (SIDE_ALIASES[s]) return SIDE_ALIASES[s];
+      if (["w", "white", "trắng", "1-0"].includes(s)) return "w";
+      if (["b", "black", "đen", "0-1"].includes(s)) return "b";
+      if (["draw", "drawn", "tie", "stalemate", "1/2-1/2", "½-½", "="].includes(s)) return "draw";
+      return null;
+    };
+    let winner = null, reason = null;
+    if (r && typeof r === "object") {
+      for (const k of ["winner", "winnerColor", "winningSide", "victor"]) { winner = normSide(r[k]); if (winner) break; }
+      if (!winner && (r.draw === true || r.isDraw === true)) winner = "draw";
+      if (!winner) for (const k of ["outcome", "status", "type", "kind", "result"]) { winner = normSide(r[k]); if (winner) break; }
+      const rs = r.reason ?? r.type ?? r.kind ?? r.by ?? r.status ?? r.outcome ?? null;
+      reason = rs == null ? null : (typeof rs === "object" ? safe(rs) : String(rs));
+    } else {
+      winner = normSide(r);
+      reason = String(r);
+    }
+    const text = (r && typeof r === "object" ? safe(r) : String(r)).toLowerCase();
+    if (!winner) {
+      if (/draw|stalemate|\btie\b|1\/2|½|insufficient|repetition|fifty|hòa/.test(text)) winner = "draw";
+      else if (/white[\s_-]*(wins?|won)|trắng\s*thắng|\b1-0\b/.test(text)) winner = "w";
+      else if (/black[\s_-]*(wins?|won)|đen\s*thắng|\b0-1\b/.test(text)) winner = "b";
+    }
+    if (!winner && /mate/.test(text) && (ctx.lastMover === "w" || ctx.lastMover === "b")) winner = ctx.lastMover;
+    if (!winner) {
+      const hasW = /white|trắng/.test(text), hasB = /black|đen/.test(text);
+      if (hasW !== hasB) {
+        const named = hasW ? "w" : "b";
+        winner = /loser|losing|mated|lost/.test(text) ? (named === "w" ? "b" : "w") : named;
+      }
+    }
+    return { winner: winner ?? "unknown", reason };
+  }
+
+  /* ================= helpers ================= */
+  const $ = (s, r = document) => r.querySelector(s);
+  function el(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  function safe(v, space) {
+    const stack = [];
+    try {
+      return JSON.stringify(v, function (k, x) {
+        if (typeof x === "bigint") return x.toString() + "n";
+        if (typeof x === "function") return `[Function ${x.name || "anonymous"}]`;
+        if (x instanceof Error) return { name: x.name, message: x.message, stack: x.stack };
+        if (x instanceof Map) return { __map: [...x] };
+        if (x instanceof Set) return { __set: [...x] };
+        if (x && typeof x === "object") {
+          while (stack.length && stack[stack.length - 1] !== this) stack.pop();
+          if (stack.includes(x)) return "[Circular]";
+          stack.push(x);
+        }
+        return x;
+      }, space);
+    } catch { return String(v); }
+  }
+  function clone(v) {
+    if (v === undefined) return null;
+    try { return JSON.parse(safe(v)); } catch { return String(v); }
+  }
+  function fmt(v) {
+    if (v === undefined) return "—";
+    if (v === null) return "null";
+    if (typeof v === "string") return v;
+    if (typeof v === "function") return `[Function ${v.name}]`;
+    if (typeof v === "object") { const s = safe(v); return s.length > 160 ? s.slice(0, 160) + "…" : s; }
+    return String(v);
+  }
+  function shortVal(v, n = 30) {
+    const s = v === undefined ? "∅" : typeof v === "string" ? v : safe(v);
+    return s.length > n ? s.slice(0, n) + "…" : s;
+  }
+  function fmtDur(ms) {
+    if (ms == null) return "—";
+    if (ms < 1000) return `${Math.round(ms)}ms`;
+    const s = ms / 1000;
+    return s < 60 ? `${s.toFixed(1)}s` : `${Math.floor(s / 60)}m${String(Math.round(s % 60)).padStart(2, "0")}s`;
+  }
+  const fmtMs = (ms) => ms == null ? "—" : ms >= 1000 ? (ms / 1000).toFixed(2) + "s" : Math.round(ms) + "ms";
+  const shallow = (v) => (v && typeof v === "object" ? { ...v } : null);
+  function changedKeys(prevS, view) {
+    if (!prevS || !view || typeof view !== "object") return [];
+    const ks = new Set([...Object.keys(prevS), ...Object.keys(view)]);
+    return [...ks].filter(k => prevS[k] !== view[k]);
+  }
+
+  function getPath(obj, path) {
+    let cur = obj;
+    for (const k of String(path).split(".").filter(Boolean)) {
+      if (cur == null) return undefined;
+      cur = cur[k];
+    }
+    return cur;
+  }
+  function pickKV(obj, keys, pred = () => true) {
+    if (!obj || typeof obj !== "object") return null;
+    for (const k of keys) if (k in obj && obj[k] !== undefined && pred(obj[k])) return { key: k, value: obj[k] };
+    for (const [pk, sub] of Object.entries(obj)) {
+      if (sub && typeof sub === "object" && !Array.isArray(sub)) {
+        for (const k of keys) if (k in sub && sub[k] !== undefined && pred(sub[k])) return { key: `${pk}.${k}`, value: sub[k] };
+      }
+    }
+    return null;
+  }
+  function sideInfo(t) {
+    if (t == null) return null;
+    const raw = typeof t === "object" ? (t.color ?? t.side ?? t.name ?? safe(t)) : t;
+    const s0 = String(raw).toLowerCase().trim();
+    const s = SIDE_ALIASES[s0] ?? s0;
+    if (["w", "white", "trắng"].includes(s)) return { key: "w", label: "Trắng", cls: "w", raw: String(raw) };
+    if (["b", "black", "đen"].includes(s)) return { key: "b", label: "Đen", cls: "b", raw: String(raw) };
+    return { key: `?${s}`, label: `Bên ${raw}`, cls: "", raw: String(raw) };
+  }
+  function moveText(m) {
+    if (typeof m === "string") return m;
+    if (m && typeof m === "object") {
+      if (m.san) return m.san;
+      if (m.from != null && m.to != null) return `${fmt(m.from)}→${fmt(m.to)}` + (m.promotion ? `=${m.promotion}` : "");
+      if (m.uci) return m.uci;
+      if (m.notation) return m.notation;
+    }
+    return fmt(m);
+  }
+
+  const WIN_LABEL = { w: "Trắng thắng", b: "Đen thắng", draw: "Hòa", unknown: "Không rõ", stuck: "Kẹt (STUCK)", maxmoves: "Quá dài" };
+  const WIN_CLS = { w: "w", b: "b", draw: "draw" };
+  const WIN_FILL = { w: "#f1f3f8", b: "#6b7390", draw: "#4ade80" };
+  const winnerLabel = (k) => WIN_LABEL[k] ?? String(k);
+  const winnerBadge = (k) => el("span", "wb " + (WIN_CLS[k] ?? "x"), winnerLabel(k));
+
+  /* ================= BÀN CỜ ================= */
+  // Quy ước: row 0 = hàng 8 (Đen ở trên), col 0 = cột a. Chỉ ảnh hưởng tên ô hiển thị.
+  const GLYPH = Object.fromEntries(Object.entries({ p: "♟", n: "♞", b: "♝", r: "♜", q: "♛", k: "♚" }).map(([k, v]) => [k, v + "\uFE0E"]));
+  const TYPE_CODES = [["PAWN", "p"], ["KNIGHT", "n"], ["BISHOP", "b"], ["ROOK", "r"], ["QUEEN", "q"], ["KING", "k"]];
+  const fileName = (c) => (c < 26 ? "abcdefghijklmnopqrstuvwxyz"[c] : String(c));
+  const sqName = (i, size) => fileName(i % size) + (size - Math.floor(i / size));
+  const colorOf = (ch) => (ch === ch.toUpperCase() ? "w" : "b");
+
+  function typeCode(t) {
+    if (t == null) return "?";
+    const s = String(typeof t === "object" ? (t.name ?? t.type ?? safe(t)) : t).toUpperCase();
+    for (const [k, c] of TYPE_CODES) if (s.includes(k)) return c;
+    if (s.length === 1 && "pnbrqk".includes(s.toLowerCase())) return s.toLowerCase();
+    return "?";
+  }
+
+  function findPieces(view) {
+    const ok = (v) => Array.isArray(v) && v.length > 0 && v[0] && typeof v[0] === "object" && !Array.isArray(v[0]);
+    const ov = (map.pieces || "").trim();
+    if (ov) { const v = getPath(view, ov); return ok(v) ? { key: ov, value: v } : null; }
+    return pickKV(view, PIECE_KEYS, ok);
+  }
+  // view.pieces → chuỗi bàn cờ size*size (chữ HOA = Trắng, chữ thường = Đen, "." = trống)
+  function readPieces(view) {
+    const kv = findPieces(view);
+    if (!kv) return null;
+    const items = [];
+    let maxR = 7, maxC = 7;
+    for (const p of kv.value) {
+      if (!p || typeof p !== "object") continue;
+      if (p.captured === true || p.dead === true || p.removed === true || p.alive === false) continue;
+      const row = Number(p.row ?? p.r ?? p.y ?? p.rank);
+      const col = Number(p.col ?? p.c ?? p.x ?? p.column ?? p.file);
+      if (!Number.isInteger(row) || !Number.isInteger(col) || row < 0 || col < 0 || row > 31 || col > 31) continue;
+      const code = typeCode(p.type ?? p.kind ?? p.piece ?? p.name);
+      const sk = sideInfo(p.side ?? p.color ?? p.player ?? p.owner)?.key;
+      items.push({ row, col, code, white: sk === "w" });
+      if (row > maxR) maxR = row;
+      if (col > maxC) maxC = col;
+    }
+    if (!items.length) return null;
+    const size = Math.max(maxR, maxC) + 1;
+    const cells = new Array(size * size).fill(".");
+    for (const it of items) cells[it.row * size + it.col] = it.white ? it.code.toUpperCase() : it.code;
+    return { key: kv.key, size, str: cells.join(""), count: items.length };
+  }
+
+  function changedCount(a, b) {
+    let n = 0;
+    const len = Math.max(a.length, b.length);
+    for (let i = 0; i < len; i++) if (a[i] !== b[i]) n++;
+    return n;
+  }
+
+  // So 2 bàn cờ liên tiếp → danh sách nước đi (thường 1, hiếm khi 2 nếu view bị gộp)
+  function deriveMoves(a, b, size, turnBefore) {
+    const gone = [], added = [];
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] === b[i]) continue;
+      if (a[i] !== ".") gone.push(i);
+      if (b[i] !== ".") added.push(i);
+    }
+    const sides = [...new Set(added.map(i => colorOf(b[i])))];
+    if (!sides.length) return [];
+    const order = sides.length === 2 ? (turnBefore === "b" ? ["b", "w"] : ["w", "b"]) : sides;
+    return order.map(c => extractFor(c, a, b, gone, added, size));
+  }
+  function extractFor(col, a, b, gone, added, size) {
+    const myAdd = added.filter(i => colorOf(b[i]) === col);
+    const myGone = gone.filter(i => colorOf(a[i]) === col);
+    const foeGone = gone.filter(i => colorOf(a[i]) !== col);
+    const r = { side: col, from: null, to: null, piece: null, cap: null, promo: null, castle: null, ep: false, uncertain: false, amend: false };
+    const kTo = myAdd.find(i => b[i].toLowerCase() === "k");
+    const kFrom = myGone.find(i => a[i].toLowerCase() === "k");
+    if (myAdd.length === 2 && myGone.length === 2 && kTo != null && kFrom != null) {
+      r.from = kFrom; r.to = kTo; r.piece = "k";
+      r.castle = (kTo % size) > (kFrom % size) ? "O-O" : "O-O-O";
+      return r;
+    }
+    if (myAdd.length === 1 && myGone.length === 1) {
+      r.from = myGone[0]; r.to = myAdd[0];
+      r.piece = a[r.from].toLowerCase();
+      const after = b[r.to].toLowerCase();
+      if (after !== r.piece) r.promo = after;
+      if (r.from === r.to) { r.amend = true; return r; }          // chọn quân phong cấp xong ở tick sau
+      if (foeGone.includes(r.to)) r.cap = a[r.to].toLowerCase();
+      else if (foeGone.length === 1) { r.cap = a[foeGone[0]].toLowerCase(); r.ep = true; }
+      return r;
+    }
+    r.uncertain = true;
+    r.from = myGone[0] ?? null;
+    r.to = myAdd[0] ?? null;
+    r.piece = r.to != null ? b[r.to].toLowerCase() : (r.from != null ? a[r.from].toLowerCase() : null);
+    return r;
+  }
+  function buildText(r, size) {
+    if (r.castle) return r.castle;
+    if (r.from == null || r.to == null) return "?";
+    return `${sqName(r.from, size)}${r.cap ? "×" : "→"}${sqName(r.to, size)}${r.promo ? "=" + r.promo.toUpperCase() : ""}${r.ep ? " e.p." : ""}${r.uncertain ? "?" : ""}`;
+  }
+
+  function drawBoard(host, boardStr, size, opts = {}) {
+    host.replaceChildren();
+    const px = opts.px ?? 240;
+    const b = el("div", "board");
+    b.style.width = px + "px";
+    b.style.height = px + "px";
+    b.style.gridTemplateColumns = `repeat(${size},1fr)`;
+    b.style.gridTemplateRows = `repeat(${size},1fr)`;
+    b.style.fontSize = Math.floor((px / size) * 0.78) + "px";
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        const i = r * size + c;
+        const ch = boardStr?.[i] ?? ".";
+        const cell = el("div", "sq " + ((r + c) % 2 ? "dk" : "lt"));
+        if (i === opts.from) cell.classList.add("from");
+        if (i === opts.to) cell.classList.add("to");
+        if (ch !== ".") cell.append(el("span", "pc " + colorOf(ch), GLYPH[ch.toLowerCase()] ?? "?"));
+        if (c === 0) cell.append(el("i", "rk", String(size - r)));
+        if (r === size - 1) cell.append(el("i", "fl", fileName(c)));
+        b.append(cell);
+      }
+    }
+    host.append(b);
+  }
+
+  /* ================= log ================= */
+  const TAGS = { move: "NƯỚC", game: "VÁN", view: "VIEW", sys: "HỆ THỐNG", action: "ACTION", warn: "CẢNH BÁO", error: "LỖI" };
+  function log(kind, text, payload, opts = {}) {
+    const box = $("#log");
+    const near = box.scrollHeight - box.scrollTop - box.clientHeight < 50;
+    const row = el("div", "log-row " + kind);
+    const d = new Date();
+    row.append(
+      el("span", "t", d.toLocaleTimeString("en-GB", { hour12: false }) + "." + String(d.getMilliseconds()).padStart(3, "0")),
+      el("span", "tag", TAGS[kind] ?? kind)
+    );
+    const body = el("div", "txt");
+    if (opts.side === "w" || opts.side === "b") body.append(el("span", "dot " + opts.side));
+    if (payload !== undefined && payload !== null) {
+      const det = document.createElement("details");
+      det.append(el("summary", null, text), el("pre", null, safe(payload, 2)));
+      body.append(det);
+    } else body.append(document.createTextNode(text));
+    row.append(body);
+    box.append(row);
+    while (box.children.length > 1200) box.firstChild.remove();
+    if (near) box.scrollTop = box.scrollHeight;
+  }
+  window.addEventListener("error", e => log("error", `window.error: ${e.message}`));
+  window.addEventListener("unhandledrejection", e => log("error", `unhandledrejection: ${e.reason?.message ?? e.reason}`, e.reason));
+
+  /* ================= lưu trữ ================= */
+  function loadJSON(key, def) {
+    try { const v = JSON.parse(localStorage.getItem(key) ?? "null"); return v ?? def; } catch { return def; }
+  }
+  let persistWarned = false;
+  function persist() {
+    const arr = state.games.slice(-300);
+    const KEEP_FULL = 40;   // chỉ giữ nước đi + bàn cờ cho 40 ván gần nhất
+    const slim = arr.map((g, i) => {
+      const { finalView, ...rest } = g;
+      if (i >= arr.length - KEEP_FULL) return rest;
+      const { moves, startBoard, ...lite } = rest;
+      return lite;
+    });
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(slim)); }
+    catch {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(slim.map(({ moves, startBoard, ...r }) => r))); }
+      catch (e) { if (!persistWarned) { persistWarned = true; log("warn", `Không lưu được localStorage: ${e.message}`); } }
+    }
+  }
+
+  /* ================= state ================= */
+  const controller = chess.create({ mode: CONFIG.mode, botDelay: CONFIG.botDelay });
+  const map = loadJSON(MAP_KEY, {});
+  const state = {
+    auto: true,
+    games: [],
+    nextId: 1,
+    selectedId: null,
+    follow: true,
+    sessionCount: 0,
+    sinceLogClear: 0,
+    shortStreak: 0,
+    errors: 0,
+    cur: null,
+    prevRead: null,
+    prevShallow: null,
+    lastSeen: null,
+    unseenSince: null,
+    liveBoardKey: null,
+    replayTimer: null,
+    restartTimer: null,
+    restartAt: null,
+    restarting: false,
+    pendingReset: null,
+    watchdogFired: false,
+    lastTickPerf: performance.now(),
+    destroyed: false,
+  };
+  { const a = loadJSON(STORE_KEY, []); state.games = Array.isArray(a) ? a : []; }
+  state.nextId = state.games.reduce((m, g) => Math.max(m, g.id ?? 0), 0) + 1;
+  window.__bot = { controller, state };
+
+  const num = (sel, def) => { const n = Number($(sel).value); return Number.isFinite(n) && n >= 0 ? n : def; };
+  const cfg = {
+    delay: () => num("#cfg-delay", 0),
+    max: () => Math.floor(num("#cfg-max", 0)),
+    maxPlies: () => Math.floor(num("#cfg-maxply", 0)),
+    watchdog: () => num("#cfg-wd", 30),
+    logClear: () => Math.floor(num("#cfg-logclear", 3)),
+    stuck: () => $("#cfg-stuck").checked,
+  };
+
+  /* ================= đọc view ================= */
+  function resolve(view, name) {
+    const ov = (map[name] || "").trim();
+    if (ov) { const v = getPath(view, ov); return v === undefined ? null : { key: ov, value: v }; }
+    if (name === "result") { const v = view?.result; return v === undefined ? null : { key: "result", value: v }; }
+    const pred = name === "history" ? (v => Array.isArray(v) || typeof v === "string") : () => true;
+    const kv = pickKV(view, AUTO[name] ?? [], pred);
+    if (kv) return kv;
+    if (name === "turn") {
+      const fen = pickKV(view, AUTO.fen, v => typeof v === "string" && /\s[wb]\s/.test(v));
+      if (fen) return { key: `${fen.key} (từ FEN)`, value: fen.value.split(/\s+/)[1] };
+    }
+    return null;
+  }
+  function read(view) {
+    const turnKV = resolve(view, "turn");
+    const histKV = resolve(view, "history");
+    const lastKV = resolve(view, "lastMove");
+    const resKV = resolve(view, "result");
+    const stKV = resolve(view, "status");
+    const turn = turnKV ? sideInfo(turnKV.value) : null;
+    const hist = histKV && Array.isArray(histKV.value) ? histKV.value : null;
+    const resultVal = resKV ? resKV.value : undefined;
+    return {
+      turn, turnKey: turn?.key ?? null,
+      hist, histLen: hist ? hist.length : null,
+      lastText: lastKV && lastKV.value != null ? moveText(lastKV.value) : null,
+      board: readPieces(view),
+      resultVal, hasResult: isResult(resultVal),
+      status: stKV,
+    };
+  }
+
+  /* ================= vòng đời ván ================= */
+  function makeMove(o) {
+    const side = o.side;
+    return {
+      ply: o.ply, side,
+      sideLabel: side === "w" ? "Trắng" : side === "b" ? "Đen" : "?",
+      piece: o.piece ?? null, from: o.from ?? null, to: o.to ?? null, promo: o.promo ?? null,
+      text: o.text ?? "?", dtMs: o.dtMs ?? null, board: o.board ?? null,
+      uncertain: !!o.uncertain, guessed: !!o.guessed,
+    };
+  }
+  function addMove(g, m) {
+    g.moves.push(m);
+    const gl = m.piece && GLYPH[m.piece] ? GLYPH[m.piece] + " " : "";
+    log("move", `#${g.id} · nước ${m.ply} · ${m.sideLabel}${m.guessed ? "?" : ""} · ${gl}${m.text} · ${fmtMs(m.dtMs)}`, undefined, { side: m.side });
+  }
+  function sideAgg(moves) {
+    const out = {};
+    for (const m of moves || []) {
+      if (m.dtMs == null) continue;
+      const s = (out[m.side] ??= { label: m.sideLabel, n: 0, sum: 0, max: 0 });
+      s.n++; s.sum += m.dtMs; if (m.dtMs > s.max) s.max = m.dtMs;
+    }
+    return out;
+  }
+  function avgOf(ss) {
+    let n = 0, sum = 0;
+    for (const s of Object.values(ss || {})) { n += s.n; sum += s.sum; }
+    return n ? sum / n : null;
+  }
+
+  function startGame(why) {
+    const view = controller.getView();
+    const now = performance.now();
+    const rd = read(view);
+
+    const N = cfg.logClear();
+    if (N > 0 && state.sinceLogClear >= N) {
+      $("#log").replaceChildren();
+      state.sinceLogClear = 0;
+      log("sys", `Đã tự xoá log sau ${N} ván`);
+    }
+
+    state.cur = {
+      id: state.nextId, startedAt: Date.now(), startPerf: now, lastMoveAt: now,
+      moves: [], ticks: 0, finished: false, winner: null,
+      size: rd.board?.size ?? 8, startBoard: rd.board?.str ?? null,
+    };
+    state.prevRead = rd;
+    state.prevShallow = shallow(view);
+    state.lastSeen = view;
+    state.unseenSince = null;
+    state.pendingReset = null;
+    state.watchdogFired = false;
+    state.lastTickPerf = now;
+    state.liveBoardKey = null;
+    log("game", `▶ BẮT ĐẦU ván #${state.cur.id}${why ? ` (${why})` : ""}`);
+  }
+
+  function onViewChange() {
+    if (state.destroyed || !state.cur || state.restarting) return;
+    const now = performance.now();
+    state.lastTickPerf = now;
+    state.watchdogFired = false;
+    state.unseenSince = null;
+    const view = controller.getView();
+    state.lastSeen = view;
+    const g = state.cur;
+    const cur = read(view);
+    const prev = state.prevRead;
+    const prevShallow = state.prevShallow;
+    state.prevShallow = shallow(view);
+    g.ticks++;
+
+    // ván mới do nơi khác restart (nút "Ván mới" trong UI…)
+    const boardReset = prev.board && cur.board &&
+      (prev.board.size !== cur.board.size || changedCount(prev.board.str, cur.board.str) > 8);
+    const histReset = !cur.board && prev.histLen != null && cur.histLen != null && cur.histLen < prev.histLen;
+    if ((prev.hasResult && !cur.hasResult) || boardReset || histReset) {
+      if (!g.finished && g.moves.length) log("warn", `Ván #${g.id} bị reset giữa chừng (${g.moves.length} nước) — không lưu`);
+      startGame("phát hiện reset từ bên ngoài");
+      renderAll();
+      return;
+    }
+
+    if (g.finished) {
+      log("view", `view đổi sau khi ván #${g.id} kết thúc: ${changedKeys(prevShallow, view).join(", ") || "cùng nội dung"}`);
+      state.prevRead = cur;
+      renderSoon();
+      return;
+    }
+
+    let used = 0;
+    if (cur.board && prev.board && cur.board.size === prev.board.size) {
+      // phát hiện nước đi bằng cách so 2 bàn cờ
+      if (cur.board.str !== prev.board.str) {
+        const size = cur.board.size;
+        for (const r of deriveMoves(prev.board.str, cur.board.str, size, prev.turnKey)) {
+          if (r.amend) {
+            const last = g.moves[g.moves.length - 1];
+            if (last && last.side === r.side && r.promo) {
+              last.promo = r.promo;
+              last.text = last.text.replace(/=.$/, "") + "=" + r.promo.toUpperCase();
+              last.board = cur.board.str;
+              log("move", `#${g.id} · nước ${last.ply} · phong cấp → ${GLYPH[r.promo] ?? r.promo} (${last.text})`, undefined, { side: last.side });
+            }
+            continue;
+          }
+          addMove(g, makeMove({
+            ply: g.moves.length + 1, side: r.side, piece: r.piece, from: r.from, to: r.to, promo: r.promo,
+            text: buildText(r, size), dtMs: used === 0 ? Math.round(now - g.lastMoveAt) : null,
+            board: cur.board.str, uncertain: r.uncertain,
+          }));
+          used++;
+        }
+      }
+    } else if (!cur.board) {
+      // không có danh sách quân → dò theo lịch sử / lượt đi / nước cuối
+      const fb = [];
+      if (cur.histLen != null && prev.histLen != null) {
+        for (let i = prev.histLen; i < cur.histLen; i++) fb.push({ entry: cur.hist[i] });
+      } else if (cur.turnKey != null && prev.turnKey != null && cur.turnKey !== prev.turnKey) fb.push({ entry: null });
+      else if (cur.lastText != null && cur.lastText !== prev.lastText) fb.push({ entry: null });
+      fb.forEach((f, j) => {
+        const ply = g.moves.length + 1;
+        let side = j === 0 && (prev.turnKey === "w" || prev.turnKey === "b") ? prev.turnKey : null;
+        if (f.entry && typeof f.entry === "object") {
+          const s = sideInfo(f.entry.color ?? f.entry.side ?? f.entry.player)?.key;
+          if (s === "w" || s === "b") side = s;
+        }
+        const guessed = !side;
+        if (!side) side = ply % 2 === 1 ? "w" : "b";
+        addMove(g, makeMove({
+          ply, side, guessed,
+          text: f.entry != null ? moveText(f.entry) : (cur.lastText ?? "?"),
+          dtMs: j === 0 ? Math.round(now - g.lastMoveAt) : null,
+        }));
+        used++;
+      });
+    }
+
+    if (used) g.lastMoveAt = now;
+    else log("view", `view đổi (không có nước đi): ${changedKeys(prevShallow, view).join(", ") || "cùng nội dung"}`);
+
+    state.prevRead = cur;
+    checkEnd(view, cur);
+    renderSoon();
+  }
+
+  function checkEnd(view, cur) {
+    const g = state.cur;
+    if (!g || g.finished) return;
+    if (cur.hasResult) {
+      const out = parseResult(cur.resultVal, { lastMover: g.moves[g.moves.length - 1]?.side });
+      finishGame({ winner: out.winner, reason: out.reason, raw: cur.resultVal });
+      scheduleRestart();
+      return;
+    }
+    const mp = cfg.maxPlies();
+    if (mp > 0 && g.moves.length >= mp) {
+      finishGame({ winner: "maxmoves", reason: `vượt ${mp} nước`, raw: { maxPlies: mp } });
+      scheduleRestart();
+    }
+  }
+
+  function finishGame(o) {
+    const g = state.cur;
+    g.finished = true;
+    g.winner = o.winner;
+    const rec = {
+      id: g.id,
+      winner: o.winner,
+      reason: o.reason ?? null,
+      resultRaw: clone(o.raw),
+      plies: g.moves.length,
+      ticks: g.ticks,
+      startedAt: new Date(g.startedAt).toISOString(),
+      durationMs: Math.round(performance.now() - g.startPerf),
+      size: g.size,
+      startBoard: g.startBoard,
+      ss: sideAgg(g.moves),
+      moves: g.moves,
+      finalView: clone(controller.getView()),
+    };
+    state.games.push(rec);
+    state.sessionCount++;
+    state.sinceLogClear++;
+    state.nextId = g.id + 1;
+    if (state.follow) state.selectedId = rec.id;
+    persist();
+    log("game",
+      `■ KẾT THÚC ván #${rec.id}: ${winnerLabel(rec.winner)}${rec.reason ? ` (${shortVal(rec.reason, 60)})` : ""} · ${rec.plies} nước · ${fmtDur(rec.durationMs)}`,
+      undefined, { side: WIN_CLS[rec.winner] === "w" || WIN_CLS[rec.winner] === "b" ? WIN_CLS[rec.winner] : "" });
+
+    // chặn vòng lặp restart dồn dập khi delay = 0
+    if (rec.plies < 2 && rec.winner !== "stuck") state.shortStreak++; else state.shortStreak = 0;
+    if (state.shortStreak >= 5) {
+      state.errors++;
+      log("error", "5 ván liên tiếp kết thúc dưới 2 nước — tắt auto để kiểm tra lại (xem view.result và “Ánh xạ trường”)");
+      setAuto(false);
+    }
+    renderAll();
+  }
+
+  /* ================= restart ================= */
+  function scheduleRestart() {
+    if (state.destroyed || !state.auto) return;
+    const max = cfg.max();
+    if (max > 0 && state.sessionCount >= max) {
+      log("sys", `Đã đủ ${max} ván — dừng auto`);
+      setAuto(false);
+      return;
+    }
+    clearTimeout(state.restartTimer);
+    const delay = cfg.delay();
+    state.restartAt = performance.now() + delay;
+    state.restartTimer = setTimeout(() => doRestart(false), delay);
+    renderBadges();
+  }
+
+  function doRestart(manual) {
+    if (state.destroyed) return;
+    clearTimeout(state.restartTimer);
+    state.restartTimer = null;
+    state.restartAt = null;
+    const g = state.cur;
+    if (manual && g && !g.finished) log("warn", `Restart tay khi ván #${g.id} chưa kết thúc — ván dở không được lưu`);
+    log("action", `controller.actions.restart() — ${manual ? "thủ công" : "tự động"}`);
+    state.restarting = true;
+    try {
+      controller.actions.restart();
+    } catch (e) {
+      state.restarting = false;
+      state.errors++;
+      log("error", `restart() ném lỗi: ${e?.message ?? e}`, e);
+      setAuto(false);
+      renderAll();
+      return;
+    }
+    state.restarting = false;
+    const rd = read(controller.getView());
+    if (rd.hasResult) {
+      state.pendingReset = performance.now();
+      log("warn", "restart() xong nhưng view.result vẫn còn — đợi tối đa 2s");
+      renderAll();
+      return;
+    }
+    startGame("restart");
+    renderAll();
+  }
+
+  function setAuto(on) {
+    state.auto = on;
+    if (!on) { clearTimeout(state.restartTimer); state.restartTimer = null; state.restartAt = null; }
+    const b = $("#btn-auto");
+    b.textContent = `Auto: ${on ? "BẬT" : "TẮT"}`;
+    b.classList.toggle("primary", on);
+    if (on && !state.destroyed && state.cur?.finished && !state.restartTimer && !state.pendingReset) scheduleRestart();
+    renderBadges();
+  }
+
+  /* ================= subscribe ================= */
+  const unsubscribe = controller.subscribe(onViewChange);
+  const unsubscribeError = controller.onError(err => {
+    state.errors++;
+    log("error", `controller.onError: ${err?.message ?? fmt(err)}`, err);
+    renderBadges();
+  });
+
+  /* ================= render ================= */
+  let rq = false;
+  function renderSoon() {
+    if (rq) return;
+    rq = true;
+    requestAnimationFrame(() => { rq = false; if (!state.destroyed) renderTick(); });
+  }
+  function renderTick() { renderBadges(); renderLive(); renderCurMoves(); }
+  function renderAll() {
+    renderTick(); renderScore(); renderStats(); renderGames();
+    if (state.follow) renderDetail();
+  }
+
+  function badge(text, cls = "") { return el("span", "badge " + cls, text); }
+  function renderBadges() {
+    const bd = $("#badges");
+    bd.replaceChildren();
+    bd.append(badge(`mode: ${fmt(CONFIG.mode)}`, "acc"));
+    bd.append(badge(`botDelay: ${CONFIG.botDelay}ms`, "acc"));
+    bd.append(badge(`Auto ${state.auto ? "BẬT" : "TẮT"}`, state.auto ? "ok" : "warn"));
+    const g = state.cur;
+    if (g) {
+      bd.append(badge(`Ván #${g.id}`));
+      bd.append(badge(g.finished ? "đã kết thúc" : `${g.moves.length} nước`, g.finished ? "warn" : ""));
+    }
+    if (state.restartAt != null) bd.append(badge(`restart sau ${Math.max(0, (state.restartAt - performance.now()) / 1000).toFixed(1)}s`, "warn"));
+    if (state.pendingReset) bd.append(badge("chờ view.result xoá…", "warn"));
+    if (state.errors) bd.append(badge(`${state.errors} lỗi`, "err"));
+    if (state.destroyed) bd.append(badge("ĐÃ DESTROY", "err"));
+  }
+
+  function renderLive() {
+    const view = controller.getView();
+    const g = state.cur;
+    const cur = read(view);
+
+    const tb = $("#turnbar");
+    tb.replaceChildren();
+    if (g?.finished) {
+      tb.append(document.createTextNode("■ Ván đã kết thúc: "), winnerBadge(g.winner));
+    } else if (cur.turn) {
+      tb.append(el("span", "dot " + cur.turn.cls), document.createTextNode(`Lượt: ${cur.turn.label}`));
+    } else tb.append(el("span", "muted", "Không tìm thấy trường lượt đi — xem “Ánh xạ trường”"));
+
+    $("#lv-title").textContent = g ? `#${g.id}` : "";
+    $("#lv-ply").textContent = g ? String(g.moves.length) : "—";
+    const last = g?.moves[g.moves.length - 1];
+    $("#lv-last").textContent = last ? `${last.sideLabel}: ${last.piece ? GLYPH[last.piece] + " " : ""}${last.text} (${fmtMs(last.dtMs)})` : "—";
+    const ss = sideAgg(g?.moves);
+    $("#lv-avg").textContent = Object.values(ss).length
+      ? Object.values(ss).map(s => `${s.label}: ${Math.round(s.sum / s.n)}ms (max ${Math.round(s.max)}ms)`).join(" · ")
+      : "—";
+    $("#lv-status").textContent = cur.status ? `${fmt(cur.status.value)} (${cur.status.key})` : "—";
+    $("#lv-ticks").textContent = g ? String(g.ticks) : "—";
+
+    const flags = $("#lv-flags");
+    flags.replaceChildren();
+    let any = false;
+    for (const f of FLAG_KEYS) {
+      const kv = pickKV(view, [f], v => typeof v === "boolean");
+      if (!kv) continue;
+      any = true;
+      flags.append(el("span", "chip" + (kv.value ? " on" : ""), `${kv.key}: ${kv.value}`));
+    }
+    if (!any) flags.textContent = "—";
+
+    $("#lv-result").textContent = cur.hasResult ? fmt(cur.resultVal) : "chưa có";
+
+    const mp = cfg.maxPlies();
+    $("#pg").style.width = mp > 0 && g ? Math.min(100, (g.moves.length / mp) * 100) + "%" : "0%";
+
+    // bàn cờ trực tiếp
+    const bk = cur.board ? `${cur.board.str}|${last?.from}|${last?.to}` : "none";
+    if (bk !== state.liveBoardKey) {
+      state.liveBoardKey = bk;
+      const bh = $("#live-board");
+      if (cur.board) drawBoard(bh, cur.board.str, cur.board.size, { px: 240, from: last?.from, to: last?.to });
+      else bh.replaceChildren(el("span", "muted", "Không đọc được quân cờ (view.pieces) — xem “Ánh xạ trường”"));
+    }
+
+    if ($("#d-fields").open) {
+      const fields = $("#fields");
+      fields.replaceChildren();
+      if (view && typeof view === "object") {
+        const t = document.createElement("table");
+        t.innerHTML = "<tr><th>Trường</th><th>Kiểu</th><th>Giá trị</th></tr>";
+        for (const [k, v] of Object.entries(view)) {
+          const tr = document.createElement("tr");
+          const type = Array.isArray(v) ? `array(${v.length})` : v === null ? "null" : typeof v;
+          for (const txt of [k, type, fmt(v)]) tr.append(el("td", null, txt));
+          t.append(tr);
+        }
+        fields.append(t);
+      } else fields.textContent = `view = ${fmt(view)}`;
+    }
+    if ($("#d-raw").open) $("#raw").textContent = safe(view, 2);
+
+    updateMapDetected(view);
+    updateTimers();
+  }
+
+  function updateTimers() {
+    if (state.destroyed) return;
+    const g = state.cur;
+    const now = performance.now();
+    if (!g) return;
+    $("#lv-elapsed").textContent = g.finished ? "đã xong" : fmtDur(now - g.startPerf);
+    $("#lv-think").textContent = g.finished ? "—" : fmtDur(now - g.lastMoveAt);
+    renderBadges();
+  }
+
+  function moveCell(m) {
+    const w = el("span", "mc");
+    if (m.piece && GLYPH[m.piece]) w.append(el("span", "pc " + (m.side === "b" ? "b" : "w"), GLYPH[m.piece]));
+    w.append(el("span", "mv", m.text + (m.guessed ? "?" : "")));
+    w.append(el("span", "t" + (m.dtMs != null && m.dtMs > 3000 ? " slow" : ""), fmtMs(m.dtMs)));
+    return w;
+  }
+  function renderMoveTable(host, moves, opts = {}) {
+    host.replaceChildren();
+    if (!moves || !moves.length) { host.append(el("span", "muted", "Chưa có nước đi nào.")); return; }
+    const t = document.createElement("table");
+    const paired = moves.every(m => m.side === "w" || m.side === "b");
+    if (paired) {
+      t.innerHTML = "<tr><th>#</th><th>Trắng</th><th>Đen</th></tr>";
+      const rows = [];
+      let row = null, no = 0;
+      for (const m of moves) {
+        if (m.side === "w" || !row || row.b) { row = { no: ++no, w: null, b: null }; rows.push(row); }
+        row[m.side] = m;
+      }
+      rows.forEach((r, i) => {
+        const tr = document.createElement("tr");
+        if (opts.markLast && i === rows.length - 1) tr.className = "sel";
+        tr.append(el("td", null, String(r.no)));
+        for (const s of ["w", "b"]) {
+          const td = document.createElement("td");
+          const m = r[s];
+          if (!m) { td.className = "muted"; td.textContent = "—"; }
+          else {
+            td.append(moveCell(m));
+            td.dataset.ply = String(m.ply);
+            if (opts.onPick) { td.classList.add("pick"); td.addEventListener("click", () => opts.onPick(m.ply)); }
+          }
+          tr.append(td);
+        }
+        t.append(tr);
+      });
+    } else {
+      t.innerHTML = "<tr><th>Nước</th><th>Bên</th><th>Đi</th></tr>";
+      moves.forEach((m, i) => {
+        const tr = document.createElement("tr");
+        if (opts.markLast && i === moves.length - 1) tr.className = "sel";
+        tr.dataset.ply = String(m.ply);
+        if (opts.onPick) { tr.classList.add("pick"); tr.addEventListener("click", () => opts.onPick(m.ply)); }
+        const td = document.createElement("td");
+        td.append(moveCell(m));
+        tr.append(el("td", null, String(m.ply)), el("td", null, m.sideLabel + (m.guessed ? "?" : "")), td);
+        t.append(tr);
+      });
+    }
+    host.append(t);
+    if (opts.stickBottom) host.scrollTop = host.scrollHeight;
+  }
+  const renderCurMoves = () => renderMoveTable($("#cur-moves"), state.cur?.moves, { markLast: true, stickBottom: true });
+
+  /* ----- biểu đồ ----- */
+  function chartPlies(host, games) {
+    const gs = games.slice(-40);
+    const W = 400, H = 70;
+    const max = Math.max(1, ...gs.map(g => g.plies ?? 0));
+    const bw = (W - 2) / gs.length;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="none">`;
+    gs.forEach((g, i) => {
+      const h = Math.max(1, ((g.plies ?? 0) / max) * (H - 2));
+      s += `<rect x="${(1 + i * bw).toFixed(1)}" y="${(H - h).toFixed(1)}" width="${Math.max(1, bw - 1.5).toFixed(1)}" height="${h.toFixed(1)}" fill="${WIN_FILL[g.winner] ?? "#fbbf24"}"><title>${esc(`#${g.id} · ${winnerLabel(g.winner)} · ${g.plies ?? "?"} nước`)}</title></rect>`;
+    });
+    host.innerHTML = s + `</svg><small>Số nước mỗi ván (${gs.length} ván gần nhất, cao nhất ${max}) · trắng = Trắng thắng · xám = Đen thắng · xanh = hòa · vàng = khác</small>`;
+  }
+  function chartTimes(host, moves) {
+    const ms = moves.map(m => m.dtMs ?? 0);
+    const max = Math.max(50, ...ms);
+    const W = 420, H = 64;
+    const bw = W / moves.length;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="none">`;
+    moves.forEach((m, i) => {
+      const h = Math.max(1, (ms[i] / max) * (H - 2));
+      s += `<rect x="${(i * bw).toFixed(1)}" y="${(H - h).toFixed(1)}" width="${Math.max(1, bw - 1).toFixed(1)}" height="${h.toFixed(1)}" fill="${m.side === "w" ? "#f1f3f8" : "#6b7390"}"><title>${esc(`nước ${m.ply} · ${m.sideLabel} · ${m.text} · ${fmtMs(m.dtMs)}`)}</title></rect>`;
+    });
+    host.innerHTML = s + `</svg><small>Thời gian mỗi nước (cột trắng = Trắng, xám = Đen) · cao nhất ${fmtMs(max)}</small>`;
+  }
+
+  function setStat(id, n, sub, pct) {
+    const e = $(id);
+    $(".num", e).textContent = String(n);
+    $(".sub", e).textContent = sub;
+    $(".bar i", e).style.width = pct + "%";
+  }
+  function renderScore() {
+    const gs = state.games, n = gs.length;
+    const c = k => gs.filter(g => g.winner === k).length;
+    const w = c("w"), b = c("b"), d = c("draw"), x = n - w - b - d;
+    const p = v => (n ? (v / n) * 100 : 0);
+    setStat("#st-total", n, `${state.sessionCount} ván trong phiên này · tỉ số ${w}–${b}`, n ? 100 : 0);
+    setStat("#st-w", w, `${p(w).toFixed(1)}%`, p(w));
+    setStat("#st-b", b, `${p(b).toFixed(1)}%`, p(b));
+    setStat("#st-d", d, `${p(d).toFixed(1)}%`, p(d));
+    setStat("#st-x", x, x ? `STUCK ${c("stuck")} · quá dài ${c("maxmoves")} · không rõ ${c("unknown")}` : "—", p(x));
+  }
+
+  function renderStats() {
+    const host = $("#stats");
+    host.replaceChildren();
+    const gs = state.games;
+    if (!gs.length) { host.append(el("span", "muted", "Chưa có ván nào.")); return; }
+    const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+    const plies = gs.map(g => g.plies).filter(n => typeof n === "number");
+    const durs = gs.map(g => g.durationMs).filter(n => typeof n === "number");
+    const kv = el("div", "kv");
+    const add = (k, v) => kv.append(el("div", "k", k), el("div", "v", v));
+    add("Số nước TB / min / max", plies.length ? `${avg(plies).toFixed(1)} / ${Math.min(...plies)} / ${Math.max(...plies)}` : "—");
+    add("Thời gian TB / min / max", durs.length ? `${fmtDur(avg(durs))} / ${fmtDur(Math.min(...durs))} / ${fmtDur(Math.max(...durs))}` : "—");
+    host.append(kv);
+
+    const ch = el("div", "chart");
+    chartPlies(ch, gs);
+    host.append(ch);
+
+    const agg = {};
+    const mk = (k) => ({ label: k === "w" ? "Trắng" : "Đen", n: 0, sum: 0, max: 0, wins: 0 });
+    agg.w = mk("w"); agg.b = mk("b");
+    for (const g of gs) {
+      for (const [k, s] of Object.entries(g.ss ?? {})) {
+        const a = (agg[k] ??= { label: s.label, n: 0, sum: 0, max: 0, wins: 0 });
+        a.n += s.n; a.sum += s.sum; if (s.max > a.max) a.max = s.max;
+      }
+    }
+    agg.w.wins = gs.filter(g => g.winner === "w").length;
+    agg.b.wins = gs.filter(g => g.winner === "b").length;
+    const t1 = document.createElement("table");
+    t1.style.marginTop = "8px";
+    t1.innerHTML = "<tr><th>Bên</th><th>Thắng</th><th>Số nước đo được</th><th>TB / nước</th><th>Lâu nhất</th></tr>";
+    for (const s of Object.values(agg)) {
+      const tr = document.createElement("tr");
+      [s.label, String(s.wins), String(s.n), s.n ? fmtMs(s.sum / s.n) : "—", s.n ? fmtMs(s.max) : "—"].forEach(x => tr.append(el("td", null, x)));
+      t1.append(tr);
+    }
+    host.append(t1);
+
+    const tally = new Map();
+    for (const g of gs) {
+      const key = `${winnerLabel(g.winner)} — ${shortVal(g.reason ?? "—", 50)}`;
+      tally.set(key, (tally.get(key) || 0) + 1);
+    }
+    const t2 = document.createElement("table");
+    t2.style.marginTop = "8px";
+    t2.innerHTML = "<tr><th>Kết quả — lý do</th><th>Số ván</th><th>%</th></tr>";
+    [...tally.entries()].sort((a, b) => b[1] - a[1]).forEach(([k, n]) => {
+      const tr = document.createElement("tr");
+      [k, String(n), ((n / gs.length) * 100).toFixed(1) + "%"].forEach(x => tr.append(el("td", null, x)));
+      t2.append(tr);
+    });
+    host.append(t2);
+  }
+
+  function renderGames() {
+    const host = $("#games");
+    host.replaceChildren();
+    $("#games-meta").textContent = `(${state.games.length})`;
+    if (!state.games.length) { host.append(el("span", "muted", "Chưa có ván nào kết thúc.")); return; }
+    const t = document.createElement("table");
+    t.innerHTML = "<tr><th>#</th><th>Kết quả</th><th>Lý do</th><th>Nước</th><th>Thời gian</th><th>TB/nước</th><th>view.result</th><th>Bắt đầu</th></tr>";
+    for (const g of [...state.games].reverse().slice(0, 300)) {
+      const tr = document.createElement("tr");
+      tr.className = "click" + (g.id === state.selectedId ? " sel" : "");
+      const tdW = document.createElement("td");
+      tdW.append(winnerBadge(g.winner));
+      tr.append(el("td", null, String(g.id)), tdW,
+        el("td", null, shortVal(g.reason ?? "—", 40)),
+        el("td", null, String(g.plies ?? "?")),
+        el("td", null, fmtDur(g.durationMs)),
+        el("td", null, fmtMs(avgOf(g.ss))),
+        el("td", "mv", shortVal(g.resultRaw, 40)),
+        el("td", null, (g.startedAt || "").slice(11, 19)));
+      tr.addEventListener("click", () => {
+        state.selectedId = g.id;
+        state.follow = false;
+        $("#follow").checked = false;
+        renderGames();
+        renderDetail();
+      });
+      t.append(tr);
+    }
+    host.append(t);
+  }
+
+  function renderDetail() {
+    clearInterval(state.replayTimer);
+    state.replayTimer = null;
+    const host = $("#detail");
+    host.replaceChildren();
+    const g = state.games.find(x => x.id === state.selectedId);
+    if (!g) { host.append(el("span", "muted", "Chọn một ván ở bảng trên.")); return; }
+
+    const head = el("div");
+    head.append(winnerBadge(g.winner),
+      document.createTextNode(` ván #${g.id} · ${g.reason ?? "—"} · ${g.plies ?? "?"} nước · ${fmtDur(g.durationMs)} · bắt đầu ${(g.startedAt || "").replace("T", " ").slice(0, 19)}`));
+    host.append(head);
+
+    const ss = g.ss ?? {};
+    if (Object.keys(ss).length) {
+      host.append(el("div", "muted", Object.values(ss).map(s => `${s.label}: TB ${Math.round(s.sum / s.n)}ms · max ${Math.round(s.max)}ms`).join("   |   ")));
+    }
+
+    const mv = el("div", "scroll");
+    mv.style.marginTop = "8px";
+    mv.style.maxHeight = "230px";
+
+    const canReplay = Array.isArray(g.moves) && g.moves.length > 0 && !!g.startBoard && g.moves.every(m => m.board);
+    let show = null;
+    if (canReplay) {
+      const n = g.moves.length;
+      let idx = n;
+      const rp = el("div", "replay");
+      const bh = el("div");
+      const cap = el("div", "rcap");
+      const ctl = el("div", "rctl");
+      const slider = document.createElement("input");
+      slider.type = "range"; slider.min = "0"; slider.max = String(n); slider.value = String(n);
+      show = (i) => {
+        idx = Math.max(0, Math.min(n, i));
+        slider.value = String(idx);
+        const m = idx > 0 ? g.moves[idx - 1] : null;
+        drawBoard(bh, m ? m.board : g.startBoard, g.size ?? 8, { px: 300, from: m?.from, to: m?.to });
+        cap.textContent = m
+          ? `Nước ${idx}/${n} · ${m.sideLabel} · ${m.piece && GLYPH[m.piece] ? GLYPH[m.piece] + " " : ""}${m.text} · ${fmtMs(m.dtMs)}`
+          : `Thế cờ ban đầu (0/${n})`;
+        mv.querySelectorAll("[data-ply]").forEach(e => e.classList.toggle("cur", Number(e.dataset.ply) === idx));
+      };
+      const mkBtn = (label, title, fn) => { const b = el("button", null, label); b.title = title; b.addEventListener("click", fn); return b; };
+      const stopAuto = () => { clearInterval(state.replayTimer); state.replayTimer = null; bAuto.textContent = "▶ Tự chạy"; };
+      const bAuto = mkBtn("▶ Tự chạy", "Tự phát lại ván", () => {
+        if (state.replayTimer) { stopAuto(); return; }
+        if (idx >= n) show(0);
+        bAuto.textContent = "⏸ Dừng";
+        state.replayTimer = setInterval(() => {
+          if (idx >= n) { stopAuto(); return; }
+          show(idx + 1);
+        }, 400);
+      });
+      slider.addEventListener("input", () => { if (state.replayTimer) stopAuto(); show(Number(slider.value)); });
+      ctl.append(
+        mkBtn("⏮", "Thế cờ ban đầu", () => { stopAuto(); show(0); }),
+        mkBtn("◀", "Lùi 1 nước", () => { stopAuto(); show(idx - 1); }),
+        mkBtn("▶", "Tiến 1 nước", () => { stopAuto(); show(idx + 1); }),
+        mkBtn("⏭", "Nước cuối", () => { stopAuto(); show(n); }),
+        bAuto, slider);
+      rp.append(bh, ctl, cap);
+      host.append(rp);
+    } else if (g.moves && g.moves.length) {
+      host.append(el("div", "muted", "Không có dữ liệu bàn cờ để phát lại (view không có danh sách quân hoặc ván cũ đã được rút gọn)."));
+    }
+
+    if (g.moves && g.moves.length) {
+      const ch = el("div", "chart");
+      chartTimes(ch, g.moves);
+      host.append(ch);
+      host.append(mv);
+      renderMoveTable(mv, g.moves, { onPick: canReplay ? (ply) => { clearInterval(state.replayTimer); state.replayTimer = null; show(ply); } : null });
+    } else {
+      mv.append(el("span", "muted", "Ván cũ nạp từ localStorage — không còn danh sách nước đi."));
+      host.append(mv);
+    }
+    if (show) show(g.moves.length);
+
+    const d1 = document.createElement("details");
+    d1.append(el("summary", null, "view.result (thô)"), el("pre", null, safe(g.resultRaw, 2)));
+    const d2 = document.createElement("details");
+    d2.append(el("summary", null, "view cuối ván"), el("pre", null, g.finalView ? safe(g.finalView, 2) : "(không lưu — ván nạp từ localStorage)"));
+    host.append(d1, d2);
+  }
+
+  /* ----- ánh xạ trường ----- */
+  function buildMapUI() {
+    const t = $("#map");
+    t.innerHTML = "<tr><th>Trường</th><th>Đường dẫn (tuỳ chọn)</th><th>Đang dò được</th></tr>";
+    for (const [name, label] of MAP_FIELDS) {
+      const tr = document.createElement("tr");
+      const input = document.createElement("input");
+      input.placeholder = name === "result" ? "result" : name === "pieces" ? "pieces" : "tự dò";
+      input.value = map[name] ?? "";
+      input.addEventListener("change", () => {
+        map[name] = input.value.trim();
+        try { localStorage.setItem(MAP_KEY, JSON.stringify(map)); } catch {}
+        const v = controller.getView();
+        state.prevRead = read(v);
+        state.prevShallow = shallow(v);
+        state.liveBoardKey = null;
+        log("sys", `Đã đổi ánh xạ “${name}” → ${map[name] || "(tự dò)"}`);
+        renderAll();
+      });
+      const td2 = document.createElement("td"); td2.append(input);
+      const td3 = el("td"); td3.id = `md-${name}`;
+      tr.append(el("td", null, label), td2, td3);
+      t.append(tr);
+    }
+  }
+  function updateMapDetected(view) {
+    for (const [name] of MAP_FIELDS) {
+      const td = $(`#md-${name}`);
+      if (!td) continue;
+      if (name === "pieces") {
+        const b = readPieces(view);
+        td.textContent = b ? `${b.key} → ${b.count} quân, bàn ${b.size}×${b.size}` : "không tìm thấy";
+        continue;
+      }
+      const kv = resolve(view, name);
+      td.textContent = kv ? `${kv.key} → ${shortVal(kv.value, 70)}` : "không tìm thấy";
+    }
+  }
+
+  /* ================= poll: timer, watchdog, safety net ================= */
+  const timerId = setInterval(() => {
+    if (state.destroyed || !state.cur) return;
+    updateTimers();
+    if (state.restarting) return;
+    const view = controller.getView();
+    const now = performance.now();
+
+    // getView() đổi mà subscribe không gọi
+    if (view !== state.lastSeen) {
+      state.unseenSince ??= now;
+      if (now - state.unseenSince > 600) {
+        log("warn", "getView() đã đổi nhưng subscribe không được gọi — xử lý bù");
+        onViewChange();
+      }
+    } else state.unseenSince = null;
+
+    // đợi view.result được xoá sau restart
+    if (state.pendingReset && now - state.pendingReset > 2000) {
+      state.pendingReset = null;
+      if (read(view).hasResult) {
+        state.errors++;
+        log("error", "restart() không xoá được view.result sau 2s — tắt auto để tránh lặp vô hạn", view.result);
+        setAuto(false);
+      }
+    }
+
+    const g = state.cur;
+    if (g.finished) return;
+    const limit = cfg.watchdog() * 1000;
+    if (!limit || state.watchdogFired) return;
+    const idle = now - state.lastTickPerf;
+    if (idle <= limit) return;
+    state.watchdogFired = true;
+    log("warn", `Ván #${g.id}: ${Math.round(idle / 1000)}s không có thay đổi view (đã đi ${g.moves.length} nước) — bot có thể bị kẹt`);
+    if (cfg.stuck() && state.auto) {
+      finishGame({ winner: "stuck", reason: `không đổi view ${Math.round(idle / 1000)}s`, raw: { stuck: true, idleMs: Math.round(idle) } });
+      scheduleRestart();
+    }
+  }, 250);
+
+  /* ================= toolbar ================= */
+  function download(name, text, type) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], { type }));
+    a.download = name;
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+  const csvCell = (v) => { const s = v == null ? "" : String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+
+  $("#btn-auto").addEventListener("click", () => setAuto(!state.auto));
+  $("#btn-restart").addEventListener("click", () => doRestart(true));
+  $("#btn-export").addEventListener("click", () => {
+    download(`bot-games-${Date.now()}.json`,
+      JSON.stringify({ exportedAt: new Date().toISOString(), mode: String(CONFIG.mode), botDelay: CONFIG.botDelay, total: state.games.length, games: state.games }, null, 2),
+      "application/json");
+    log("sys", `Đã export ${state.games.length} ván (JSON)`);
+  });
+  $("#btn-csv").addEventListener("click", () => {
+    const head = ["id", "winner", "reason", "plies", "durationMs", "ticks", "startedAt", "avgMsWhite", "avgMsBlack", "viewResult"];
+    const rows = state.games.map(g => {
+      const ss = g.ss ?? {};
+      return [g.id, g.winner, g.reason, g.plies, g.durationMs, g.ticks, g.startedAt,
+        ss.w ? Math.round(ss.w.sum / ss.w.n) : "", ss.b ? Math.round(ss.b.sum / ss.b.n) : "", safe(g.resultRaw)];
+    });
+    download(`bot-games-${Date.now()}.csv`, [head, ...rows].map(r => r.map(csvCell).join(",")).join("\n"), "text/csv");
+    log("sys", `Đã export ${state.games.length} ván (CSV)`);
+  });
+  $("#btn-clear").addEventListener("click", () => {
+    state.games = [];
+    state.selectedId = null;
+    try { localStorage.removeItem(STORE_KEY); } catch {}
+    log("sys", "Đã xoá lịch sử các ván");
+    renderScore(); renderStats(); renderGames(); renderDetail();
+  });
+  $("#clear-log").addEventListener("click", () => { $("#log").replaceChildren(); state.sinceLogClear = 0; });
+  $("#log").classList.add("hide-view");
+  $("#filters").addEventListener("change", e => {
+    const k = e.target.dataset?.k;
+    if (k) $("#log").classList.toggle("hide-" + k, !e.target.checked);
+  });
+  $("#follow").addEventListener("change", e => {
+    state.follow = e.target.checked;
+    if (state.follow && state.games.length) state.selectedId = state.games[state.games.length - 1].id;
+    renderGames(); renderDetail();
+  });
+  $("#d-fields").addEventListener("toggle", () => renderLive());
+  $("#d-raw").addEventListener("toggle", () => renderLive());
+  $("#btn-destroy").addEventListener("click", () => {
+    if (state.destroyed) return;
+    clearTimeout(state.restartTimer);
+    clearInterval(timerId);
+    clearInterval(state.replayTimer);
+    try { unsubscribe(); unsubscribeError(); } catch {}
+    controller.destroy();
+    state.destroyed = true;
+    for (const id of ["#btn-auto", "#btn-restart", "#btn-destroy"]) $(id).disabled = true;
+    log("sys", "Đã gọi controller.destroy()");
+    renderBadges();
+  });
+
+  /* ================= botDelay ================= */
+  $("#cfg-botdelay").value = String(CONFIG.botDelay);
+  function applyBotDelay() {
+    const n = Math.floor(Number($("#cfg-botdelay").value));
+    const v = Number.isFinite(n) && n >= 0 ? n : 0;
+    try { localStorage.setItem(BOT_DELAY_KEY, String(v)); } catch {}
+    location.reload();
+  }
+  $("#btn-apply-delay").addEventListener("click", applyBotDelay);
+  $("#cfg-botdelay").addEventListener("keydown", e => { if (e.key === "Enter") applyBotDelay(); });
+
+  /* ================= khởi động ================= */
+  buildMapUI();
+  if (CONFIG.mode === undefined) log("warn", "GameMode.BOT không tồn tại — kiểm tra lại tên mode trong CONFIG");
+  if (state.games.length) log("sys", `Đã nạp ${state.games.length} ván từ localStorage`);
+  log("sys", `Controller đã tạo (mode ${fmt(CONFIG.mode)}, botDelay ${CONFIG.botDelay}ms) · actions: ${Object.keys(controller.actions ?? {}).join(", ") || "(không có)"}`);
+  startGame("khởi tạo");
+  if (state.prevRead.hasResult) {
+    log("warn", "Ngay khi mở trang view.result đã có giá trị");
+    checkEnd(controller.getView(), state.prevRead);
+  }
+  renderAll();
+
+  const container = document.getElementById("ui-host");
+  if (!container) console.error("Missing #ui-host element");
+  else {
+    try {
+      const ui = await chess.loadUI();
+      ui.mount(container, controller);
+      log("sys", "UI đã mount");
+    } catch (e) {
+      log("error", `Mount UI thất bại: ${e?.message ?? e}`, e);
+    }
+  }
+</script>
+</body>
+</html>

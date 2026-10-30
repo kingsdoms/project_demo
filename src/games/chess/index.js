@@ -74,7 +74,7 @@ export default {
         throw new Error(`Unsupported game mode: ${mode}`);
     }
     const room = new Room();
-    let bot = null;
+    /** @type {{ stop: () => void } | null} */ let bot = null;
     const controller = createController({
       room,
       sides: humanSides,
