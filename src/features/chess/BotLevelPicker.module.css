@@ -1,0 +1,20 @@
+.picker { min-width: 0; margin: 0 0 var(--space-6); padding: 0; border: 0; }
+.picker legend { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3); padding: 0; color: var(--color-text-primary); font-size: var(--text-base); font-weight: var(--weight-semibold); }
+.picker legend svg { color: var(--color-text-link); }
+.levels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); }
+.levels button { display: flex; align-items: center; gap: var(--space-2); min-width: 0; min-height: var(--size-layout-control); padding: var(--space-3); border: var(--space-hairline) solid var(--color-border-strong); border-radius: var(--radius-button); background: var(--color-surface-raised); color: var(--color-text-secondary); text-align: left; cursor: pointer; }
+.levels button:hover { background: var(--color-surface-sunken); }
+.levels button[data-selected='true'] { border-color: var(--color-interactive-selected-border); background: var(--color-interactive-selected-bg); color: var(--color-text-link); }
+.levels strong { flex: 1; min-width: 0; font-size: var(--text-xs); font-weight: var(--weight-medium); line-height: var(--leading-snug); }
+.levels svg { flex: none; }
+.levelNumber { color: var(--color-text-secondary); font: var(--text-xs) var(--font-mono); }
+.description, .note { margin: var(--space-3) 0 0; color: var(--color-text-secondary); font-size: var(--text-xs); line-height: var(--leading-normal); }
+.note { margin-top: var(--space-2); }
+.picker[data-compact='true'] { margin: 0; padding: var(--space-4); border: var(--space-hairline) solid var(--color-border-default); border-radius: var(--radius-card); background: var(--color-surface-card); }
+.picker[data-compact='true'] legend { margin: 0; padding-inline: var(--space-1); font-size: var(--text-sm); }
+.picker[data-compact='true'] .levelNumber { display: none; }
+.picker:disabled { opacity: .55; }
+.picker:disabled button { cursor: not-allowed; }
+@media (min-width: 36rem) { /* Native breakpoint matches design token sm. */
+  .picker:not([data-compact='true']) .levels { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

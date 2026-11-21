@@ -7,14 +7,76 @@ import { Action } from "../core/models/Action.js";
 import { GameError } from "../utils/GameError.js";
 import { EMPTY, click, syncInteraction } from "./interaction.js";
 import { toView } from "./toview.js";
-import { Room } from "../core/engine/room.js";
-import { Side } from "../core/constants/Side.js";
-import { Game } from "../core/models/Game.js";
+import { MoveKind } from "../core/constants/MoveKind.js";
+import { PieceType } from "../core/constants/PieceType.js";
+import { findMove } from "../core/moves/index.js";
 /**
+ * @typedef {import("../core/engine/room.js").Room} Room
+ * @typedef {import("../core/constants/Side.js").SideValue} SideValue
+ * @typedef {import("../core/models/Game.js").Game} Game
  * @typedef {Readonly<{
  *   selectedId: string | null
  * }>} Interaction
+ * @typedef {import("./toview.js").HistoryEntry} HistoryEntry
  */
+
+/** @type {readonly HistoryEntry[]} */
+const EMPTY_HISTORY = Object.freeze([]);
+
+/**
+ * A move preserves every untouched Piece object, even though a moved piece's ID
+ * changes. A restart builds a fresh board with no moved pieces.
+ * @param {Game} before
+ * @param {Game} after
+ * @param {readonly HistoryEntry[]} history
+ */
+function updateHistory(before, after, history) {
+  if (before.board === after.board) return history;
+
+  const { pieces: oldPieces } = before.board;
+  const { pieces: newPieces } = after.board;
+  const oldSet = new Set(oldPieces);
+  const arrived = newPieces.filter((piece) => !oldSet.has(piece));
+  if (!arrived.some((piece) => piece.hasMoved)) return EMPTY_HISTORY;
+
+  if (before.pendingPromotion !== null) {
+    const pawn = before.board.pieceById(before.pendingPromotion);
+    const latest = history.at(-1);
+    if (
+      !pawn || !latest || latest.to.row !== pawn.row || latest.to.col !== pawn.col
+    ) return history;
+
+    const promoted = after.board.pieceAt(pawn.row, pawn.col);
+    if (!promoted) return history;
+
+    return Object.freeze([
+      ...history.slice(0, -1),
+      Object.freeze({ ...latest, promotion: promoted.type }),
+    ]);
+  }
+
+  // Castling moves two pieces; the king is the move's source and destination.
+  const to = arrived.length === 2
+    ? arrived.find((piece) => piece.type === PieceType.KING)
+    : arrived[0];
+  if (!to) return history;
+
+  const newSet = new Set(newPieces);
+  const from = oldPieces.find(
+    (piece) => piece.side === before.turn && piece.type === to.type && !newSet.has(piece),
+  );
+  if (!from) return history;
+
+  return Object.freeze([...history, Object.freeze({
+    side: from.side,
+    from: Object.freeze({ row: from.row, col: from.col }),
+    to: Object.freeze({ row: to.row, col: to.col }),
+    pieceType: from.type,
+    promotion: null,
+    kind: findMove(before, from, to.row, to.col)?.kind ?? MoveKind.NORMAL,
+    capture: newPieces.length < oldPieces.length,
+  })]);
+}
 
 /**
  * controller phục vụ UI,
@@ -22,7 +84,7 @@ import { Game } from "../core/models/Game.js";
  *
  * @param {object} options
  * @param {Room} options.room - Phòng chơi mà controller quản lý.
- * @param {typeof Side[keyof typeof Side][]} options.sides - Các bên được điều khiển bởi người chơi.
+ * @param {SideValue[]} options.sides - Các bên được điều khiển bởi người chơi.
  * @param {() => void} [options.dispose=() => {}] - Hàm dọn dẹp tài nguyên khi controller kết thúc.
  */
 export function createController({ room, sides, dispose = () => {} }) {
@@ -35,6 +97,7 @@ export function createController({ room, sides, dispose = () => {} }) {
 
   let alive = true;
   let ix = EMPTY;
+  let history = EMPTY_HISTORY;
   /** @type {any} */ let view = null;
   /** @type {Game | null} */ let seenGame = null;
   /** @type {Interaction | null} */ let seenIx = null;
@@ -61,11 +124,15 @@ export function createController({ room, sides, dispose = () => {} }) {
   function refresh() {
     if (!alive) return;
     const game = room.getState();
+    if (seenGame && game !== seenGame) {
+      history = updateHistory(seenGame, game, history);
+      if (history === EMPTY_HISTORY) ix = EMPTY;
+    }
     ix = syncInteraction(ix, game);
     if (game === seenGame && ix === seenIx) return;
     seenGame = game;
     seenIx = ix;
-    view = toView(game, ix, ctx.canAct);
+    view = toView(game, ix, ctx.canAct, history);
     emit(listeners);
   }
 

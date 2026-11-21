@@ -8,7 +8,7 @@ import { GameError } from "../../utils/GameError.js";
 import { isInt } from "../../utils/validation.js";
 
 /**
- * @typedef {import("./Piece.js").Piece} Piece
+ * @typedef {import("./piece.js").Piece} Piece
  *
  * Một ô nằm trên đường duyệt của `ray`.
  * @typedef {Object} RayCell

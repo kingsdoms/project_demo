@@ -19,6 +19,33 @@ import { PIECE_MOVE_DEFS } from "../constants/PieceMoveDefs.js";
 const REQUIRES = { unmoved: (piece) => !piece.hasMoved };
 
 /**
+ * @param {import("../constants/PieceMoveDefs.js").MovePattern} pattern
+ * @param {Piece} piece
+ */
+function meetsRequirement(pattern, piece) {
+  if (pattern.requires === undefined) return true;
+  const met = REQUIRES[/** @type {keyof typeof REQUIRES} */ (pattern.requires)];
+  if (met === undefined)
+    throw new GameError(
+      ErrorCode.INVALID_ARGUMENT,
+      `Điều kiện "${pattern.requires}" chưa được khai báo`,
+    );
+  return met(piece);
+}
+
+/**
+ * @param {import("../constants/PieceMoveDefs.js").MovePattern} pattern
+ * @param {boolean} occupied
+ */
+function permitsOccupancy(pattern, occupied) {
+  return (
+    pattern.capture === CaptureMode.ANY ||
+    (pattern.capture === CaptureMode.NEVER && !occupied) ||
+    (pattern.capture === CaptureMode.ONLY && occupied)
+  );
+}
+
+/**
  * Tính danh sách các ô liên quan đến hướng di chuyển của một quân cờ.
  *
  * Phân biệt hai chế độ:
@@ -44,16 +71,7 @@ function patternSquares(board, piece, forAttack) {
   for (const m of PIECE_MOVE_DEFS[piece.type]) {
     // Attack but capture is never
     if (forAttack && m.capture === CaptureMode.NEVER) continue;
-    // When contain requires
-    if (m.requires !== undefined) {
-      const met = REQUIRES[/** @type {keyof typeof REQUIRES} */ (m.requires)];
-      if (met === undefined)
-        throw new GameError(
-          ErrorCode.INVALID_ARGUMENT,
-          `Điều kiện "${m.requires}" chưa được khai báo`,
-        );
-      if (!met(piece)) continue;
-    }
+    if (!meetsRequirement(m, piece)) continue;
 
     const ray = board.ray(
       piece.row,
@@ -71,13 +89,7 @@ function patternSquares(board, piece, forAttack) {
           : [];
 
     for (const sq of reached) {
-      const occupied = sq.piece !== null;
-      const ok =
-        forAttack ||
-        m.capture === CaptureMode.ANY ||
-        (m.capture === CaptureMode.NEVER && !occupied) ||
-        (m.capture === CaptureMode.ONLY && occupied);
-      if (ok) squares.push(sq);
+      if (forAttack || permitsOccupancy(m, sq.piece !== null)) squares.push(sq);
     }
   }
   return squares;
@@ -117,12 +129,68 @@ export const hasSquare = (squares, row, col) =>
   squares.some((sq) => sq.row === row && sq.col === col);
 
 /**
+ * Test one target using the same patterns as `patternSquares`. Only walk a
+ * ray after its direction and distance line up with the target.
+ * @param {Board} board
+ * @param {Piece} piece
+ * @param {number} row
+ * @param {number} col
+ * @param {boolean} forAttack
+ */
+function matchesSquare(board, piece, row, col, forAttack) {
+  const side = SIDE_SIGN[piece.side];
+  const forward = -side * (row - piece.row);
+  const lateral = side * (col - piece.col);
+
+  pattern: for (const m of PIECE_MOVE_DEFS[piece.type]) {
+    if (forAttack && m.capture === CaptureMode.NEVER) continue;
+    const steps =
+      m.steps === Infinity
+        ? m.forward !== 0
+          ? forward / m.forward
+          : lateral / m.lateral
+        : m.steps;
+    if (
+      steps < 1 ||
+      !Number.isInteger(steps) ||
+      forward !== steps * m.forward ||
+      lateral !== steps * m.lateral ||
+      !meetsRequirement(m, piece)
+    )
+      continue;
+
+    const dRow = -side * m.forward;
+    const dCol = side * m.lateral;
+    for (let step = 1; step < steps; step++) {
+      if (board.pieceAt(piece.row + step * dRow, piece.col + step * dCol) !== null)
+        continue pattern;
+    }
+    if (
+      forAttack ||
+      m.capture === CaptureMode.ANY ||
+      permitsOccupancy(m, board.pieceAt(row, col) !== null)
+    )
+      return true;
+  }
+  return false;
+}
+
+/**
+ * @param {Board} board
+ * @param {Piece} piece
+ * @param {number} row
+ * @param {number} col
+ */
+export function canReachSquare(board, piece, row, col) {
+  return board.inBounds(row, col) && matchesSquare(board, piece, row, col, false);
+}
+
+/**
  * Kiểm tra ô tại vị trí (row, col) có bị ít nhất một quân cờ
  * thuộc phe tấn công kiểm soát hay không.
  *
  * Duyệt các quân cờ trên bàn và sử dụng isAttacker để lọc những quân
- * thuộc phe cần kiểm tra. Với mỗi quân phù hợp, kiểm tra xem ô mục tiêu
- * có nằm trong tập ô mà quân đó tấn công hay không.
+ * thuộc phe cần kiểm tra. Với mỗi quân phù hợp, chỉ xét ô mục tiêu.
  *
  * @param {Board} board - Trạng thái bàn cờ hiện tại.
  * @param {number} row - Hàng của ô cần kiểm tra.
@@ -133,16 +201,18 @@ export const hasSquare = (squares, row, col) =>
  *                    ô mục tiêu; ngược lại trả về false.
  */
 function attackedBy(board, row, col, isAttacker) {
-  return board.pieces.some(
-    (p) => isAttacker(p) && hasSquare(attackSquares(board, p), row, col),
-  );
+  if (!board.inBounds(row, col)) return false;
+  for (const piece of board.pieces) {
+    if (isAttacker(piece) && matchesSquare(board, piece, row, col, true))
+      return true;
+  }
+  return false;
 }
 
 /**
  * Kiểm tra một ô có bị ít nhất một quân của bên chỉ định tấn công hay không.
  *
- * Dựa trên danh sách ô tấn công của từng quân, không phụ thuộc vào việc
- * ô đích hiện có quân hay đang trống.
+ * Không phụ thuộc vào việc ô đích hiện có quân hay đang trống.
  *
  * @param {Board} board - Bàn cờ hiện tại.
  * @param {number} row - Hàng của ô cần kiểm tra.

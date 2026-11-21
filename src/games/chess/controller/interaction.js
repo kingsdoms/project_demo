@@ -3,10 +3,10 @@
  * @author tuanca
  */
 
-import { Game } from "../core/models/Game.js";
 import { getLegalMoves } from "../core/engine/legalMoves.js";
 
 /**
+ * @typedef {import("../core/models/Game.js").Game} Game
  * @typedef {Readonly<{
  *   selectedId: string | null
  * }>} Interaction

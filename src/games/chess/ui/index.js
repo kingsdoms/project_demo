@@ -4,7 +4,6 @@
  */
 import { createBoard, updateBoard } from "./Board/index.js";
 import { createPromotion } from "./Overlay/Promotion.js";
-import { createResult } from "./Overlay/Result.js";
 
 /**
  * Gắn UI vào container. Trả về hàm hủy.
@@ -28,24 +27,23 @@ export function mount(container, controller) {
   // ── Lắng nghe controller ──
   let mounted = true;
   /** @type {any} */ let lastView = null;
+  /** @type {ReturnType<typeof createPromotion> | null} */ let overlay = null;
 
   const render = () => {
     const view = controller.getView();
     if (!mounted || view === lastView) return;
+    lastView = view;
     updateBoard(board, view);
 
+    overlay?.destroy();
+    overlay = null;
     if (view.promotion && view.canAct) {
-      const { el, destroy } = createPromotion(view.promotion, {
+      overlay = createPromotion(view.promotion, {
         timeoutMs: 10000,
         onPick: (/** @type {any} */ type) => controller.actions.promote(type),
       });
-      root.appendChild(el);
+      root.appendChild(overlay.el);
     }
-
-    // if (view.result) {
-    //   root.appendChild(createResult(view.result).el);
-    //   controller.destroy();
-    // }
   };
 
   const offs = [
@@ -60,6 +58,7 @@ export function mount(container, controller) {
   return function unmount() {
     if (!mounted) return;
     mounted = false;
+    overlay?.destroy();
     for (const off of offs) {
       if (typeof off === "function") off();
     }

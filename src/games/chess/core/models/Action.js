@@ -3,7 +3,10 @@
  * @author tuanca
  */
 
+import { GameError } from "../../utils/GameError.js";
 import { ActionType } from "../constants/ActionType.js";
+import { ErrorCode } from "../constants/ErrorCode.js";
+import { PROMOTION_TARGETS } from "../constants/StandardDef.js";
 
 /**
  * Tạo một hành động trong game.
@@ -43,6 +46,8 @@ export class Action {
    * @param {import("../constants/PieceType.js").PieceTypeValue} pieceType
    */
   static promote(pieceType) {
+    if (!PROMOTION_TARGETS.includes(pieceType))
+      throw new GameError(ErrorCode.BAD_ACTION, "Không được phong thành quân này");
     return new Action(ActionType.PROMOTE, "", null, null, pieceType);
   }
 }

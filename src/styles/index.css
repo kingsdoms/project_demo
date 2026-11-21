@@ -1,28 +1,54 @@
-/* src/styles/index.css */
-:root {
-  color-scheme: dark;
-  --color-bg: #0b0e17;
-  --color-surface: rgba(18, 24, 38, 0.82);
-  --color-border: rgba(255, 255, 255, 0.12);
-  --color-text: #e8ecf5;
-  --color-muted: #8b95ad;
-  --color-primary: #6366f1;
-  --color-hp: #ef4444;
-  --color-mp: #3b82f6;
-  --color-exp: #eab308;
-  --radius: 12px;
-  --hud-gap: 16px;
-}
+@import './fonts.css';
 
 *, *::before, *::after { box-sizing: border-box; }
-html, body, #root { height: 100%; margin: 0; }
+
+html, body, #root { min-height: 100%; margin: 0; }
+
+html { text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
 
 body {
-  overflow: hidden;
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  user-select: none;
+  background: var(--color-surface-page);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  text-rendering: optimizeLegibility;
 }
 
-button { font: inherit; color: inherit; cursor: pointer; }
+button, input, select, textarea { font: inherit; }
+button { color: inherit; cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
+  outline: var(--space-focus) solid var(--color-interactive-focus-ring);
+  outline-offset: var(--space-1);
+}
+
+::selection { background: var(--color-interactive-selected-bg); color: var(--color-text-primary); }
+
+[data-board='slate'] { --chess-square-light: var(--color-board-slate-light); --chess-square-dark: var(--color-board-slate-dark); }
+[data-board='paper'] { --chess-square-light: var(--color-board-paper-light); --chess-square-dark: var(--color-board-paper-dark); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: var(--duration-instant) !important;
+    transition-duration: var(--duration-instant) !important;
+  }
+}
+
+/* Compatibility aliases for the preserved debug scene. */
+:root {
+  --color-bg: var(--color-surface-page);
+  --color-surface: var(--color-surface-card);
+  --color-text: var(--color-text-primary);
+  --color-muted: var(--color-text-secondary);
+  --color-primary: var(--color-action-primary);
+  --color-border: var(--color-border-default);
+  --color-hp: var(--color-feedback-error-icon);
+  --color-mp: var(--color-text-link);
+  --color-exp: var(--color-feedback-warning-icon);
+  --radius: var(--radius-card);
+  --frame: var(--color-border-focus);
+}
+

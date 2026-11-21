@@ -10,7 +10,7 @@
 import { MOVES, findMove, validate } from "../moves/index.js";
 
 /**
- * @typedef {import("../models/Piece.js").Piece} Piece
+ * @typedef {import("../models/piece.js").Piece} Piece
  * @typedef {import("../models/Game.js").Game} Game
  * @typedef {import("../moves/index.js").Move} Move
  * @typedef {import("../moves/index.js").Position} Position

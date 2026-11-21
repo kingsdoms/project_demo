@@ -1,0 +1,2867 @@
+{
+  "schemaVersion": 2,
+  "title": "ChessArena security and bounded-load assessment",
+  "startedAt": "2026-11-21T11:22:06.966Z",
+  "completedAt": "2026-11-21T11:38:05.366Z",
+  "timezone": "Asia/Bangkok",
+  "target": "https://thesaurus-divinity-cosigner.ngrok-free.dev/api",
+  "frontend": "http://localhost:5173/",
+  "secretHandling": "No password, Authorization, JWT, refresh token, cookie values, profile bodies or UID values saved.",
+  "counts": {
+    "initialRunnerRequests": 94,
+    "supplementalVerificationRequests": 65,
+    "documentationPreflightRequests": 1,
+    "loggedProgrammaticApiRequests": 160,
+    "browserApiRequests": null,
+    "browserCountNote": "Browser auth lifecycle was observed but network request count was not instrumented. Requests manually initiated by the human in another tab are excluded.",
+    "initialLoadRequests": 48,
+    "correctedLoadRequests": 48,
+    "totalLoadRequests": 96
+  },
+  "planAdjustments": [
+    "First load run accidentally used /api/ (404) in 18/48 reads; retained raw snapshot and reran only the corrected 48 reads on verified200 endpoints within remaining overall200 budget.",
+    "The initial94-request runner and corrected load were paced. The first13 supplemental functional probes were sequential without global4RPS pacing; subsequent supplemental probes used minimum250ms spacing. Do not claim a measured global4RPS ceiling across all functional probes.",
+    "Initial automatic classification was superseded: supplied accounts actually USER; mixed refresh issuance is not proven escalation; failed correct login is insufficient to prove lockout.",
+    "Owner clarification on 2026-11-21 supersedes the earlier daily-user-expiry interpretation. Internal JWT signing-key rotation is the requirement; 5-hour access and 30-day refresh metadata are not a mismatch with it. New per-user closed-loop load is measured separately."
+  ],
+  "observedRoles": {
+    "admin0": {
+      "authenticated": true,
+      "roles": [
+        "USER"
+      ],
+      "needsOtp": false,
+      "needsActivation": false
+    },
+    "admin48": {
+      "authenticated": true,
+      "roles": [
+        "USER"
+      ],
+      "needsOtp": false,
+      "needsActivation": false
+    },
+    "admin49": {
+      "authenticated": true,
+      "roles": [
+        "USER"
+      ],
+      "needsOtp": false,
+      "needsActivation": false
+    }
+  },
+  "authorization": {
+    "verifiedAccounts": [
+      "admin0",
+      "admin48"
+    ],
+    "roles": [
+      "USER"
+    ],
+    "adminAccess": false,
+    "userDeniedAdminStatus": 403
+  },
+  "tokenMetadata": {
+    "algorithm": "HS256",
+    "type": "JWT",
+    "hasKeyId": false,
+    "claimNames": [
+      "uid",
+      "roles",
+      "exp"
+    ],
+    "accessExpiry": 1795278130,
+    "refreshExpiry": 1797852130,
+    "remainingAccessSeconds": 18000,
+    "remainingRefreshSeconds": 2592000,
+    "issuedAt": null
+  },
+  "mixedRefreshProof": [
+    {
+      "pair": "A-access-B-refresh",
+      "refreshStatus": 200,
+      "accessTokenReturned": true,
+      "matchesAccessOwner": false,
+      "matchesRefreshOwner": true,
+      "profileReadStatus": 200,
+      "roles": [
+        "USER"
+      ]
+    },
+    {
+      "pair": "B-access-A-refresh",
+      "refreshStatus": 200,
+      "accessTokenReturned": true,
+      "matchesAccessOwner": false,
+      "matchesRefreshOwner": true,
+      "profileReadStatus": 200,
+      "roles": [
+        "USER"
+      ]
+    }
+  ],
+  "bruteForce": {
+    "attempts": 6,
+    "blockObserved": false,
+    "correctAfterFailures": false,
+    "classification": "INCONCLUSIVE",
+    "note": "The blockObserved=false automatic field reflects missing message capture, not proof that rate limiting is absent."
+  },
+  "initialLoad": [
+    {
+      "offeredRps": 1,
+      "completed": 16,
+      "statusCounts": {
+        "200": 10,
+        "404": 6
+      },
+      "p50Ms": 87,
+      "p95Ms": 152,
+      "maxMs": 152,
+      "durationMs": 15115,
+      "interrupted": false
+    },
+    {
+      "offeredRps": 2,
+      "completed": 16,
+      "statusCounts": {
+        "200": 10,
+        "404": 6
+      },
+      "p50Ms": 88,
+      "p95Ms": 155,
+      "maxMs": 155,
+      "durationMs": 7588,
+      "interrupted": false
+    },
+    {
+      "offeredRps": 4,
+      "completed": 16,
+      "statusCounts": {
+        "200": 10,
+        "404": 6
+      },
+      "p50Ms": 87,
+      "p95Ms": 89,
+      "maxMs": 89,
+      "durationMs": 4002,
+      "interrupted": false
+    }
+  ],
+  "correctedLoad": [
+    {
+      "offeredRps": 1,
+      "completed": 16,
+      "statusCounts": {
+        "200": 16
+      },
+      "p50Ms": 88,
+      "p95Ms": 457,
+      "maxMs": 457,
+      "durationMs": 15119,
+      "actualStartRps": 1,
+      "peakConcurrency": 1
+    },
+    {
+      "offeredRps": 2,
+      "completed": 16,
+      "statusCounts": {
+        "200": 16
+      },
+      "p50Ms": 89,
+      "p95Ms": 97,
+      "maxMs": 97,
+      "durationMs": 7613,
+      "actualStartRps": 2.03,
+      "peakConcurrency": 1
+    },
+    {
+      "offeredRps": 4,
+      "completed": 16,
+      "statusCounts": {
+        "200": 16
+      },
+      "p50Ms": 89,
+      "p95Ms": 92,
+      "maxMs": 92,
+      "durationMs": 3986,
+      "actualStartRps": 4,
+      "peakConcurrency": 1
+    }
+  ],
+  "peakMeasuredConcurrency": 1,
+  "checks": [
+    {
+      "id": "AUTH-01",
+      "status": "PASS",
+      "title": "Đăng nhập hợp lệ và hồ sơ của chính tài khoản",
+      "evidence": [
+        "login-admin0-baseline",
+        "login-admin48-baseline",
+        "login-admin49-baseline",
+        "verify-me-admin0",
+        "verify-me-admin48"
+      ]
+    },
+    {
+      "id": "AUTH-02",
+      "status": "PASS",
+      "title": "Thiếu token bị từ chối và USER bị chặn API admin",
+      "evidence": [
+        "no-token:/account/me",
+        "no-token:/account/admin-access",
+        "no-token:/admin/accounts?page=1&page_size=1",
+        "no-token:/admin/roles",
+        "no-token:/admin/permissions",
+        "no-token:/admin/tokens/stats",
+        "admin-read:/admin/accounts/count",
+        "admin-read:/admin/roles",
+        "admin-read:/admin/permissions",
+        "admin-read:/admin/tokens/stats",
+        "admin-read:/admin/accounts?page=1&page_size=1"
+      ]
+    },
+    {
+      "id": "AUTH-03",
+      "status": "PASS",
+      "title": "JWT none/sửa payload/sửa chữ ký bị 401 trên account/me có baseline 200",
+      "evidence": [
+        "verify-me-admin0",
+        "verify-jwt-none-me",
+        "verify-jwt-tamper-me",
+        "verify-jwt-bad-signature-me"
+      ]
+    },
+    {
+      "id": "AUTH-04",
+      "status": "PASS",
+      "title": "Bốn đầu vào sai kiểu/thiếu trường/chuỗi injection nhỏ bị từ chối",
+      "detail": "Không chứng minh toàn bộ backend không có injection.",
+      "evidence": [
+        "login-invalid-field-types",
+        "login-sql-negative",
+        "login-json-operator-string",
+        "login-missing-fields"
+      ]
+    },
+    {
+      "id": "ROLE-01",
+      "status": "FAIL",
+      "severity": "medium",
+      "title": "Tài khoản được gọi là admin thực nhận USER và admin-access=false",
+      "detail": "Lệch kỳ vọng dữ liệu/quyền, không phải vượt quyền. Chỉ kiểm tra admin0/admin48/admin49 qua API; admin2 thấy USER trong UI.",
+      "evidence": [
+        "login-admin0-baseline",
+        "login-admin48-baseline",
+        "login-admin49-baseline",
+        "verify-admin-access-admin0",
+        "verify-admin-access-admin48"
+      ]
+    },
+    {
+      "id": "TOKEN-01",
+      "status": "PASS",
+      "title": "Refresh hợp lệ hoạt động",
+      "evidence": [
+        "refresh-valid"
+      ]
+    },
+    {
+      "id": "TOKEN-02",
+      "status": "INCONCLUSIVE",
+      "severity": "medium",
+      "title": "Cặp access A + refresh B được chấp nhận, access mới thuộc B",
+      "detail": "Cả hai chiều đã xác minh chữ ký được account/me chấp nhận. Cần sở hữu refresh B từ đầu; không chứng minh vượt quyền khi chỉ có access A. Cần xác định hợp đồng có buộc cặp cùng uid hay refresh là bearer độc lập.",
+      "evidence": [
+        "verify-mixed-A-access-B-refresh",
+        "verify-minted-me-A-access-B-refresh",
+        "verify-mixed-B-access-A-refresh",
+        "verify-minted-me-B-access-A-refresh"
+      ]
+    },
+    {
+      "id": "TOKEN-03",
+      "status": "INCONCLUSIVE",
+      "title": "Cùng refresh token được chấp nhận hai lần",
+      "detail": "API chỉ trả access mới; chưa chứng minh có refresh rotation/reuse detection, cũng chưa đủ kết luận khai thác.",
+      "evidence": [
+        "refresh-valid",
+        "refresh-reuse-same-value"
+      ]
+    },
+    {
+      "id": "TOKEN-04",
+      "status": "PASS",
+      "title": "Logout thu hồi refresh của năm phiên API do bài thử tạo",
+      "evidence": [
+        "cleanup-logout-admin0-baseline",
+        "cleanup-refresh-replay-admin0-baseline",
+        "cleanup-logout-admin48-baseline",
+        "cleanup-refresh-replay-admin48-baseline",
+        "cleanup-logout-admin49-baseline",
+        "cleanup-refresh-replay-admin49-baseline",
+        "verify-cleanup-logout-admin0",
+        "verify-cleanup-refresh-replay-admin0",
+        "verify-cleanup-logout-admin48",
+        "verify-cleanup-refresh-replay-admin48"
+      ]
+    },
+    {
+      "id": "TOKEN-05",
+      "status": "INCONCLUSIVE",
+      "severity": "medium",
+      "title": "Access JWT cũ còn đọc account/me sau logout",
+      "detail": "Hành vi được API docs công bố. Access có cửa sổ tối đa còn lại tới exp; không thử chờ 5 giờ.",
+      "evidence": [
+        "access-after-logout"
+      ]
+    },
+    {
+      "id": "TOKEN-06",
+      "status": "INCONCLUSIVE",
+      "title": "Xoay khóa ký JWT nội bộ khi sang ngày mới chưa được xác minh thực tế",
+      "detail": "Chủ hệ thống làm rõ ngày 21/11/2026: yêu cầu là secret ký JWT nội bộ đổi qua biên ngày, không phải user đăng nhập lại mỗi ngày. HS256 là chữ ký/MAC, không mã hóa claims. Metadata access 18000 giây và refresh 2592000 giây là thông tin phiên, không chứng minh hoặc phủ định rotation. Không có mã/cấu hình backend hay log rotation, chưa thử qua nửa đêm/restart; không dò hoặc lấy secret. Rotation đơn lẻ không chứng minh secret không thể rò.",
+      "evidence": [
+        "login-admin0-baseline",
+        "api-docs"
+      ]
+    },
+    {
+      "id": "ABUSE-01",
+      "status": "INCONCLUSIVE",
+      "title": "Sau sáu mật khẩu sai admin49, mật khẩu đúng cũng bị 401",
+      "detail": "Baseline đúng trước thử là 200. Body năm lần đầu 62 byte, lần sáu và lần đúng 77 byte; không lưu message trong lần đầu, nên chưa xác định nguyên nhân, ngưỡng và thời gian khóa. Không gửi thêm thử sai hay tự mở khóa.",
+      "evidence": [
+        "login-admin49-baseline",
+        "login-admin49-wrong-1",
+        "login-admin49-wrong-2",
+        "login-admin49-wrong-3",
+        "login-admin49-wrong-4",
+        "login-admin49-wrong-5",
+        "login-admin49-wrong-6",
+        "login-admin49-correct-after-six"
+      ]
+    },
+    {
+      "id": "CACHE-01",
+      "status": "FAIL",
+      "severity": "low",
+      "title": "Phản hồi login/account thiếu Cache-Control: no-store rõ ràng",
+      "detail": "Thiếu hardening header; chưa chứng minh cache đã làm lộ token.",
+      "evidence": [
+        "login-admin0-baseline",
+        "admin-read:/account/me"
+      ]
+    },
+    {
+      "id": "UI-01",
+      "status": "PASS",
+      "title": "UI admin2 đăng nhập, giữ phiên sau reload và logout",
+      "detail": "Password input có type=password; sau logout hiện nút Đăng nhập. Không đọc token khỏi browser storage.",
+      "evidence": [
+        "screenshots/auth-persisted.jpg"
+      ]
+    },
+    {
+      "id": "CODE-01",
+      "status": "PASS",
+      "title": "Đã sửa race logout cũ xóa phiên mới",
+      "detail": "Regression late success/late failure cùng kiểm tra logout phiên hiện tại đều pass; kiểm tra UI guard đã review.",
+      "evidence": [
+        "src/services/api/auth.js:7",
+        "src/features/auth/AccountMenu.jsx:43",
+        "src/services/api/auth.test.js:91"
+      ]
+    },
+    {
+      "id": "LOAD-01",
+      "status": "PASS",
+      "title": "Đợt tải đã sửa endpoint: 48/48 HTTP 200",
+      "detail": "Ba mức 1/2/4 RPS, 16 mẫu/mức; actual peak concurrency=1, không suy ra 50 users.",
+      "evidence": [
+        "verified-load-1rps-1",
+        "verified-load-1rps-2",
+        "verified-load-1rps-3",
+        "verified-load-1rps-4",
+        "verified-load-1rps-5",
+        "verified-load-1rps-6",
+        "verified-load-1rps-7",
+        "verified-load-1rps-8",
+        "verified-load-1rps-9",
+        "verified-load-1rps-10",
+        "verified-load-1rps-11",
+        "verified-load-1rps-12",
+        "verified-load-1rps-13",
+        "verified-load-1rps-14",
+        "verified-load-1rps-15",
+        "verified-load-1rps-16",
+        "verified-load-2rps-1",
+        "verified-load-2rps-2",
+        "verified-load-2rps-3",
+        "verified-load-2rps-4",
+        "verified-load-2rps-5",
+        "verified-load-2rps-6",
+        "verified-load-2rps-7",
+        "verified-load-2rps-8",
+        "verified-load-2rps-9",
+        "verified-load-2rps-10",
+        "verified-load-2rps-11",
+        "verified-load-2rps-12",
+        "verified-load-2rps-13",
+        "verified-load-2rps-14",
+        "verified-load-2rps-15",
+        "verified-load-2rps-16",
+        "verified-load-4rps-1",
+        "verified-load-4rps-2",
+        "verified-load-4rps-3",
+        "verified-load-4rps-4",
+        "verified-load-4rps-5",
+        "verified-load-4rps-6",
+        "verified-load-4rps-7",
+        "verified-load-4rps-8",
+        "verified-load-4rps-9",
+        "verified-load-4rps-10",
+        "verified-load-4rps-11",
+        "verified-load-4rps-12",
+        "verified-load-4rps-13",
+        "verified-load-4rps-14",
+        "verified-load-4rps-15",
+        "verified-load-4rps-16"
+      ]
+    },
+    {
+      "id": "NOT-01",
+      "status": "NOT_TESTED",
+      "title": "Biên nửa đêm/lần xoay key nội bộ thứ nhất và thứ hai, token hết hạn có chữ ký thật, restart/key rotation thực tế"
+    },
+    {
+      "id": "NOT-02",
+      "status": "NOT_TESTED",
+      "title": "Chức năng với token admin thật, OTP/email/reset password/ghi quyền và dữ liệu, stress/soak50users, CPU/RAM/DB metrics, payload khai thác sâu"
+    },
+    {
+      "id": "NOT-03",
+      "status": "NOT_TESTED",
+      "title": "UI in-memory qua reload và UX khóa phiên hết hạn",
+      "detail": "Unit test chế độ in-memory có chạy; không thay thế kiểm tra trình duyệt này."
+    }
+  ],
+  "summary": {
+    "PASS": 9,
+    "FAIL": 2,
+    "INCONCLUSIVE": 5,
+    "NOT_TESTED": 3
+  },
+  "cleanup": {
+    "initialApiSessions": 3,
+    "initialRefreshReplayStatuses": [
+      401,
+      401,
+      401
+    ],
+    "supplemental": [
+      {
+        "user": "admin0",
+        "logoutStatus": 200,
+        "replayStatus": 401
+      },
+      {
+        "user": "admin48",
+        "logoutStatus": 200,
+        "replayStatus": 401
+      }
+    ],
+    "browser": {
+      "user": "admin2",
+      "logoutGuestUiObserved": true,
+      "serverRefreshReplayNotInspected": true
+    },
+    "admin49": "May be temporarily locked; no unlock or further failed-password probes attempted."
+  },
+  "localValidation": {
+    "unit": {
+      "passed": 54,
+      "failed": 0,
+      "skipped": 0
+    },
+    "lint": "PASS",
+    "build": "PASS",
+    "staticScreens": {
+      "passed": 31,
+      "note": "SSR only"
+    },
+    "auditRegressionTests": {
+      "passed": 4,
+      "network": "Mocked fetch only"
+    }
+  },
+  "requests": [
+    {
+      "label": "api-docs",
+      "path": "/dev",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:06.969Z",
+      "status": 200,
+      "ms": 536,
+      "bytes": 24304,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:07 GMT",
+        "content-type": "text/html; charset=utf-8",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "api-health-baseline",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:07.507Z",
+      "status": 404,
+      "ms": 88,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:07 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "public-providers",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:07.762Z",
+      "status": 200,
+      "ms": 148,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:07 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "no-token:/account/me",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:08.016Z",
+      "status": 401,
+      "ms": 88,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:07 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "no-token:/account/admin-access",
+      "path": "/account/admin-access",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:08.262Z",
+      "status": 401,
+      "ms": 87,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:07 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "no-token:/admin/accounts?page=1&page_size=1",
+      "path": "/admin/accounts?page=1&page_size=1",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:08.512Z",
+      "status": 401,
+      "ms": 86,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:08 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "no-token:/admin/roles",
+      "path": "/admin/roles",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:08.764Z",
+      "status": 401,
+      "ms": 87,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:08 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "no-token:/admin/permissions",
+      "path": "/admin/permissions",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:09.013Z",
+      "status": 401,
+      "ms": 86,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:08 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "no-token:/admin/tokens/stats",
+      "path": "/admin/tokens/stats",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:09.263Z",
+      "status": 401,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:08 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-admin0-baseline",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:09.513Z",
+      "status": 200,
+      "ms": 222,
+      "bytes": 461,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:09 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-admin48-baseline",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:09.763Z",
+      "status": 200,
+      "ms": 137,
+      "bytes": 461,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:09 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-admin49-baseline",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:10.014Z",
+      "status": 200,
+      "ms": 140,
+      "bytes": 461,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:09 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "admin-read:/account/me",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:10.264Z",
+      "status": 200,
+      "ms": 91,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:09 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "admin-read:/account/admin-access",
+      "path": "/account/admin-access",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:10.514Z",
+      "status": 200,
+      "ms": 113,
+      "bytes": 45,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:09 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "admin-read:/admin/accounts/count",
+      "path": "/admin/accounts/count",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:10.764Z",
+      "status": 403,
+      "ms": 91,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:10 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "admin-read:/admin/roles",
+      "path": "/admin/roles",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:11.015Z",
+      "status": 403,
+      "ms": 88,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:10 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "admin-read:/admin/permissions",
+      "path": "/admin/permissions",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:11.265Z",
+      "status": 403,
+      "ms": 88,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:10 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "admin-read:/admin/tokens/stats",
+      "path": "/admin/tokens/stats",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:11.515Z",
+      "status": 403,
+      "ms": 89,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:10 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "admin-read:/admin/accounts?page=1&page_size=1",
+      "path": "/admin/accounts?page=1&page_size=1",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:11.765Z",
+      "status": 403,
+      "ms": 89,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:11 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "jwt-unsigned",
+      "path": "/admin/accounts/count",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:12.005Z",
+      "status": 401,
+      "ms": 87,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:11 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "jwt-altered-claims",
+      "path": "/admin/accounts/count",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:12.265Z",
+      "status": 401,
+      "ms": 87,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:11 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "jwt-invalid-signature",
+      "path": "/admin/accounts/count",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:12.516Z",
+      "status": 401,
+      "ms": 163,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:11 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "refresh-cross-account",
+      "path": "/auth/refresh-token",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:12.766Z",
+      "status": 200,
+      "ms": 178,
+      "bytes": 230,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:12 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "refresh-valid",
+      "path": "/auth/refresh-token",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:13.016Z",
+      "status": 200,
+      "ms": 136,
+      "bytes": 230,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:13 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "refresh-reuse-same-value",
+      "path": "/auth/refresh-token",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:13.266Z",
+      "status": 200,
+      "ms": 94,
+      "bytes": 230,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:13 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-invalid-field-types",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:13.517Z",
+      "status": 422,
+      "ms": 87,
+      "bytes": 126,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:13 GMT",
+        "content-type": "text/plain; charset=utf-8",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-sql-negative",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:13.768Z",
+      "status": 400,
+      "ms": 88,
+      "bytes": 64,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:13 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-json-operator-string",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:14.017Z",
+      "status": 400,
+      "ms": 129,
+      "bytes": 64,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:13 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-missing-fields",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:14.267Z",
+      "status": 422,
+      "ms": 89,
+      "bytes": 103,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:14 GMT",
+        "content-type": "text/plain; charset=utf-8",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "exists-owned-admin0",
+      "path": "/account/exists/admin0",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:14.518Z",
+      "status": 200,
+      "ms": 89,
+      "bytes": 44,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:14 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "exists-nonexistent-audit",
+      "path": "/account/exists/audite9509716c45d4848",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:14.768Z",
+      "status": 200,
+      "ms": 87,
+      "bytes": 45,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:14 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "cors-untrusted-origin",
+      "path": "/account/me",
+      "method": "OPTIONS",
+      "startedAt": "2026-11-21T11:22:15.018Z",
+      "status": 200,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:14 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-1",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:15.269Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:14 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-2",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:16.135Z",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:16 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-3",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:17.108Z",
+      "status": 200,
+      "ms": 90,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:16 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-4",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:18.121Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:18 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-5",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:19.122Z",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:19 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-6",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:20.122Z",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:20 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-7",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:21.107Z",
+      "status": 404,
+      "ms": 152,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:20 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-8",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:22.112Z",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:22 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-9",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:23.125Z",
+      "status": 200,
+      "ms": 88,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:23 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-10",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:24.126Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:23 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-11",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:25.127Z",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:25 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-12",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:26.128Z",
+      "status": 200,
+      "ms": 88,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:26 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-13",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:27.116Z",
+      "status": 404,
+      "ms": 86,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:26 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-14",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:28.130Z",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:28 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-15",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:29.130Z",
+      "status": 200,
+      "ms": 90,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:29 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-1rps-16",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:30.131Z",
+      "status": 404,
+      "ms": 88,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:30 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-1",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:30.365Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:30 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-2",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:30.736Z",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:30 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-3",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:31.234Z",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:31 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-4",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:31.750Z",
+      "status": 404,
+      "ms": 155,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:31 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-5",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:32.235Z",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:32 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-6",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:32.722Z",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:32 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-7",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:33.251Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:33 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-8",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:33.738Z",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:33 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-9",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:34.236Z",
+      "status": 200,
+      "ms": 88,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:33 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-10",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:34.722Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:34 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-11",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:35.236Z",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:34 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-12",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:35.736Z",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:35 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-13",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:36.237Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:35 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-14",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:36.725Z",
+      "status": 200,
+      "ms": 90,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:35 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-15",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:37.238Z",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:37 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-2rps-16",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:37.723Z",
+      "status": 404,
+      "ms": 84,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:37 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-1",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:37.989Z",
+      "status": 404,
+      "ms": 86,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:37 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-2",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:38.222Z",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:37 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-3",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:38.473Z",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:38 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-4",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:38.724Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:38 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-5",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:38.973Z",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:38 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-6",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:39.223Z",
+      "status": 200,
+      "ms": 88,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:38 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-7",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:39.473Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:39 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-8",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:39.724Z",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:39 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-9",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:39.974Z",
+      "status": 200,
+      "ms": 88,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:39 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-10",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:40.224Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:39 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-11",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:40.475Z",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:40 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-12",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:40.727Z",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:40 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-13",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:40.975Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:40 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-14",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:41.224Z",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:40 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-15",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:41.475Z",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:41 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "load-4rps-16",
+      "path": "/",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:41.725Z",
+      "status": 404,
+      "ms": 85,
+      "bytes": 0,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:41 GMT",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-admin49-wrong-1",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:42.827Z",
+      "status": 401,
+      "ms": 137,
+      "bytes": 62,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:42 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-admin49-wrong-2",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:43.994Z",
+      "status": 401,
+      "ms": 136,
+      "bytes": 62,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:44 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-admin49-wrong-3",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:45.161Z",
+      "status": 401,
+      "ms": 136,
+      "bytes": 62,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:45 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-admin49-wrong-4",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:46.329Z",
+      "status": 401,
+      "ms": 136,
+      "bytes": 62,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:46 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-admin49-wrong-5",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:47.497Z",
+      "status": 401,
+      "ms": 137,
+      "bytes": 62,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:47 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-admin49-wrong-6",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:48.665Z",
+      "status": 401,
+      "ms": 92,
+      "bytes": 77,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:48 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "login-admin49-correct-after-six",
+      "path": "/auth/login",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:48.898Z",
+      "status": 401,
+      "ms": 92,
+      "bytes": 77,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:48 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "cleanup-logout-admin0-baseline",
+      "path": "/auth/logout",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:49.149Z",
+      "status": 200,
+      "ms": 90,
+      "bytes": 44,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:48 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "cleanup-refresh-replay-admin0-baseline",
+      "path": "/auth/refresh-token",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:49.399Z",
+      "status": 401,
+      "ms": 89,
+      "bytes": 81,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:48 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "access-after-logout",
+      "path": "/account/me",
+      "method": "GET",
+      "startedAt": "2026-11-21T11:22:49.649Z",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:48 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "cleanup-logout-admin48-baseline",
+      "path": "/auth/logout",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:49.899Z",
+      "status": 200,
+      "ms": 93,
+      "bytes": 44,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:49 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "cleanup-refresh-replay-admin48-baseline",
+      "path": "/auth/refresh-token",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:50.150Z",
+      "status": 401,
+      "ms": 89,
+      "bytes": 81,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:49 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "cleanup-logout-admin49-baseline",
+      "path": "/auth/logout",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:50.399Z",
+      "status": 200,
+      "ms": 92,
+      "bytes": 44,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:49 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "cleanup-refresh-replay-admin49-baseline",
+      "path": "/auth/refresh-token",
+      "method": "POST",
+      "startedAt": "2026-11-21T11:22:50.650Z",
+      "status": 401,
+      "ms": 88,
+      "bytes": 81,
+      "headers": {
+        "date": "Sat, 21 Nov 2026 11:22:49 GMT",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "setCookiePresent": false
+    },
+    {
+      "label": "verify-login-admin0",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ms": 591,
+      "bytes": 461,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:25:52 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-login-admin48",
+      "path": "/auth/login",
+      "method": "POST",
+      "status": 200,
+      "ms": 283,
+      "bytes": 461,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:25:53 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-me-admin0",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 187,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:26:44 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-admin-access-admin0",
+      "path": "/account/admin-access",
+      "method": "GET",
+      "status": 200,
+      "ms": 189,
+      "bytes": 45,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:26:44 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-me-admin48",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:26:44 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-admin-access-admin48",
+      "path": "/account/admin-access",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 45,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:26:44 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-jwt-none-me",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 401,
+      "ms": 87,
+      "bytes": 0,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "date": "Sat, 21 Nov 2026 11:26:44 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-jwt-tamper-me",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 401,
+      "ms": 87,
+      "bytes": 0,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "date": "Sat, 21 Nov 2026 11:26:44 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-jwt-bad-signature-me",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 401,
+      "ms": 87,
+      "bytes": 0,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "date": "Sat, 21 Nov 2026 11:26:44 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-mixed-A-access-B-refresh",
+      "path": "/auth/refresh-token",
+      "method": "POST",
+      "status": 200,
+      "ms": 129,
+      "bytes": 230,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:26:44 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-minted-me-A-access-B-refresh",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 122,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:26:44 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-mixed-B-access-A-refresh",
+      "path": "/auth/refresh-token",
+      "method": "POST",
+      "status": 200,
+      "ms": 89,
+      "bytes": 230,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:26:44 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verify-minted-me-B-access-A-refresh",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:26:45 GMT"
+      },
+      "message": null
+    },
+    {
+      "label": "verified-load-1rps-1",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 457,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:09 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:08.858Z"
+    },
+    {
+      "label": "verified-load-1rps-2",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 90,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:09 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:09.859Z"
+    },
+    {
+      "label": "verified-load-1rps-3",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:10 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:10.860Z"
+    },
+    {
+      "label": "verified-load-1rps-4",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 90,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:11 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:11.860Z"
+    },
+    {
+      "label": "verified-load-1rps-5",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:12 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:12.862Z"
+    },
+    {
+      "label": "verified-load-1rps-6",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:13 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:13.863Z"
+    },
+    {
+      "label": "verified-load-1rps-7",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:14 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:14.864Z"
+    },
+    {
+      "label": "verified-load-1rps-8",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:15 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:15.865Z"
+    },
+    {
+      "label": "verified-load-1rps-9",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:16 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:16.865Z"
+    },
+    {
+      "label": "verified-load-1rps-10",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:17 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:17.865Z"
+    },
+    {
+      "label": "verified-load-1rps-11",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:18 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:18.867Z"
+    },
+    {
+      "label": "verified-load-1rps-12",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:19 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:19.867Z"
+    },
+    {
+      "label": "verified-load-1rps-13",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:20 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:20.869Z"
+    },
+    {
+      "label": "verified-load-1rps-14",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:21 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:21.869Z"
+    },
+    {
+      "label": "verified-load-1rps-15",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:21 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:22.854Z"
+    },
+    {
+      "label": "verified-load-1rps-16",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:23 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:23.870Z"
+    },
+    {
+      "label": "verified-load-2rps-1",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 97,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:23 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:24.122Z"
+    },
+    {
+      "label": "verified-load-2rps-2",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:23 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:24.474Z"
+    },
+    {
+      "label": "verified-load-2rps-3",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:25 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:24.974Z"
+    },
+    {
+      "label": "verified-load-2rps-4",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:25 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:25.474Z"
+    },
+    {
+      "label": "verified-load-2rps-5",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:26 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:25.975Z"
+    },
+    {
+      "label": "verified-load-2rps-6",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:26 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:26.474Z"
+    },
+    {
+      "label": "verified-load-2rps-7",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:27 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:26.975Z"
+    },
+    {
+      "label": "verified-load-2rps-8",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:27 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:27.490Z"
+    },
+    {
+      "label": "verified-load-2rps-9",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:28 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:27.991Z"
+    },
+    {
+      "label": "verified-load-2rps-10",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:28 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:28.491Z"
+    },
+    {
+      "label": "verified-load-2rps-11",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:29 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:28.992Z"
+    },
+    {
+      "label": "verified-load-2rps-12",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:29 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:29.492Z"
+    },
+    {
+      "label": "verified-load-2rps-13",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:30 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:29.993Z"
+    },
+    {
+      "label": "verified-load-2rps-14",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:30 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:30.493Z"
+    },
+    {
+      "label": "verified-load-2rps-15",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:31 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:30.994Z"
+    },
+    {
+      "label": "verified-load-2rps-16",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 91,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:31 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:31.495Z"
+    },
+    {
+      "label": "verified-load-4rps-1",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:31 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:31.730Z"
+    },
+    {
+      "label": "verified-load-4rps-2",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 92,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:31 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:31.979Z"
+    },
+    {
+      "label": "verified-load-4rps-3",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:32 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:32.231Z"
+    },
+    {
+      "label": "verified-load-4rps-4",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:32 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:32.479Z"
+    },
+    {
+      "label": "verified-load-4rps-5",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:32 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:32.731Z"
+    },
+    {
+      "label": "verified-load-4rps-6",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:32 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:32.980Z"
+    },
+    {
+      "label": "verified-load-4rps-7",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:33 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:33.230Z"
+    },
+    {
+      "label": "verified-load-4rps-8",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 90,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:33 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:33.480Z"
+    },
+    {
+      "label": "verified-load-4rps-9",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:33 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:33.730Z"
+    },
+    {
+      "label": "verified-load-4rps-10",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:33 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:33.981Z"
+    },
+    {
+      "label": "verified-load-4rps-11",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 88,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:33 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:34.230Z"
+    },
+    {
+      "label": "verified-load-4rps-12",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 89,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:34 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:34.481Z"
+    },
+    {
+      "label": "verified-load-4rps-13",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:34 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:34.731Z"
+    },
+    {
+      "label": "verified-load-4rps-14",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 90,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:34 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:34.982Z"
+    },
+    {
+      "label": "verified-load-4rps-15",
+      "path": "/oauth/providers",
+      "method": "GET",
+      "status": 200,
+      "ms": 87,
+      "bytes": 183,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:34 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:35.231Z"
+    },
+    {
+      "label": "verified-load-4rps-16",
+      "path": "/account/me",
+      "method": "GET",
+      "status": 200,
+      "ms": 90,
+      "bytes": 305,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:29:35 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:29:35.482Z"
+    },
+    {
+      "label": "verify-cleanup-logout-admin0",
+      "path": "/auth/logout",
+      "method": "POST",
+      "status": 200,
+      "ms": 494,
+      "bytes": 44,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:33:32 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:33:32.110Z"
+    },
+    {
+      "label": "verify-cleanup-refresh-replay-admin0",
+      "path": "/auth/refresh-token",
+      "method": "POST",
+      "status": 401,
+      "ms": 86,
+      "bytes": 81,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:33:32 GMT"
+      },
+      "message": "Refresh token has not valid or expired",
+      "startedAt": "2026-11-21T11:33:32.612Z"
+    },
+    {
+      "label": "verify-cleanup-logout-admin48",
+      "path": "/auth/logout",
+      "method": "POST",
+      "status": 200,
+      "ms": 89,
+      "bytes": 44,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:33:32 GMT"
+      },
+      "message": null,
+      "startedAt": "2026-11-21T11:33:32.861Z"
+    },
+    {
+      "label": "verify-cleanup-refresh-replay-admin48",
+      "path": "/auth/refresh-token",
+      "method": "POST",
+      "status": 401,
+      "ms": 85,
+      "bytes": 81,
+      "headers": {
+        "access-control-allow-origin": "*",
+        "content-type": "application/json",
+        "date": "Sat, 21 Nov 2026 11:33:32 GMT"
+      },
+      "message": "Refresh token has not valid or expired",
+      "startedAt": "2026-11-21T11:33:33.111Z"
+    }
+  ],
+  "documentationPreflight": {
+    "label": "API documentation",
+    "path": "/dev",
+    "method": "GET",
+    "status": 200,
+    "ms": 661,
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "*",
+      "content-length": "24304",
+      "content-type": "text/html; charset=utf-8",
+      "date": "Sat, 21 Nov 2026 11:14:59 GMT",
+      "ngrok-agent-ips": "117.5.147.180",
+      "x-robots-tag": "noindex, nofollow"
+    },
+    "bytes": 23188
+  },
+  "historicalSnapshot": "security-test-results.initial.json",
+  "exclusions": [
+    "Backend source is absent from this repo. No server policy was changed.",
+    "No real signing-key forgery, secret brute force, RCE, destructive SQL, database write, OTP/email send, account/password/role change or global logout performed.",
+    "No claim that all50 accounts were checked, the app is unhackable, or a full OWASP certification was earned."
+  ],
+  "requirementClarification": {
+    "date": "2026-11-21",
+    "timezone": "Asia/Bangkok",
+    "requirement": "Internal JWT signing secret changes when a new calendar day starts; daily user reauthentication is not requested.",
+    "observedAlgorithm": "HS256 (signature/MAC, not payload encryption)",
+    "verification": "INCONCLUSIVE: backend implementation/configuration/key metadata/rotation logs are unavailable; real midnight transition was not observed.",
+    "secrecy": "No signing secret extraction or brute force attempted. Rotation alone does not demonstrate that internal secrets cannot leak.",
+    "loadFollowUp": "A separate closed-loop load assessment is requested: one authenticated user per worker, repeated own-account reads, and statistics before, during, and after. Previous bounded-load data remains historical."
+  }
+}

@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 1,
+  "requirement": "Daily rotation of the server-internal JWT signing key, not daily user reauthentication. Load model is one distinct account per closed-loop virtual user.",
+  "target": "https://thesaurus-divinity-cosigner.ngrok-free.dev/api",
+  "endpoint": "/account/me",
+  "run": {
+    "startedAt": "2026-11-21T13:12:43.645Z",
+    "completedAt": "2026-11-21T13:14:13.069Z",
+    "timezone": "Asia/Bangkok"
+  },
+  "users": {
+    "authenticated": 50,
+    "distinctSubjects": 50,
+    "requested": 50
+  },
+  "before": {
+    "user": "admin0",
+    "endpoint": "/account/me",
+    "attempted": 20,
+    "completed": 20,
+    "successful": 20,
+    "httpErrors": 0,
+    "applicationErrors": 0,
+    "transportErrors": 0,
+    "timeouts": 0,
+    "statusCounts": {
+      "200": 20
+    },
+    "durationMs": 4949,
+    "completedRps": 4.041,
+    "successfulRps": 4.041,
+    "requestStartRps": 3.912,
+    "peakConcurrency": 1,
+    "p50Ms": 89.101,
+    "p95Ms": 89.878,
+    "p99Ms": 90.323,
+    "maxMs": 90.323,
+    "bytes": 6100,
+    "complete": true
+  },
+  "stages": [
+    {
+      "users": 1,
+      "requestedUsers": 1,
+      "requests": 89,
+      "successful": 89,
+      "durationMs": 8068,
+      "rps": 11.031,
+      "successfulRps": 11.031,
+      "p50Ms": 88.954,
+      "p95Ms": 90.416,
+      "p99Ms": 188.475,
+      "maxMs": 188.475,
+      "httpStatus": {
+        "200": 89
+      },
+      "peakConcurrency": 1,
+      "endedBy": "duration"
+    },
+    {
+      "users": 5,
+      "requestedUsers": 5,
+      "requests": 444,
+      "successful": 444,
+      "durationMs": 8043,
+      "rps": 55.2,
+      "successfulRps": 55.2,
+      "p50Ms": 87.1,
+      "p95Ms": 101.786,
+      "p99Ms": 183.854,
+      "maxMs": 289.34,
+      "httpStatus": {
+        "200": 444
+      },
+      "peakConcurrency": 5,
+      "endedBy": "duration"
+    },
+    {
+      "users": 10,
+      "requestedUsers": 10,
+      "requests": 929,
+      "successful": 929,
+      "durationMs": 8074,
+      "rps": 115.058,
+      "successfulRps": 115.058,
+      "p50Ms": 84.805,
+      "p95Ms": 90.194,
+      "p99Ms": 142.332,
+      "maxMs": 225.822,
+      "httpStatus": {
+        "200": 929
+      },
+      "peakConcurrency": 10,
+      "endedBy": "duration"
+    },
+    {
+      "users": 25,
+      "requestedUsers": 25,
+      "requests": 2310,
+      "successful": 2310,
+      "durationMs": 8066,
+      "rps": 286.395,
+      "successfulRps": 286.395,
+      "p50Ms": 83.784,
+      "p95Ms": 96.441,
+      "p99Ms": 186.843,
+      "maxMs": 272.993,
+      "httpStatus": {
+        "200": 2310
+      },
+      "peakConcurrency": 25,
+      "endedBy": "duration"
+    },
+    {
+      "users": 50,
+      "requestedUsers": 50,
+      "requests": 942,
+      "successful": 919,
+      "durationMs": 2043,
+      "rps": 461.103,
+      "successfulRps": 449.845,
+      "p50Ms": 86.53,
+      "p95Ms": 210.199,
+      "p99Ms": 473.406,
+      "maxMs": 510.276,
+      "httpStatus": {
+        "200": 919,
+        "429": 23
+      },
+      "peakConcurrency": 50,
+      "endedBy": "safety-or-validation-stop"
+    }
+  ],
+  "automaticAfter": null,
+  "automaticAfterSkippedReason": "HTTP 429 during load-50",
+  "recoveryProbe": {
+    "at": "2026-11-21T13:16:43.078Z",
+    "phase": "recovery-probe",
+    "path": "/oauth/providers",
+    "status": 200,
+    "ms": 465,
+    "headers": {
+      "content-type": "application/json",
+      "date": "Sat, 21 Nov 2026 13:16:42 GMT"
+    },
+    "bytes": 183,
+    "publicError": null
+  },
+  "afterRecovery": {
+    "reason": "The initial run stopped on429. A public probe returned200 after more than two minutes without load; reauthenticated the same admin0 account for the matched own-profile snapshot.",
+    "originalAccessTokenReused": false,
+    "user": "admin0",
+    "endpoint": "/account/me",
+    "summary": {
+      "attempted": 20,
+      "completed": 20,
+      "successful": 20,
+      "httpErrors": 0,
+      "applicationErrors": 0,
+      "transportErrors": 0,
+      "timeouts": 0,
+      "statusCounts": {
+        "200": 20
+      },
+      "durationMs": 4919,
+      "completedRps": 4.066,
+      "successfulRps": 4.066,
+      "requestStartRps": 3.939,
+      "peakConcurrency": 1,
+      "p50Ms": 88.766,
+      "p95Ms": 100.597,
+      "p99Ms": 101.655,
+      "maxMs": 101.655,
+      "bytes": 6100
+    },
+    "comparison": {
+      "p50Ms": {
+        "before": 89.101,
+        "after": 88.766,
+        "delta": -0.335,
+        "percent": -0.376
+      },
+      "p95Ms": {
+        "before": 89.878,
+        "after": 100.597,
+        "delta": 10.719,
+        "percent": 11.926
+      },
+      "p99Ms": {
+        "before": 90.323,
+        "after": 101.655,
+        "delta": 11.332,
+        "percent": 12.546
+      },
+      "maxMs": {
+        "before": 90.323,
+        "after": 101.655,
+        "delta": 11.332,
+        "percent": 12.546
+      },
+      "completedRps": {
+        "before": 4.041,
+        "after": 4.066,
+        "delta": 0.025,
+        "percent": 0.619
+      },
+      "successfulRps": {
+        "before": 4.041,
+        "after": 4.066,
+        "delta": 0.025,
+        "percent": 0.619
+      }
+    },
+    "logoutAccepted": true,
+    "complete": true,
+    "recordedAt": "2026-11-21T13:17:37.700Z"
+  },
+  "comparison": {
+    "p50Ms": {
+      "before": 89.101,
+      "after": 88.766,
+      "delta": -0.335,
+      "percent": -0.376
+    },
+    "p95Ms": {
+      "before": 89.878,
+      "after": 100.597,
+      "delta": 10.719,
+      "percent": 11.926
+    },
+    "p99Ms": {
+      "before": 90.323,
+      "after": 101.655,
+      "delta": 11.332,
+      "percent": 12.546
+    },
+    "maxMs": {
+      "before": 90.323,
+      "after": 101.655,
+      "delta": 11.332,
+      "percent": 12.546
+    },
+    "completedRps": {
+      "before": 4.041,
+      "after": 4.066,
+      "delta": 0.025,
+      "percent": 0.619
+    },
+    "successfulRps": {
+      "before": 4.041,
+      "after": 4.066,
+      "delta": 0.025,
+      "percent": 0.619
+    }
+  },
+  "counts": {
+    "runnerRequests": 4884,
+    "recoveryProbeRequests": 1,
+    "supplementalRequests": 22,
+    "documentationPreflightRequests": 1,
+    "totalRecordedRemoteRequests": 4908,
+    "loadRequests": 4714,
+    "loadHttp429": 23,
+    "loadSuccessful": 4691
+  },
+  "cleanup": {
+    "originalSessions": 50,
+    "originalLogoutAccepted": 0,
+    "originalStatusCounts": {
+      "0": 33,
+      "429": 17
+    },
+    "originalUnconfirmed": 50,
+    "supplementalLogoutAccepted": true,
+    "note": "No original refresh values were saved; the original50sessions could not be retried after the runner cleared runtime secrets. No global logout or credential/role changes were performed."
+  },
+  "limits": {
+    "totalRequests": 10000,
+    "cleanupReserve": 55,
+    "maxUsers": 50,
+    "stageUsers": [
+      1,
+      5,
+      10,
+      25,
+      50
+    ],
+    "stageDurationMs": 8000,
+    "stageRequestLimit": 3000,
+    "snapshotRequests": 20,
+    "setupStartIntervalMs": 500,
+    "snapshotStartIntervalMs": 250,
+    "cleanupStartIntervalMs": 500,
+    "timeoutMs": 10000,
+    "slowThresholdMs": 5000
+  },
+  "stopReason": "HTTP 429 during load-50",
+  "rawFiles": {
+    "run": "load-runs/2026-11-21T13-12-43-644Z/load-results.json",
+    "progress": "load-runs/2026-11-21T13-12-43-644Z/progress.json",
+    "recoveryProbe": "load-runs/2026-11-21T13-12-43-644Z/recovery-probes.json",
+    "afterRecovery": "load-runs/2026-11-21T13-12-43-644Z/after-recovery.json"
+  },
+  "limitations": [
+    "50-user stage ended after~2s on429, not a successful8-second50-user stage.",
+    "429origin/backendvsngroknotestablished; noCPU/RAM/DBtelemetry.",
+    "Before20requests and after20requests matchedsameaccount/endpoint; afterusedfreshlogin and was measured after cooldown, not immediately afterload.",
+    "Only own-profile GETs were loaded; no writes/admin-queryload/passwordguessing/keybruteforce."
+  ],
+  "localChecks": {
+    "tests": {
+      "passed": 60,
+      "failed": 0,
+      "skipped": 0
+    },
+    "lint": "PASS",
+    "liveRunnerRevisionNote": "Raw run preceded future429cleanup-recoveryhardening; changes after this run must not be claimed to have been live-tested.",
+    "loadRunnerMockTests": {
+      "passed": 6,
+      "network": "Mocked fetch only"
+    },
+    "syntax": "PASS"
+  },
+  "hardeningAfterRun": {
+    "fallbackOn429WithoutRetryAfterSeconds": 60,
+    "maxOneRecoveryWaitSeconds": 60,
+    "cleanupStopsOnFirst429503OrTransportError": true,
+    "postCooldownSnapshotWhenHealthy": true,
+    "liveExecution": "Not rerun; tested with mocked fetch. Historical raw results retained."
+  }
+}

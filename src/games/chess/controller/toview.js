@@ -8,10 +8,24 @@
 
 import { PieceType } from "../core/constants/PieceType.js";
 import { isInCheck } from "../core/moves/squares.js";
-import { Game } from "../core/models/Game.js";
 import { getLegalMoves } from "../core/engine/legalMoves.js";
 import { PROMOTION_TARGETS } from "../core/constants/StandardDef.js";
-import { Piece } from "../core/models/Piece.js";
+
+/**
+ * @typedef {import("../core/models/Game.js").Game} Game
+ * @typedef {import("../core/models/piece.js").Piece} Piece
+ * @typedef {Readonly<{row: number, col: number}>} Position
+ * @typedef {import("../core/constants/PieceType.js").PieceTypeValue} PieceTypeValue
+ * @typedef {Readonly<{
+ *   side: import("../core/constants/Side.js").SideValue,
+ *   from: Position,
+ *   to: Position,
+ *   pieceType: PieceTypeValue,
+ *   promotion: PieceTypeValue | null,
+ *   kind: import("../core/constants/MoveKind.js").MoveKindValue,
+ *   capture: boolean
+ * }>} HistoryEntry
+ */
 
 /**
  * Kiểm tra nước đi có phải là nước bắt quân hay không,
@@ -40,9 +54,10 @@ function isCapture(game, piece, row, col) {
  * @param {Game} game - Trạng thái ván cờ.
  * @param {{ selectedId: string | null }} ix - Trạng thái lựa chọn quân cờ.
  * @param {(game: Game) => boolean} canAct - Kiểm tra người chơi hiện tại có được phép thực hiện hành động hay không.
+ * @param {readonly HistoryEntry[]} [history] - Các nước đi của ván hiện tại.
  */
 
-export function toView(game, ix, canAct) {
+export function toView(game, ix, canAct, history = []) {
   const { board } = game;
 
   const selected =
@@ -86,6 +101,8 @@ export function toView(game, ix, canAct) {
     targets,
     checkedKing,
     promotion,
+    history,
+    lastMove: history.at(-1) ?? null,
     result: game.result ?? null,
     canAct: canAct(game), // người dùng có được thao tác lúc này không (không phải lượt bot, chưa hết ván)
   };

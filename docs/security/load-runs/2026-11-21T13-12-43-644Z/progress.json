@@ -1,0 +1,58 @@
+[
+  {
+    "at": "2026-11-21T13:12:43.645Z",
+    "message": "Logging in up to 50 supplied test accounts once each; validating each own-profile read"
+  },
+  {
+    "at": "2026-11-21T13:13:08.948Z",
+    "message": "Measuring 20 sequential reads before load with admin0"
+  },
+  {
+    "at": "2026-11-21T13:13:13.899Z",
+    "message": "Starting closed-loop stage: requested 1, actual 1 users, up to 8 seconds / 3000 reads"
+  },
+  {
+    "at": "2026-11-21T13:13:21.970Z",
+    "message": "Finished 1-user stage: 89 reads, 89 successful, 11.031 completed RPS, p95 90.416 ms, peak 1; duration"
+  },
+  {
+    "at": "2026-11-21T13:13:21.970Z",
+    "message": "Starting closed-loop stage: requested 5, actual 5 users, up to 8 seconds / 3000 reads"
+  },
+  {
+    "at": "2026-11-21T13:13:30.020Z",
+    "message": "Finished 5-user stage: 444 reads, 444 successful, 55.2 completed RPS, p95 101.786 ms, peak 5; duration"
+  },
+  {
+    "at": "2026-11-21T13:13:30.020Z",
+    "message": "Starting closed-loop stage: requested 10, actual 10 users, up to 8 seconds / 3000 reads"
+  },
+  {
+    "at": "2026-11-21T13:13:38.105Z",
+    "message": "Finished 10-user stage: 929 reads, 929 successful, 115.058 completed RPS, p95 90.194 ms, peak 10; duration"
+  },
+  {
+    "at": "2026-11-21T13:13:38.105Z",
+    "message": "Starting closed-loop stage: requested 25, actual 25 users, up to 8 seconds / 3000 reads"
+  },
+  {
+    "at": "2026-11-21T13:13:46.211Z",
+    "message": "Finished 25-user stage: 2310 reads, 2310 successful, 286.395 completed RPS, p95 96.441 ms, peak 25; duration"
+  },
+  {
+    "at": "2026-11-21T13:13:46.211Z",
+    "message": "Starting closed-loop stage: requested 50, actual 50 users, up to 8 seconds / 3000 reads"
+  },
+  {
+    "at": "2026-11-21T13:13:48.206Z",
+    "message": "Stopping new requests: HTTP 429 during load-50"
+  },
+  {
+    "at": "2026-11-21T13:13:48.266Z",
+    "message": "Finished 50-user stage: 942 reads, 919 successful, 461.103 completed RPS, p95 210.199 ms, peak 50; safety-or-validation-stop"
+  },
+  {
+    "at": "2026-11-21T13:13:48.266Z",
+    "message": "Cleaning up only sessions created by this load test"
+  }
+]

@@ -8,8 +8,7 @@ import { PieceType } from "../constants/PieceType.js";
 import { PIECE_DEFS } from "../constants/PieceDefs.js";
 
 import { Board } from "./Board.js";
-import { Piece } from "./Piece.js";
-import { Square } from "./Square.js";
+import { Piece } from "./piece.js";
 
 import {
   BACK_RANK,
@@ -19,6 +18,7 @@ import {
 
 /**
  * @typedef {import("../constants/Side.js").SideValue} SideValue
+ * @typedef {import("./Square.js").Square} Square
  * 
  * @typedef {Object} EnPassantTarget
  * @property {number} row - Hàng của ô mà tốt đối phương có thể bắt qua đường.

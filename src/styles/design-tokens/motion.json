@@ -1,0 +1,80 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "duration": {
+    "instant": {
+      "$type": "duration",
+      "$value": "0ms"
+    },
+    "fast": {
+      "$type": "duration",
+      "$value": "120ms"
+    },
+    "base": {
+      "$type": "duration",
+      "$value": "180ms"
+    },
+    "moderate": {
+      "$type": "duration",
+      "$value": "260ms"
+    },
+    "spinner": {
+      "$type": "duration",
+      "$value": "900ms"
+    }
+  },
+  "easing": {
+    "linear": {
+      "$type": "cubicBezier",
+      "$value": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    "ease-out": {
+      "$type": "cubicBezier",
+      "$value": [
+        0,
+        0,
+        0.2,
+        1
+      ]
+    },
+    "ease-in": {
+      "$type": "cubicBezier",
+      "$value": [
+        0.4,
+        0,
+        1,
+        1
+      ]
+    }
+  },
+  "transition": {
+    "micro": {
+      "$type": "transition",
+      "$value": {
+        "duration": "{duration.fast}",
+        "timingFunction": "{easing.ease-out}",
+        "delay": "0ms"
+      }
+    },
+    "default": {
+      "$type": "transition",
+      "$value": {
+        "duration": "{duration.base}",
+        "timingFunction": "{easing.ease-out}",
+        "delay": "0ms"
+      }
+    },
+    "enter": {
+      "$type": "transition",
+      "$value": {
+        "duration": "{duration.moderate}",
+        "timingFunction": "{easing.ease-out}",
+        "delay": "0ms"
+      }
+    }
+  }
+}

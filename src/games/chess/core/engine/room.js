@@ -4,10 +4,11 @@
  */
 
 import { Game } from "../models/Game.js";
-import { Action } from "../models/Action.js";
 import { GameError } from "../../utils/GameError.js";
 import { ErrorCode } from "../constants/ErrorCode.js";
 import { reduce } from "./reduce.js";
+
+/** @typedef {import("../models/Action.js").Action} Action */
 
 /**
  * Quản lý state của ván cờ hiện tại, nhận action và thông báo cho các subscriber

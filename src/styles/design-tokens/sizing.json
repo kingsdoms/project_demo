@@ -1,0 +1,258 @@
+{
+  "tracking": {
+    "tight": {
+      "$type": "dimension",
+      "$value": "{typography.letterSpacing.tight}"
+    },
+    "normal": {
+      "$type": "dimension",
+      "$value": "{typography.letterSpacing.normal}"
+    },
+    "wide": {
+      "$type": "dimension",
+      "$value": "{typography.letterSpacing.wide}"
+    }
+  },
+  "layout": {
+    "header": {
+      "$type": "dimension",
+      "$value": "4rem"
+    },
+    "r2_25": {
+      "$type": "dimension",
+      "$value": "2.25rem"
+    },
+    "r1_5": {
+      "$type": "dimension",
+      "$value": "1.5rem"
+    },
+    "r0_45": {
+      "$type": "dimension",
+      "$value": "0.45rem"
+    },
+    "r0_2": {
+      "$type": "dimension",
+      "$value": "0.2rem"
+    },
+    "r2_5": {
+      "$type": "dimension",
+      "$value": "2.5rem"
+    },
+    "r0_48": {
+      "$type": "dimension",
+      "$value": "0.48rem"
+    },
+    "r0_5": {
+      "$type": "dimension",
+      "$value": "0.5rem"
+    },
+    "r0_38": {
+      "$type": "dimension",
+      "$value": "0.38rem"
+    },
+    "sidebar": {
+      "$type": "dimension",
+      "$value": "15rem"
+    },
+    "r2_625": {
+      "$type": "dimension",
+      "$value": "2.625rem"
+    },
+    "r1_25": {
+      "$type": "dimension",
+      "$value": "1.25rem"
+    },
+    "r2": {
+      "$type": "dimension",
+      "$value": "2rem"
+    },
+    "r1": {
+      "$type": "dimension",
+      "$value": "1rem"
+    },
+    "r2_125": {
+      "$type": "dimension",
+      "$value": "2.125rem"
+    },
+    "content": {
+      "$type": "dimension",
+      "$value": "76rem"
+    },
+    "control": {
+      "$type": "dimension",
+      "$value": "2.75rem"
+    },
+    "r18": {
+      "$type": "dimension",
+      "$value": "18rem"
+    },
+    "r17": {
+      "$type": "dimension",
+      "$value": "17rem"
+    },
+    "r21": {
+      "$type": "dimension",
+      "$value": "21rem"
+    },
+    "r38": {
+      "$type": "dimension",
+      "$value": "38rem"
+    },
+    "r28": {
+      "$type": "dimension",
+      "$value": "28rem"
+    },
+    "r10": {
+      "$type": "dimension",
+      "$value": "10rem"
+    },
+    "r0_4": {
+      "$type": "dimension",
+      "$value": "0.4rem"
+    },
+    "r5_75": {
+      "$type": "dimension",
+      "$value": "5.75rem"
+    },
+    "r8_25": {
+      "$type": "dimension",
+      "$value": "8.25rem"
+    },
+    "r6_15": {
+      "$type": "dimension",
+      "$value": "6.15rem"
+    },
+    "r9": {
+      "$type": "dimension",
+      "$value": "9rem"
+    },
+    "r2_4": {
+      "$type": "dimension",
+      "$value": "2.4rem"
+    },
+    "r19": {
+      "$type": "dimension",
+      "$value": "19rem"
+    },
+    "r3": {
+      "$type": "dimension",
+      "$value": "3rem"
+    },
+    "r5": {
+      "$type": "dimension",
+      "$value": "5rem"
+    },
+    "r29": {
+      "$type": "dimension",
+      "$value": "29rem"
+    },
+    "r36": {
+      "$type": "dimension",
+      "$value": "36rem"
+    },
+    "r1_875": {
+      "$type": "dimension",
+      "$value": "1.875rem"
+    },
+    "r12": {
+      "$type": "dimension",
+      "$value": "12rem"
+    },
+    "r0_625": {
+      "$type": "dimension",
+      "$value": "0.625rem"
+    },
+    "r16": {
+      "$type": "dimension",
+      "$value": "16rem"
+    },
+    "r0_32": {
+      "$type": "dimension",
+      "$value": "0.32rem"
+    },
+    "r5_5": {
+      "$type": "dimension",
+      "$value": "5.5rem"
+    },
+    "r3_5": {
+      "$type": "dimension",
+      "$value": "3.5rem"
+    },
+    "r2_875": {
+      "$type": "dimension",
+      "$value": "2.875rem"
+    },
+    "r1_625": {
+      "$type": "dimension",
+      "$value": "1.625rem"
+    },
+    "r1_125": {
+      "$type": "dimension",
+      "$value": "1.125rem"
+    },
+    "r20": {
+      "$type": "dimension",
+      "$value": "20rem"
+    },
+    "r14": {
+      "$type": "dimension",
+      "$value": "14rem"
+    },
+    "dialog": {
+      "$type": "dimension",
+      "$value": "32rem"
+    },
+    "header-mobile": {
+      "$type": "dimension",
+      "$value": "3.75rem"
+    },
+    "r42": {
+      "$type": "dimension",
+      "$value": "42rem"
+    },
+    "r0_5625": {
+      "$type": "dimension",
+      "$value": "0.5625rem"
+    },
+    "r12_5": {
+      "$type": "dimension",
+      "$value": "12.5rem"
+    },
+    "r4_75": {
+      "$type": "dimension",
+      "$value": "4.75rem"
+    },
+    "r7": {
+      "$type": "dimension",
+      "$value": "7rem"
+    },
+    "r5_25": {
+      "$type": "dimension",
+      "$value": "5.25rem"
+    },
+    "r6": {
+      "$type": "dimension",
+      "$value": "6rem"
+    },
+    "r77": {
+      "$type": "dimension",
+      "$value": "77rem"
+    },
+    "board-max": {
+      "$type": "dimension",
+      "$value": "44rem"
+    },
+    "r33": {
+      "$type": "dimension",
+      "$value": "33rem"
+    },
+    "r30": {
+      "$type": "dimension",
+      "$value": "30rem"
+    },
+    "r25": {
+      "$type": "dimension",
+      "$value": "25rem"
+    }
+  }
+}

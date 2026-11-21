@@ -5,11 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/build-design-tokens.mjs --in src/styles/design-tokens --out src/styles/design-tokens.generated.css --check && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "test": "node --test",
+    "preview": "vite preview",
+    "check:ui": "node scripts/check-ui-ssr.mjs",
+    "tokens:build": "node scripts/build-design-tokens.mjs --in src/styles/design-tokens --out src/styles/design-tokens.generated.css --check",
+    "check:stockfish": "node scripts/check-stockfish.mjs",
+    "check:security": "node scripts/security-audit.mjs",
+    "check:load": "node scripts/api-load.mjs"
   },
   "dependencies": {
+    "lucide-react": "^1.77.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "zustand": "^5.0.15"

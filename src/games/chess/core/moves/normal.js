@@ -7,7 +7,7 @@ import { ErrorCode } from "../constants/ErrorCode.js";
 import { MoveKind } from "../constants/MoveKind.js";
 import { PieceType } from "../constants/PieceType.js";
 import { PROMOTION_RANK } from "../constants/StandardDef.js";
-import { hasSquare, movementSquares } from "./squares.js";
+import { canReachSquare, movementSquares } from "./squares.js";
 import { inBoard, kingSafe } from "./checks.js";
 import { finish } from "./finish.js";
 import { Square } from "../models/Square.js";
@@ -95,7 +95,7 @@ export const normal = {
 
   /** @type {FactsFn} Dữ kiện tính lười: reachable, targetIsAlly. */
   facts: (game, piece, row, col) => ({
-    reachable: () => hasSquare(movementSquares(game.board, piece), row, col),
+    reachable: () => canReachSquare(game.board, piece, row, col),
     targetIsAlly: () => game.board.pieceAt(row, col)?.side === piece.side,
   }),
 

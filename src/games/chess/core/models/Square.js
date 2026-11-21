@@ -30,7 +30,7 @@ export class Square {
    * @param {Partial<{
    *   row: number,
    *   col: number,
-   *   occupant: import("./Piece.js").Piece | null
+   *   occupant: import("./piece.js").Piece | null
    * }>} changes
    * @returns {Square}
    */

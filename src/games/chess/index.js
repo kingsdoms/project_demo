@@ -11,8 +11,8 @@ import { Room } from "./core/engine/room.js";
 import { Side, randomSide, OPPONENT } from "./core/constants/Side.js";
 import { createController } from "./controller/createController.js";
 import { PieceType } from "./core/constants/PieceType.js";
-import { createSimpleBot, chooseBotAction } from "./bot/simpleBot.js";
 import { attachBot } from "./bot/attachBot.js";
+import { createStockfishBot } from "./bot/stockfish/index.js";
 
 export const GameMode = Object.freeze({
   VS_BOT: "VS_BOT", // human x bot
@@ -40,19 +40,26 @@ export default {
    * @param {object} [options]
    * @param {(typeof GameMode)[keyof typeof GameMode]} [options.mode=GameMode.VS_BOT]
    * @param {number} [options.botDelay=400]
+   * @param {typeof Side[keyof typeof Side]} [options.humanSide]
+   * @param {"simple" | "stockfish"} [options.botEngine="stockfish"]
+   * @param {string} [options.botLevel="medium"]
+   * @param {(status: object) => void} [options.onBotStatus]
    */
   create(options = {}) {
-    const { mode = GameMode.VS_BOT, botDelay = 400 } = options;
+    const { mode = GameMode.VS_BOT, botDelay = 400, humanSide, botEngine = "stockfish", botLevel = "medium", onBotStatus } = options;
+    if (!["simple", "stockfish"].includes(botEngine)) throw new Error("Unsupported bot engine: " + botEngine);
 
     /** @type {typeof Side[keyof typeof Side][]} */ let humanSides = [];
     /** @type {typeof Side[keyof typeof Side][]} */ let botSides = [];
 
     switch (mode) {
       case GameMode.VS_BOT: {
-        const humanSide = randomSide();
-
-        humanSides = [humanSide];
-        botSides = [OPPONENT[humanSide]];
+        const chosenSide = humanSide ?? randomSide();
+        if (chosenSide !== Side.WHITE && chosenSide !== Side.BLACK) {
+          throw new Error(`Unsupported player side: ${chosenSide}`);
+        }
+        humanSides = [chosenSide];
+        botSides = [OPPONENT[chosenSide]];
         break;
       }
 
@@ -75,23 +82,46 @@ export default {
     }
     const room = new Room();
     /** @type {{ stop: () => void } | null} */ let bot = null;
+    let engine = null;
+    let engineGeneration = 0;
+    let disposed = false;
     const controller = createController({
       room,
       sides: humanSides,
       dispose: () => {
+        disposed = true;
+        engineGeneration++;
         bot?.stop();
+        engine?.stop();
         room.destroy();
       },
     });
 
-    if (botSides.length > 0) {
+    function startBot() {
+      const generation = ++engineGeneration;
+      bot?.stop();
+      engine?.stop();
+      engine = botEngine === "stockfish" ? createStockfishBot({
+        level: botLevel,
+        onStatus: (status) => { if (generation === engineGeneration && !disposed) onBotStatus?.(status); },
+      }) : null;
       bot = attachBot(room, {
         sides: botSides,
         delay: botDelay,
+        ...(engine ? { choose: engine.choose } : {}),
+        onError: (error) => {
+          if (!disposed && generation === engineGeneration) onBotStatus?.({ state: "error", level: botLevel, engineName: "Stockfish", message: error instanceof Error ? error.message : "Không thể thực hiện nước đi của máy." });
+          if (!onBotStatus && !disposed) console.error("[bot]", error);
+        },
       });
     }
 
-    return controller;
+    if (botSides.length > 0) startBot();
+
+    return Object.freeze({
+      ...controller,
+      retryBot() { if (!disposed && botSides.length > 0 && botEngine === "stockfish") startBot(); },
+    });
   },
   enums: Object.freeze({ Side, PieceType }),
 

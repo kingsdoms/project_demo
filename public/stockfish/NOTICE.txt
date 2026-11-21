@@ -1,0 +1,36 @@
+ChessArena bundles Stockfish.js 19.0.1 Lite, single-thread WebAssembly.
+
+Upstream: https://github.com/nmrugg/stockfish.js
+Release: https://github.com/nmrugg/stockfish.js/releases/tag/v19.0.1
+Source tag commit: 0d5dd7944f88c817c07a26bc4fb1905d5f9c46d6
+
+The unmodified release files stockfish-19-lite-single.js and
+stockfish-19-lite-single.wasm are served as stockfish.js and stockfish.wasm.
+Only filenames were changed, so the loader resolves its sibling WASM locally.
+
+License: GNU GPL version 3, see COPYING.txt.
+Authors: see AUTHORS.txt and the upstream source archive.
+Tagged source archive: source-v19.0.1.zip, served beside the engine.
+
+SHA256 stockfish.js:
+ccb130d7ff29408531c47d859a49f91d59d4f482d05a53eb1a3231a4f624c91a
+SHA256 stockfish.wasm:
+ee4f115bdb2d32cadf96cada104a05b5ec257d7ad6f57582190b49bc71f096de
+SHA256 source-v19.0.1.zip:
+69a927af9134b98988da3ce45f742d880544f9a1d230a8e06840e590f78fb82c
+
+The application adapter is in src/games/chess/bot/stockfish/.
+The local rules engine validates every UCI move before it is applied.
+Difficulty labels are resource/skill presets, not calibrated Elo ratings.
+
+Rebuild input supplied beside the archive:
+nn-61e7af4bb97d.nnue (1,166,381 bytes)
+SHA256: 61e7af4bb97d51eeeb25d322916f86513b5cd3a827ce189c98c6e31946f99e5b
+Origin: https://tests.stockfishchess.org/api/nn/nn-61e7af4bb97d.nnue
+
+To rebuild the Lite single-thread engine, extract source-v19.0.1.zip, copy
+nn-61e7af4bb97d.nnue into the extracted src/ directory, install/activate
+Emscripten 6.0.9 and the upstream Node/make prerequisites, then run from that
+source tree:
+    node build.js --lite --single-threaded --no-split
+See the source archive README and build.js for the original build process.

@@ -13,7 +13,7 @@ export { validatePromotion, applyPromotion } from "./promote.js";
 /**
  * @typedef {import("../../utils/GameError.js").GameError} GameError
  * @typedef {import("../models/Game.js").Game} Game
- * @typedef {import("../models/Piece.js").Piece} Piece
+ * @typedef {import("../models/piece.js").Piece} Piece
  * @typedef {import("../models/Board.js").Board} Board
  * @typedef {import("../constants/PieceType.js").PieceTypeValue} PieceTypeValue
  * @typedef {import("../constants/MoveKind.js").MoveKindValue} MoveKindValue

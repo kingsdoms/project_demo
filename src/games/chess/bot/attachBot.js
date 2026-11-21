@@ -21,10 +21,10 @@ const act = (/** @type {any} */ room, /** @type {string} */ _side, /** @type {an
  * Gắn bot vào room: tới lượt bên nào thuộc `sides` thì chờ `delay` ms rồi đi.
  *
  * @param {any} room
- * @param {{ sides: string[], delay?: number, choose?: Bot }} options
+ * @param {{ sides: string[], delay?: number, choose?: Bot, onError?: (error: unknown) => void }} options
  * @returns {{ stop: () => void }}
  */
-export function attachBot(room, { sides, delay = 500, choose = chooseBotAction }) {
+export function attachBot(room, { sides, delay = 500, choose = chooseBotAction, onError }) {
   const botSides = new Set(sides);
   let stopped = false;
   let busy = false; // đang trong step, chặn lên lịch chồng
@@ -45,6 +45,7 @@ export function attachBot(room, { sides, delay = 500, choose = chooseBotAction }
     timer = null;
     if (stopped || !isBotTurn()) return;
     busy = true;
+    let reschedule = true;
     try {
       // vòng lặp để xử lý phong cấp: move xong còn pendingPromotion thì chọn quân ngay,
       // không qua delay để người chơi không kịp thấy trạng thái dở dang
@@ -55,17 +56,22 @@ export function attachBot(room, { sides, delay = 500, choose = chooseBotAction }
 
         // sau await, ván có thể đã bị hủy hoặc đổi trạng thái
         if (stopped || !isBotTurn() || getGame(room) !== game) return;
-        if (action === null) return;
+        if (action === null) { reschedule = false; return; }
 
         act(room, side, action);
       } while (!stopped && getGame(room).pendingPromotion !== null && isBotTurn());
     } catch (err) {
-      console.error("[bot] lỗi khi đi nước:", err);
-      return; // không lên lịch lại, tránh lặp vô hạn với nước đi lỗi
+      reschedule = false;
+      if (!stopped) {
+        if (onError) onError(err);
+        else console.error("[bot] lỗi khi đi nước:", err);
+      }
     } finally {
       busy = false;
+      // A restart can replace the position while an async engine is thinking.
+      // Discard that old move, then schedule the new position instead of stalling.
+      if (reschedule) schedule();
     }
-    schedule(); // bot đấu bot, hoặc tới lượt bot tiếp
   }
 
   const unlisten = listen(room, schedule);

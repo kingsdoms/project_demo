@@ -1,0 +1,55 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "breakpoint": {
+    "sm": {
+      "$type": "dimension",
+      "$value": "36rem"
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "48rem"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "64rem"
+    },
+    "xl": {
+      "$type": "dimension",
+      "$value": "80rem"
+    },
+    "phone": {
+      "$type": "dimension",
+      "$value": "24rem"
+    },
+    "wide": {
+      "$type": "dimension",
+      "$value": "68rem"
+    },
+    "desktop": {
+      "$type": "dimension",
+      "$value": "75rem"
+    }
+  },
+  "z-index": {
+    "base": {
+      "$type": "number",
+      "$value": 0
+    },
+    "sticky": {
+      "$type": "number",
+      "$value": 10
+    },
+    "dropdown": {
+      "$type": "number",
+      "$value": 20
+    },
+    "overlay": {
+      "$type": "number",
+      "$value": 40
+    },
+    "toast": {
+      "$type": "number",
+      "$value": 60
+    }
+  }
+}

@@ -1,0 +1,7 @@
+.select { position: relative; flex: none; }
+.trigger { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); width: 100%; min-height: var(--space-12); padding: var(--space-2) var(--space-3); border: var(--space-hairline) solid var(--color-border-strong); border-radius: var(--radius-button); color: var(--color-text-primary); background: var(--color-surface-card); text-align: left; cursor: pointer; }
+.trigger:hover { background: var(--color-surface-sunken); }
+.options { position: absolute; right: 0; top: calc(100% + var(--space-2)); z-index: var(--z-dropdown); min-width: max(100%, var(--size-layout-r12)); max-height: var(--size-layout-r18); overflow: auto; padding: var(--space-1); border: var(--space-hairline) solid var(--color-border-strong); border-radius: var(--radius-lg); background: var(--color-surface-raised); box-shadow: var(--shadow-dropdown); }
+.options button { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); width: 100%; min-height: var(--space-12); padding: var(--space-2) var(--space-3); border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--color-text-primary); white-space: nowrap; text-align: left; }
+.options button:hover, .options button:focus-visible, .options button[aria-selected='true'] { background: var(--color-interactive-selected-bg); color: var(--color-text-link); }
+

@@ -5,7 +5,7 @@ import { createSimpleBot } from "../bot/simpleBot.js";
 import { reduce } from "../core/engine/reduce.js";
 import { Game } from "../core/models/Game.js";
 import { Board } from "../core/models/Board.js";
-import { Piece } from "../core/models/Piece.js";
+import { Piece } from "../core/models/piece.js";
 import { ActionType } from "../core/constants/ActionType.js";
 import { PieceType } from "../core/constants/PieceType.js";
 import { Side } from "../core/constants/Side.js";
