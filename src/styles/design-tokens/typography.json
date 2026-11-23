@@ -4,7 +4,7 @@
     "sans": {
       "$type": "fontFamily",
       "$value": [
-        "Be Vietnam Pro",
+        "Inter",
         "Segoe UI",
         "system-ui",
         "sans-serif"
@@ -12,11 +12,19 @@
     },
     "display": {
       "$type": "fontFamily",
-      "$value": "{fontFamily.sans}"
+      "$value": [
+        "Montserrat",
+        "Inter",
+        "Segoe UI",
+        "system-ui",
+        "sans-serif"
+      ]
     },
     "mono": {
       "$type": "fontFamily",
       "$value": [
+        "ui-monospace",
+        "Cascadia Mono",
         "Consolas",
         "monospace"
       ]

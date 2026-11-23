@@ -1,0 +1,129 @@
+/*
+ * Theme overrides (nạp sau design-tokens.generated.css).
+ * Tông graphite ấm + xanh lá tươi cho nút hành động chính, nút dày có "bóng đáy"
+ * để tạo cảm giác bấm được. Không sửa tokens gốc để `tokens:build --check` vẫn khớp.
+ */
+/* Chữ: Inter cho nội dung (dễ đọc, dấu tiếng Việt chuẩn), Montserrat đậm cho tiêu đề. */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv11', 'ss03';
+}
+h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
+button, input, select, textarea { font-family: inherit; }
+:root[data-theme="dark"] {
+  --color-surface-page: #18191b;
+  --color-surface-card: #212226;
+  --color-surface-raised: #2a2c30;
+  --color-surface-sunken: #131416;
+  --color-surface-overlay: rgba(6, 7, 8, 0.78);
+  --color-surface-disabled: #2a2c30;
+  --color-border-default: #33363b;
+  --color-border-strong: #5b6068;
+  --color-border-focus: #8fd14f;
+  --color-text-primary: #f2f3f0;
+  --color-text-secondary: #b9bcb6;
+  --color-text-tertiary: #8d918b;
+  --color-text-link: #9ad464;
+  --color-text-on-action: #0d1608;
+  --color-action-primary: #7cc142;
+  --color-action-primary-hover: #8fd14f;
+  --color-action-primary-active: #67a835;
+  --color-action-secondary: #2f3236;
+  --color-action-secondary-hover: #3a3d42;
+  --color-interactive-hover-overlay: rgba(255, 255, 255, 0.05);
+  --color-interactive-active-overlay: rgba(255, 255, 255, 0.09);
+  --color-interactive-selected-bg: #263420;
+  --color-interactive-selected-border: #7cc142;
+  --color-interactive-focus-ring: #8fd14f;
+  --color-feedback-success-bg: #1c2a17;
+  --color-feedback-success-text: #b5e38a;
+  --color-feedback-success-border: #4f7a33;
+  --color-feedback-info-bg: #1d2633;
+  --color-feedback-info-text: #c6d8f0;
+  --color-feedback-info-border: #3f5875;
+  --arena-shadow-press: #4c7a26;
+}
+
+:root,
+:root[data-theme="light"] {
+  --color-surface-page: #f1f2ee;
+  --color-surface-card: #ffffff;
+  --color-surface-raised: #f8f9f6;
+  --color-surface-sunken: #e7e9e3;
+  --color-border-default: #dcdfd8;
+  --color-text-link: #3f7d1f;
+  --color-action-primary: #5a9e2c;
+  --color-action-primary-hover: #64ad31;
+  --color-action-primary-active: #4c8a24;
+  --color-text-on-action: #ffffff;
+  --color-interactive-selected-bg: #e4f1d8;
+  --color-interactive-selected-border: #5a9e2c;
+  --color-interactive-focus-ring: #4c8a24;
+  --arena-shadow-press: #3d6f1c;
+}
+
+/* Hiệu ứng nút "dày" cho các hành động chính trên toàn ứng dụng. */
+[class*='primaryButton'],
+[class*='submitButton'] {
+  box-shadow: inset 0 -3px 0 var(--arena-shadow-press, rgba(0, 0, 0, 0.25));
+  font-weight: 700;
+  transition: transform 0.08s ease, background-color 0.15s ease, box-shadow 0.08s ease;
+}
+[class*='primaryButton']:active:not(:disabled),
+[class*='submitButton']:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 -1px 0 var(--arena-shadow-press, rgba(0, 0, 0, 0.25));
+}
+
+/* ---------- Toasts ---------- */
+.toast-region {
+  position: fixed;
+  z-index: 1000;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  display: grid;
+  gap: 10px;
+  width: min(380px, calc(100vw - 32px));
+  pointer-events: none;
+}
+.toast {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 10px;
+  padding: 12px 12px 12px 14px;
+  border: 1px solid var(--color-border-default);
+  border-left: 4px solid var(--toast-accent, var(--color-action-primary));
+  border-radius: 10px;
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  pointer-events: auto;
+  animation: toast-in 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.toast[data-kind='error'] { --toast-accent: var(--color-feedback-error-border); }
+.toast[data-kind='info'] { --toast-accent: var(--color-feedback-info-border); }
+.toast > svg { margin-top: 2px; color: var(--toast-accent, var(--color-action-primary)); }
+.toast button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+.toast button:hover { background: var(--color-interactive-hover-overlay); color: var(--color-text-primary); }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; }
+}

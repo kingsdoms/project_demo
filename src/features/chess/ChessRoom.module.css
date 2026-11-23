@@ -12,7 +12,7 @@
 .intro { position: relative; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-5); }
 .introMark { display: grid; place-items: center; padding: var(--space-3); background: var(--color-interactive-selected-bg); color: var(--color-text-link); border-radius: var(--radius-lg); }
 .matchTitle { flex: 1; }
-.matchTitle h1 { margin: 0; font: var(--weight-regular) var(--text-3xl)/var(--leading-tight) var(--font-display); }
+.matchTitle h1 { margin: 0; font: var(--weight-bold) var(--text-3xl)/var(--leading-tight) var(--font-display); }
 .matchMode { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-2); color: var(--color-text-secondary); font-size: var(--text-xs); }
 .backToArena { display: inline-flex; align-items: center; gap: var(--space-2); flex-basis: 100%; min-height: var(--space-10); width: fit-content; padding: 0; border: 0; background: transparent; color: var(--color-text-secondary); text-align: left; font-size: var(--text-xs); }
 .backToArena svg { transform: rotate(180deg); }
@@ -85,7 +85,7 @@
 .modal { width: min(calc(100% - var(--space-8)), var(--size-layout-r33)); max-height: calc(100dvh - var(--space-8)); overflow: auto; padding: var(--space-6); border: var(--space-hairline) solid var(--color-border-strong); border-radius: var(--radius-2xl); background: var(--color-surface-raised); color: var(--color-text-primary); box-shadow: var(--shadow-modal); }
 .modal::backdrop { background: var(--color-surface-overlay); }
 .modalHeader { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
-.modal h2 { margin: 0; font: var(--weight-regular) var(--text-2xl)/var(--leading-snug) var(--font-display); }
+.modal h2 { margin: 0; font: var(--weight-bold) var(--text-2xl)/var(--leading-snug) var(--font-display); }
 .modal p, .rules dd { color: var(--color-text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
 .dialogActions { flex-wrap: wrap; justify-content: end; gap: var(--space-2); margin-top: var(--space-6); }
 .rules dt { font-size: var(--text-sm); font-weight: var(--weight-semibold); }

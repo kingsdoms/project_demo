@@ -7,9 +7,13 @@ import { Action } from "../core/models/Action.js";
 import { GameError } from "../utils/GameError.js";
 import { EMPTY, click, syncInteraction } from "./interaction.js";
 import { toView } from "./toview.js";
-import { Room } from "../core/engine/room.js";
-import { Side } from "../core/constants/Side.js";
-import { Game } from "../core/models/Game.js";
+import { EMPTY_HISTORY, updateHistory } from "./history.js";
+
+/**
+ * @typedef {import("../core/engine/room.js").Room} Room
+ * @typedef {import("../core/models/Game.js").Game} Game
+ * @typedef {import("../core/constants/Side.js").SideValue} SideValue
+ */
 /**
  * @typedef {Readonly<{
  *   selectedId: string | null

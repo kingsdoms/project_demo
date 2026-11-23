@@ -100,7 +100,8 @@ async function readResponse(response) {
 
 async function fetchJson(path, { method, body, token, headers: extraHeaders = {} }) {
   const headers = { Accept: 'application/json', ...extraHeaders }
-  if (body !== undefined) headers['Content-Type'] = 'application/json'
+  const isForm = typeof FormData !== 'undefined' && body instanceof FormData
+  if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json'
   if (token) headers.Authorization = `Bearer ${token}`
   if (API_BASE_URL.includes('.ngrok-free.dev')) {
     headers['ngrok-skip-browser-warning'] = 'true'
@@ -113,7 +114,7 @@ async function fetchJson(path, { method, body, token, headers: extraHeaders = {}
     response = await fetch(`${API_BASE_URL}${path}`, {
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
       signal: controller.signal,
     })
   } catch (cause) {

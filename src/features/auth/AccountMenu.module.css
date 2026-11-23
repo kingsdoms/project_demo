@@ -28,7 +28,7 @@
 .noticeToast button { display: grid; place-items: center; flex: none; width: var(--space-10); height: var(--space-10); margin-left: auto; border: 0; background: transparent; color: inherit; cursor: pointer; }
 .confirmDialog { width: min(calc(100% - var(--space-8)), var(--size-layout-r28)); padding: var(--space-6); border: var(--space-hairline) solid var(--color-border-strong); border-radius: var(--radius-2xl); background: var(--color-surface-raised); color: var(--color-text-primary); box-shadow: var(--shadow-modal); }
 .confirmDialog::backdrop { background: var(--color-surface-overlay); }
-.confirmDialog h2 { margin: 0; font: var(--weight-regular) var(--text-2xl)/var(--leading-tight) var(--font-display); }
+.confirmDialog h2 { margin: 0; font: var(--weight-bold) var(--text-2xl)/var(--leading-tight) var(--font-display); }
 .confirmDialog p { color: var(--color-text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
 .confirmActions { display: flex; gap: var(--space-3); margin-top: var(--space-6); }
 .confirmActions > button { flex: 1; width: auto; margin: 0; }

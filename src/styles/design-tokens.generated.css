@@ -64,9 +64,9 @@
   --color-board-slate-dark: #7b919c;
   --color-board-paper-light: #eee5d2;
   --color-board-paper-dark: #b49b77;
-  --font-sans: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
-  --font-display: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
-  --font-mono: Consolas, monospace;
+  --font-sans: Inter, "Segoe UI", system-ui, sans-serif;
+  --font-display: Montserrat, Inter, "Segoe UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;

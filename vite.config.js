@@ -8,4 +8,8 @@ export default defineConfig({
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
+  css: {
+    // Giữ tên class gốc trong class đã băm để theme.css nhắm được các nút chính.
+    modules: { generateScopedName: '[local]_[hash:base64:6]' },
+  },
 })

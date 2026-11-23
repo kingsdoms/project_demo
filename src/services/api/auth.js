@@ -57,13 +57,13 @@ export const authApi = {
     })
   },
 
-  async logout() {
+  async logout({ all = false } = {}) {
     const session = getAuthSession()
     try {
       if (session?.accessToken && session.refreshToken) {
         await apiRequest('/auth/logout', {
           method: 'POST',
-          body: { refresh_token: session.refreshToken },
+          body: all ? { refresh_token: session.refreshToken, all: true } : { refresh_token: session.refreshToken },
         })
       }
     } finally {

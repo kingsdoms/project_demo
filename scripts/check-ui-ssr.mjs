@@ -17,7 +17,7 @@ let rendered = 0
 try {
   const { default: App, AdminScreen } = await server.ssrLoadModule('/src/app/ChessArenaApp.jsx')
   const { default: AuthDialog } = await server.ssrLoadModule('/src/features/auth/AuthDialog.jsx')
-  const routes = ['home', 'play', 'queue', 'queue-ready', 'game', 'leaderboard', 'friends', 'history', 'profile', 'settings', 'help', 'invite', 'replay', 'admin-login', 'admin-reports', 'privacy', 'terms', 'missing-page']
+  const routes = ['home', 'play', 'queue', 'queue-ready', 'game', 'leaderboard', 'friends', 'history', 'profile', 'settings', 'help', 'invite', 'replay', 'admin-overview', 'admin-users', 'privacy', 'terms', 'missing-page']
   for (const route of routes) {
     window.location.hash = '#' + route
     const html = renderToStaticMarkup(React.createElement(App))
@@ -25,21 +25,21 @@ try {
     assert.ok(html.includes('<h1'), route + ' must have a heading')
     assert.ok(!html.includes('undefined'), route + ' must not contain undefined output')
     if (route === 'home') assert.equal((html.match(/miniPiece/g) || []).length, 32)
+    if (route === 'home') {
+      assert.ok(!html.includes('<span>Bạn bè</span>'), 'guests must not see the Friends navigation item')
+      assert.ok(!html.includes('Mời bạn chơi'), 'guests must not see the invite-a-friend card')
+      assert.ok(!/adminSwitch/.test(html), 'the admin entry must stay hidden until the server confirms admin access')
+    }
+    if (route === 'friends') assert.ok(html.includes('Đăng nhập để xem bạn bè'), 'friends page must ask guests to sign in')
     if (route === 'replay') assert.equal((html.match(/role="gridcell"/g) || []).length, 64)
     rendered++
   }
   const noop = () => {}
-  for (const page of ['overview', 'users', 'matches', 'reports', 'content', 'permissions', 'audit']) {
-    const html = renderToStaticMarkup(React.createElement(AdminScreen, { page, navigate: noop, onLock: noop, onResolve: noop, onPublish: noop, onReview: noop, onPermission: noop, lockedUsers: {}, resolvedReports: {}, notices: [], logs: [] }))
-    assert.ok(html.includes('<h1'), page + ' must have a heading')
-    assert.ok(!html.includes('undefined'), page + ' must not contain undefined output')
-    rendered++
-  }
-  for (const page of ['overview', 'users', 'matches', 'reports', 'content', 'permissions', 'audit']) {
-    const html = renderToStaticMarkup(React.createElement(AdminScreen, { page, mode: 'api', navigate: noop, onSignIn: noop, onModeChange: noop }))
-    assert.ok(html.includes('<h1'), page + ' server mode needs an accessible entry state')
-    assert.ok(!html.includes('undefined'), page + ' server mode must not expose undefined values')
-    assert.ok(html.includes('Đăng nhập'), page + ' server mode must require authentication')
+  for (const page of ['overview', 'users', 'roles', 'notifications', 'blacklist', 'journals', 'commands', 'system']) {
+    const html = renderToStaticMarkup(React.createElement(AdminScreen, { page, navigate: noop, onSignIn: noop }))
+    assert.ok(html.includes('<h1'), page + ' needs an accessible heading')
+    assert.ok(!html.includes('undefined'), page + ' must not expose undefined values')
+    assert.ok(html.includes('Đăng nhập'), page + ' must require authentication when signed out')
     rendered++
   }
   for (const initialMode of ['login', 'register', 'otp', 'activate', 'forgot', 'reset']) {

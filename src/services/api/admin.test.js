@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { afterEach, test } from 'node:test'
 import { setImmediate } from 'node:timers/promises'
-import { adminApi, normalizeAdminPage } from './admin.js'
+import { adminApi, isTotpRequiredError, normalizeAdminPage } from './admin.js'
 import { ApiError, API_BASE_URL, clearAuthSession, setAuthSession } from './client.js'
 
 const originalFetch = globalThis.fetch
@@ -194,4 +194,60 @@ test('pagination keeps unknown counts unknown and rejects malformed list respons
   assert.deepEqual(normalizeAdminPage(page()), { items: [], page: 1, pageSize: 20, totalItems: 0, totalPages: 0 })
   assert.throws(() => normalizeAdminPage({ total_items: 0 }), ApiError)
   assert.throws(() => normalizeAdminPage(null), ApiError)
+})
+
+test('admin writes use documented methods and routes after the server access check', async () => {
+  signIn()
+  const calls = []
+  globalThis.fetch = async (url, options) => {
+    const parsed = new URL(url)
+    const path = parsed.pathname.replace('/api', '')
+    if (path === '/account/admin-access') return json(true)
+    calls.push([options.method, path, options.body === undefined ? undefined : JSON.parse(options.body)])
+    return json(null)
+  }
+  await adminApi.updateAccount(7, { status_code: 'BANNED' })
+  await adminApi.grantRole(7, 'MODERATOR')
+  await adminApi.revokeSessions(7)
+  await adminApi.grantPermission('MODERATOR', 'VIEW_USERS')
+  await adminApi.createNotification({ type_code: 'INFO', title: 'Xin chào' })
+  await adminApi.removeBlacklist(3)
+  assert.deepEqual(calls, [
+    ['PATCH', '/admin/accounts/7', { status_code: 'BANNED' }],
+    ['PUT', '/admin/accounts/7/roles/MODERATOR', undefined],
+    ['DELETE', '/admin/accounts/7/sessions', undefined],
+    ['PUT', '/admin/roles/MODERATOR/permissions/VIEW_USERS', undefined],
+    ['POST', '/admin/notifications', { type_code: 'INFO', title: 'Xin chào' }],
+    ['DELETE', '/admin/blacklist/3', undefined],
+  ])
+  assert.throws(() => adminApi.updateAccount('../x', {}), TypeError)
+})
+
+test('TOTP verification opens a window bound to the current access token', async () => {
+  signIn()
+  globalThis.fetch = async (url) => {
+    if (url.endsWith('/account/admin-access')) return json(true)
+    if (url.endsWith('/admin/totp/verify')) return json({ valid: true, expires_in: 600 })
+    return json(null)
+  }
+  assert.equal(adminApi.totpRemaining(), 0)
+  await adminApi.totpVerify('123456')
+  const remaining = adminApi.totpRemaining()
+  assert.ok(remaining > 590 && remaining <= 600)
+  signIn('other')
+  assert.equal(adminApi.totpRemaining(), 0)
+})
+
+test('a TOTP-required 403 is recognised and resets the local window', async () => {
+  signIn()
+  globalThis.fetch = async (url) => {
+    if (url.endsWith('/account/admin-access')) return json(true)
+    if (url.endsWith('/admin/totp/verify')) return json({ valid: true, expires_in: 600 })
+    return new Response(JSON.stringify({ success: false, message: 'TOTP verification required' }), { status: 403 })
+  }
+  await adminApi.totpVerify('123456')
+  assert.ok(adminApi.totpRemaining() > 0)
+  await assert.rejects(adminApi.clean(), (error) => isTotpRequiredError(error))
+  assert.equal(adminApi.totpRemaining(), 0)
+  assert.equal(isTotpRequiredError(new ApiError('Permission denied', { status: 403 })), false)
 })

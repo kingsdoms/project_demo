@@ -1,16 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  Activity, ArrowLeft, ArrowRight, ArrowUpRight, BadgeCheck, Bell,
-  BookOpen, Bot, ChartNoAxesCombined, Check, ChevronRight,
+  Activity, ArrowLeft, ArrowRight, ArrowUpRight, BadgeCheck,
+  Bot, Check, ChevronRight,
   CircleHelp, Clock3, Crown, Flag, Gamepad2, Gauge, Handshake, History,
   Home, Info, Medal, Menu, Moon, MoreHorizontal, Play, Plus, Search,
-  Settings, Shield, ShieldAlert, ShieldCheck, Swords, Sun, Timer, Trophy,
+  Settings, Shield, ShieldCheck, Swords, Sun, Timer, Trophy,
   UserRound, Users, Volume2, X, Zap,
 } from 'lucide-react'
 import AccountMenu from '@/features/auth/AccountMenu'
 import AuthDialog from '@/features/auth/AuthDialog'
 import AccountSettings from '@/features/auth/AccountSettings'
-import AdminWorkspace, { AdminEntry } from '@/features/admin/AdminWorkspace'
+import AdminConsole from '@/features/admin/AdminConsole'
+import { ADMIN_PAGES } from '@/features/admin/adminPages'
+import { useAdminAccess } from '@/features/admin/useAdminAccess'
+import NotificationCenter from '@/features/notifications/NotificationCenter'
+import Toaster from '@/components/ui/Toaster'
 import { GameMode } from '@/games/chess'
 import ChessBoard, { PieceArt } from '@/features/chess/ChessBoard'
 import { buildReplay, moveLabel, SAMPLE_HISTORY } from '@/features/chess/replay'
@@ -25,18 +29,10 @@ const PLAYER_NAV = [
   { key: 'home', label: 'Tổng quan', icon: Home },
   { key: 'play', label: 'Chơi cờ', icon: Swords },
   { key: 'leaderboard', label: 'Xếp hạng', icon: Trophy },
-  { key: 'friends', label: 'Bạn bè', icon: Users, badge: '3' },
+  { key: 'friends', label: 'Bạn bè', icon: Users, members: true },
   { key: 'history', label: 'Lịch sử đấu', icon: History },
 ]
-const ADMIN_NAV = [
-  { key: 'overview', label: 'Tổng quan', icon: ChartNoAxesCombined },
-  { key: 'users', label: 'Người dùng', icon: Users },
-  { key: 'matches', label: 'Trận đấu', icon: Swords },
-  { key: 'reports', label: 'Báo cáo', icon: ShieldAlert },
-  { key: 'content', label: 'Nội dung', icon: BookOpen },
-  { key: 'permissions', label: 'Phân quyền', icon: ShieldCheck },
-  { key: 'audit', label: 'Nhật ký', icon: Activity },
-]
+const ADMIN_NAV = ADMIN_PAGES
 const MODES = [
   { key: 'ranked', title: 'Đấu xếp hạng', detail: 'Tìm đối thủ ngang trình', icon: Trophy, tone: 'lead' },
   { key: 'friend', title: 'Chơi cùng bạn', detail: 'Tạo phòng mời riêng', icon: Handshake },
@@ -409,8 +405,8 @@ function SettingsScreen({ theme, onTheme, sound, setSound, boardTheme, setBoardT
   )
 }
 
-export function AdminScreen(props) {
-  return <AdminWorkspace navigation={ADMIN_NAV} {...props} />
+export function AdminScreen({ page = 'overview', navigate = () => {}, onSignIn = () => {} }) {
+  return <AdminConsole page={page} navigate={navigate} onSignIn={onSignIn} />
 }
 
 function SimpleModal({ title, description, children, onClose, labelledBy }) {
@@ -426,8 +422,6 @@ function SimpleModal({ title, description, children, onClose, labelledBy }) {
 export default function ChessArenaApp() {
   const [screen, setScreen] = useState(() => window.location.hash.slice(1) || 'home')
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [adminEntered, setAdminEntered] = useState(false)
-  const [adminSourceMode, setAdminSourceMode] = useState('demo')
   const [theme, setTheme] = useState(getSavedTheme)
   const [sound, setSound] = useState(true)
   const [boardTheme, setBoardTheme] = useState('forest')
@@ -437,18 +431,19 @@ export default function ChessArenaApp() {
   const [playBotLevel, setPlayBotLevel] = useState('medium')
   const [queueMode, setQueueMode] = useState('ranked')
   const [queueSpeed, setQueueSpeed] = useState('blitz')
-  const [adminDialog, setAdminDialog] = useState(null)
-  const [adminLocked, setAdminLocked] = useState({})
-  const [resolvedReports, setResolvedReports] = useState({})
-  const [publishedNotices, setPublishedNotices] = useState([])
-  const [adminLogs, setAdminLogs] = useState([])
-  const [permissionState, setPermissionState] = useState(null)
-  const [adminNotice, setAdminNotice] = useState('')
   const [replay, setReplay] = useState(null)
   const [lastGame, setLastGame] = useState(null)
   const account = useAuthStore((state) => state.account)
+  const signedIn = useAuthStore((state) => Boolean(state.session))
+  const adminAccess = useAdminAccess()
+  const playerNav = signedIn ? PLAYER_NAV : PLAYER_NAV.filter((item) => !item.members)
   const adminView = screen.startsWith('admin-')
   const adminPage = adminView ? screen.slice(6) : ''
+
+  useEffect(() => {
+    if (screen === 'admin-login') window.location.replace('#admin-overview')
+    else if (screen.startsWith('admin-') && (adminAccess === 'guest' || adminAccess === 'denied')) window.location.replace('#home')
+  }, [screen, adminAccess])
   const pageTitle = useMemo(() => ({
     home: 'Tổng quan',
     play: 'Chơi cờ',
@@ -463,7 +458,6 @@ export default function ChessArenaApp() {
     invite: 'Phòng mời',
     replay: 'Xem lại ván',
     'queue-ready': 'Sẵn sàng vào ván',
-    'admin-login': 'Truy cập quản trị',
     privacy: 'Quyền riêng tư',
     terms: 'Điều khoản trải nghiệm',
   })[screen] ?? (screen.startsWith('admin-') ? ADMIN_NAV.find((item) => item.key === screen.slice(6))?.label : null) ?? 'ChessArena', [screen])
@@ -515,7 +509,6 @@ export default function ChessArenaApp() {
 
   function navigate(next, detail) {
     if (next === 'play' && detail) setPlayMode(detail)
-    setAdminNotice('')
     setMobileOpen(false)
     setScreen(next)
     if (window.location.hash !== `#${next}`) window.location.hash = next
@@ -534,21 +527,6 @@ export default function ChessArenaApp() {
     navigate('queue')
   }
 
-  function enterAdmin(mode) {
-    setAdminSourceMode(mode)
-    setAdminEntered(true)
-    navigate('admin-overview')
-  }
-
-  function changeAdminSource(mode) {
-    setAdminSourceMode(mode)
-    setAdminNotice('')
-  }
-
-  function recordAdminAction(action, target) {
-    setAdminLogs((logs) => [{ id: 'adm_demo_' + String(logs.length + 1), actor: account?.name || 'admin_demo', action, target, time: 'Vừa xong' }, ...logs])
-  }
-
   function openReplay(history, result) {
     if (history) setLastGame({ history, result })
     setReplay(history ? { history, result } : null)
@@ -559,14 +537,13 @@ export default function ChessArenaApp() {
     home: <WelcomeScreen account={account} onNavigate={navigate} onAuth={setAuthMode} />,
     play: <PlayScreen defaultMode={playMode} defaultBotLevel={playBotLevel} onStart={startSelectedGame} onInvite={(speed, level) => { setPlaySpeed(speed); setPlayBotLevel(getBotLevel(level).key); navigate('invite') }} />,
     leaderboard: <LeaderboardScreen />,
-    friends: <FriendsScreen />,
+    friends: signedIn ? <FriendsScreen /> : <MembersOnly title="Đăng nhập để xem bạn bè" onSignIn={() => setAuthMode('login')} onBack={() => navigate('home')} />,
     history: <HistoryScreen lastGame={lastGame} onReview={(kind) => kind === 'local' ? openReplay(lastGame.history, lastGame.result) : openReplay()} />,
     profile: <ProfileScreen account={account} onEdit={() => navigate('settings')} />,
     settings: <SettingsScreen theme={theme} onTheme={setTheme} sound={sound} setSound={setSound} boardTheme={boardTheme} setBoardTheme={setBoardTheme} account={account} onAuth={() => setAuthMode('login')} />,
     help: <HelpScreen onNavigate={navigate} />,
     invite: <InviteScreen onBack={() => navigate('play', 'friend')} onStart={() => startSelectedGame('practice', playSpeed)} />,
     replay: <ReplayScreen replay={replay} onBack={() => navigate('history')} />,
-    'admin-login': <AdminAccess onEnter={enterAdmin} account={account} onSignIn={() => setAuthMode('login')} />,
     privacy: <LegalScreen privacy />,
     terms: <LegalScreen />,
   }
@@ -582,7 +559,7 @@ export default function ChessArenaApp() {
         <div className={styles.topbarActions}>
           <span className={styles.serverStatus}><ShieldCheck size={14} /><span>API tài khoản</span></span>
           <button type="button" className={styles.themeButton} aria-label={theme === 'dark' ? 'Chuyển giao diện sáng' : 'Chuyển giao diện tối'} title={theme === 'dark' ? 'Giao diện sáng' : 'Giao diện tối'} onClick={() => setTheme((value) => value === 'dark' ? 'light' : 'dark')}>{theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}</button>
-          <button type="button" className={styles.notificationButton} aria-label="Mở thông báo demo" onClick={() => setAdminDialog({ kind: 'notifications' })}><Bell size={17} />{publishedNotices.length > 0 && <i />}</button>
+          <NotificationCenter />
           <AccountMenu onSignIn={() => setAuthMode('login')} />
         </div>
       </header>
@@ -592,7 +569,7 @@ export default function ChessArenaApp() {
         <aside className={`${styles.sidebar} ${mobileOpen ? styles.mobileOpen : ''}`} id="arena-navigation" onKeyDown={(event) => { if (event.key === 'Escape') setMobileOpen(false) }}>
           <div className={styles.sidebarGroup}>
             <p className={styles.sidebarLabel}>{adminView ? 'QUẢN TRỊ' : 'MENU CHÍNH'}</p>
-            {(adminView ? ADMIN_NAV : PLAYER_NAV).map(({ key, label, icon: Icon, badge }) => {
+            {(adminView ? ADMIN_NAV : playerNav).map(({ key, label, icon: Icon, badge }) => {
               const route = adminView ? `admin-${key}` : key
               const selected = screen === route
               return <button type="button" key={key} className={styles.navItem} data-active={selected} aria-current={selected ? 'page' : undefined} onClick={() => navigate(route)}><Icon size={17} /><span>{label}</span>{badge && <small>{badge}</small>}</button>
@@ -600,27 +577,24 @@ export default function ChessArenaApp() {
           </div>
           {!adminView && <div className={styles.sidebarGroup}><p className={styles.sidebarLabel}>CÁ NHÂN</p><button type="button" className={styles.navItem} data-active={screen === 'profile'} onClick={() => navigate('profile')}><UserRound size={17} /><span>Hồ sơ của tôi</span></button><button type="button" className={styles.navItem} data-active={screen === 'settings'} onClick={() => navigate('settings')}><Settings size={17} /><span>Cài đặt</span></button><button type="button" className={styles.navItem} data-active={screen === 'help'} onClick={() => navigate('help')}><CircleHelp size={17} /><span>Hướng dẫn</span></button></div>}
           <div className={styles.sidebarBottom}>
-            <button className={styles.sidebarInvite} type="button" onClick={() => navigate('play', 'friend')}><span><Users size={16} /></span><strong>Mời bạn chơi</strong><small>Phòng mời hiện là demo</small><ArrowUpRight size={15} /></button>
-            <button className={styles.adminSwitch} type="button" onClick={() => navigate(adminView ? 'home' : adminEntered ? 'admin-overview' : 'admin-login')}><ShieldCheck size={16} /> {adminView ? 'Về khu người chơi' : 'Quản trị'}</button>
+            {signedIn && <button className={styles.sidebarInvite} type="button" onClick={() => navigate('play', 'friend')}><span><Users size={16} /></span><strong>Mời bạn chơi</strong><small>Phòng mời hiện là demo</small><ArrowUpRight size={15} /></button>}
+            {(adminView || adminAccess === 'allowed') && <button className={styles.adminSwitch} type="button" onClick={() => navigate(adminView ? 'home' : 'admin-overview')}><ShieldCheck size={16} /> {adminView ? 'Về khu người chơi' : 'Quản trị'}</button>}
             <div className={styles.sidebarUser}><span className={styles.sidebarAvatar}>{account?.name?.[0]?.toUpperCase() || <UserRound size={16} />}</span><span><strong>{account?.name || 'Khách trải nghiệm'}</strong><small>{account ? 'Đã kết nối tài khoản' : 'Đăng nhập để xem hồ sơ'}</small></span><button type="button" aria-label="Mở cài đặt" onClick={() => navigate('settings')}><MoreHorizontal size={17} /></button></div>
           </div>
         </aside>
 
         <main className={styles.mainArea} id="main-content" tabIndex={-1} key={screen}>
-          {adminNotice && <div className={styles.globalNotice} role="status"><Check size={16} />{adminNotice}<button type="button" onClick={() => setAdminNotice('')} aria-label="Đóng thông báo"><X size={16} /></button></div>}
-          {adminView && screen !== 'admin-login' ? !adminEntered ? <div className={styles.pageContent}><AdminAccess onEnter={enterAdmin} account={account} onSignIn={() => setAuthMode('login')} /></div> : <AdminScreen page={adminPage} navigate={navigate} mode={adminSourceMode} onModeChange={changeAdminSource} onSignIn={() => setAuthMode('login')} lockedUsers={adminLocked} resolvedReports={resolvedReports} notices={publishedNotices} logs={adminLogs} onReview={() => openReplay()} permissionState={permissionState} onPermission={(action, role, values) => { setPermissionState(values); recordAdminAction(action, role) }} onLock={(user) => setAdminDialog({ kind: 'lock', user })} onResolve={(report) => setAdminDialog({ kind: 'report', report })} onPublish={(notice) => { setPublishedNotices((items) => [{ ...notice, id: `cnt_demo_${items.length + 1}` }, ...items]); recordAdminAction('Lưu thông báo demo', notice.title); setAdminNotice('Đã lưu thông báo trong phiên demo. Mở chuông để xem nội dung.') }} /> :
+          {adminView ? <AdminScreen page={adminPage} navigate={navigate} onSignIn={() => setAuthMode('login')} /> :
             screen === 'queue' ? <QueueScreen mode={queueMode} speed={queueSpeed} onCancel={() => navigate('play', queueMode)} onEnter={() => navigate('queue-ready')} /> :
               screen === 'queue-ready' ? <QueueReadyScreen mode={queueMode} speed={queueSpeed} onEnter={() => navigate('game')} onCancel={() => navigate('play', queueMode)} /> :
                 screen === 'game' ? <ChessRoom embedded botLevel={playBotLevel} onBotLevelChange={setPlayBotLevel} onExit={() => navigate('home')} onFindGame={() => navigate('play')} onReview={openReplay} sound={sound} boardTheme={boardTheme} mode={GameMode.VS_BOT} timeControl={SPEEDS.find((item) => item.key === playSpeed)?.time} /> :
                   <div className={styles.pageContent}>{playerPages[screen] ?? <NotFound onBack={() => navigate('home')} />}<AppFooter navigate={navigate} /></div>}
-          {screen !== 'game' && <nav className={styles.mobileNav} aria-label="Điều hướng nhanh">{(adminView ? ADMIN_NAV : PLAYER_NAV).slice(0, 4).map(({ key, label, icon: Icon }) => { const route = adminView ? `admin-${key}` : key; return <button type="button" key={key} data-active={screen === route} aria-current={screen === route ? 'page' : undefined} onClick={() => navigate(route)}><Icon size={18} /><span>{label}</span></button> })}</nav>}
+          {screen !== 'game' && <nav className={styles.mobileNav} aria-label="Điều hướng nhanh">{(adminView ? ADMIN_NAV : playerNav).slice(0, 4).map(({ key, label, icon: Icon }) => { const route = adminView ? `admin-${key}` : key; return <button type="button" key={key} data-active={screen === route} aria-current={screen === route ? 'page' : undefined} onClick={() => navigate(route)}><Icon size={18} /><span>{label}</span></button> })}</nav>}
         </main>
       </div>
 
       {authMode && <AuthDialog initialMode={authMode} onClose={() => setAuthMode(null)} />}
-      {adminDialog?.kind === 'lock' && <LockDialog user={adminDialog.user} locked={adminDialog.user.locked} onClose={() => setAdminDialog(null)} onConfirm={(reason) => { const user = adminDialog.user; setAdminLocked((state) => ({ ...state, [user.id]: !user.locked })); recordAdminAction(`${user.locked ? 'Mở khóa' : 'Khóa'} demo: ${reason}`, user.id); setAdminNotice(`Đã ${user.locked ? 'mở khóa' : 'khóa'} ${user.name} trong prototype.`); setAdminDialog(null) }} />}
-      {adminDialog?.kind === 'report' && <ResolveDialog report={adminDialog.report} onClose={() => setAdminDialog(null)} onConfirm={(resolution, note) => { setResolvedReports((state) => ({ ...state, [adminDialog.report.id]: resolution })); recordAdminAction(`${resolution}: ${note}`, adminDialog.report.id); setAdminNotice(`Báo cáo ${adminDialog.report.id} đã cập nhật. Bạn có thể kiểm tra nhật ký.`); setAdminDialog(null) }} />}
-      {adminDialog?.kind === 'notifications' && <SimpleModal title="Thông báo demo" description="Nội dung được lưu trong phiên trải nghiệm này." labelledBy="notifications-title" onClose={() => setAdminDialog(null)}>{publishedNotices.length ? publishedNotices.map((notice) => <article className={styles.noticeArticle} key={notice.id}><h3>{notice.title}</h3><p>{notice.text}</p><small>{notice.id} · Dữ liệu demo</small></article>) : <div className={styles.emptyState}><Bell size={24} /><strong>Bạn đã xem hết thông báo.</strong><span>Thông báo mới từ trang quản trị demo sẽ xuất hiện ở đây.</span></div>}</SimpleModal>}
+      <Toaster />
     </div>
   )
 }
@@ -686,27 +660,16 @@ function HelpScreen({ onNavigate }) {
   return <><PageTitle eyebrow="BẮT ĐẦU NHANH" title="Hướng dẫn chơi" description="Các thao tác cơ bản để bắt đầu một ván cờ." /><section className={styles.helpGrid}><article className={styles.helpLead}><span className={styles.helpNumber}>01</span><h2>Chạm quân, rồi chạm ô đến.</h2><p>Các ô hợp lệ sẽ hiện trên bàn. Bạn cũng có thể dùng phím mũi tên để di chuyển focus, rồi nhấn Enter hoặc Space.</p><button className={styles.primaryButton} type="button" onClick={() => onNavigate('play')}>Chọn chế độ chơi <ArrowRight size={15} /></button></article><article className={styles.helpItem}><span className={styles.helpNumber}>02</span><h2>Đọc trạng thái bàn cờ</h2><p>Ô vàng cho biết nước vừa đi. Ô được đánh dấu đỏ báo vua đang bị chiếu.</p></article><article className={styles.helpItem}><span className={styles.helpNumber}>03</span><h2>Phong cấp tốt</h2><p>Khi tốt tới hàng cuối, chọn hậu, xe, tượng hoặc mã để hoàn tất lượt đi.</p></article><article className={styles.helpItem}><span className={styles.helpNumber}>04</span><h2>Chọn nhịp thi đấu</h2><p>Bullet, Blitz và Rapid có thời gian khác nhau. Đồng hồ chạy trên trình duyệt và tính theo từng lượt. Thi đấu thật cần đồng hồ do máy chủ xác thực.</p></article></section></>
 }
 
-function LockDialog({ user, locked, onClose, onConfirm }) {
-  const [reason, setReason] = useState('')
-  return <SimpleModal title={locked ? 'Mở khóa tài khoản' : 'Khóa tài khoản'} description={`Thao tác với ${user.name} sẽ chỉ được ghi trong prototype.`} onClose={onClose} labelledBy="user-lock-title"><label className={styles.formLabel}>Lý do xử lý<textarea value={reason} onChange={(event) => setReason(event.target.value)} rows={3} placeholder="Ghi rõ lý do để tạo ngữ cảnh xử lý." /></label><div className={styles.dialogActions}><button className={styles.secondaryButton} type="button" onClick={onClose}>Hủy</button><button className={locked ? styles.primaryButton : styles.destructiveButton} type="button" disabled={reason.trim().length < 8} onClick={() => onConfirm(reason.trim())}>{locked ? 'Xác nhận mở khóa' : 'Xác nhận khóa'} <ArrowRight size={15} /></button></div>{reason.length > 0 && reason.trim().length < 8 && <p className={styles.fieldHint}>Nhập ít nhất 8 ký tự để giải thích thao tác.</p>}</SimpleModal>
-}
-
-function ResolveDialog({ report, onClose, onConfirm }) {
-  const [note, setNote] = useState('')
-  const [status, setStatus] = useState('Đang xem xét')
-  return <SimpleModal title="Cập nhật báo cáo" description={`${report.id} · ${report.title}`} onClose={onClose} labelledBy="report-resolve-title"><details className={styles.reportEvidenceDetail}><summary>Xem bằng chứng minh họa</summary><p>Đối tượng: {report.about}. Người gửi: {report.from}. Dữ liệu bên dưới chỉ dùng để thử giao diện.</p><blockquote>{report.type === "Gian lận" ? "Mẫu ghi chú: nhiều nước đi được thực hiện với nhịp gần giống nhau. Cần phân tích ván thật trước khi kết luận." : report.type === "Hành vi" ? "Mẫu chat: có tin nhắn bị người chơi phản ánh. Kiểm duyệt cần xem toàn bộ ngữ cảnh." : "Mẫu kết nối: trình duyệt báo gián đoạn mạng trong ván."}</blockquote></details><div className={styles.formLabel}><span>Trạng thái</span><SelectMenu label="Trạng thái báo cáo" value={status} onChange={setStatus} options={["Đang xem xét", "Đã xử lý"]} /></div><label className={styles.formLabel}>Ghi chú kiểm duyệt<textarea rows={3} value={note} onChange={(event) => setNote(event.target.value)} placeholder="Tóm tắt quyết định và bước tiếp theo." /></label><div className={styles.dialogActions}><button className={styles.secondaryButton} type="button" onClick={onClose}>Hủy</button><button className={styles.primaryButton} type="button" disabled={note.trim().length < 6} onClick={() => onConfirm(status, note.trim())}><Check size={15} /> Lưu thay đổi demo</button></div></SimpleModal>
-}
-
 function AppFooter({ navigate }) {
   return <footer className={styles.footer}><span><ChessMark small /> ChessArena <small>Giao diện trải nghiệm</small></span><div><button type="button" onClick={() => navigate('terms')}>Điều khoản demo</button><button type="button" onClick={() => navigate('privacy')}>Quyền riêng tư</button><button type="button" onClick={() => navigate('help')}>Hỗ trợ</button></div><span className={styles.footerVersion}>v0.1 · dữ liệu thử</span></footer>
 }
 
-function AdminAccess(props) {
-  return <AdminEntry {...props} />
-}
-
 function LegalScreen({ privacy = false }) {
   return <><PageTitle eyebrow="THÔNG TIN TRẢI NGHIỆM" title={privacy ? 'Quyền riêng tư' : 'Điều khoản bản thử nghiệm'} description="Thông tin về phiên prototype ChessArena." /><section className={styles.settingsPanel}>{privacy ? <><h2>Dữ liệu trong trình duyệt</h2><p>Giao diện sáng hoặc tối được nhớ bằng localStorage. Token đăng nhập lưu trong sessionStorage theo tab. Mật khẩu chỉ được gửi tới API khi bạn chủ động gửi biểu mẫu.</p><h2>Dữ liệu mô phỏng</h2><p>Bạn bè, xếp hạng và các bản ghi quản trị là dữ liệu mẫu. Thay đổi demo nằm trong bộ nhớ của trang và mất khi tải lại.</p></> : <><h2>Phạm vi sử dụng</h2><p>Bạn có thể chơi cờ với bot cục bộ và khám phá các màn hình mẫu. Ván đấu chưa tính điểm hoặc lưu trên máy chủ. Chưa có ghép người chơi trực tuyến.</p><h2>Tài khoản thật</h2><p>Đăng ký, đăng nhập, xác minh và khôi phục mật khẩu sử dụng API tài khoản do chủ dự án cung cấp. Đây là bản thông tin prototype; chính sách vận hành chính thức cần được bổ sung trước khi phát hành.</p></>}</section></>
+}
+
+function MembersOnly({ title, onSignIn, onBack }) {
+  return <section className={styles.accessPanel}><span className={styles.eyebrow}>DÀNH CHO THÀNH VIÊN</span><h1>{title}</h1><p>Tính năng này gắn với tài khoản của bạn. Đăng nhập hoặc tạo tài khoản miễn phí để tiếp tục.</p><div className={styles.queueActions}><button type="button" className={styles.primaryButton} onClick={onSignIn}><UserRound size={17} /> Đăng nhập</button><button type="button" className={styles.textButton} onClick={onBack}>Về tổng quan</button></div></section>
 }
 
 function NotFound({ onBack }) {

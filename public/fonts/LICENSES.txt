@@ -1,0 +1,3 @@
+Inter (https://github.com/rsms/inter) and Montserrat (https://github.com/JulietaUla/Montserrat)
+are licensed under the SIL Open Font License, Version 1.1: https://openfontlicense.org/open-font-license-official-text/
+Files are the variable-weight WOFF2 subset builds published by Fontsource (cdn.jsdelivr.net/fontsource).
