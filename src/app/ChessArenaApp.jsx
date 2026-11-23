@@ -16,7 +16,8 @@ import { useAdminAccess } from '@/features/admin/useAdminAccess'
 import NotificationCenter from '@/features/notifications/NotificationCenter'
 import Toaster from '@/components/ui/Toaster'
 import { GameMode } from '@/games/chess'
-import ChessBoard, { PieceArt } from '@/features/chess/ChessBoard'
+import ChessBoard from '@/features/chess/ChessBoard'
+import ChessHome from '@/features/chess/ChessHome'
 import { buildReplay, moveLabel, SAMPLE_HISTORY } from '@/features/chess/replay'
 import ChessRoom from '@/features/chess/ChessRoom'
 import BotLevelPicker from '@/features/chess/BotLevelPicker'
@@ -43,7 +44,7 @@ const SPEEDS = [
   { key: 'blitz', name: 'Blitz', time: '5 + 0', detail: '5 phút mỗi bên, không cộng thêm giây' },
   { key: 'rapid', name: 'Rapid', time: '10 + 5', detail: '10 phút mỗi bên, cộng 5 giây sau mỗi nước' },
 ]
-const PREVIEW_FRAMES = buildReplay()
+
 const DEMO_PLAYERS = [
   { name: 'Minh Anh', rating: 1842, country: 'VN', win: 72 },
   { name: 'quietrook', rating: 1796, country: 'SG', win: 65 },
@@ -87,25 +88,6 @@ function PageTitle({ eyebrow, title, description, actions }) {
   )
 }
 
-function MiniBoard({ ply = 1 }) {
-  const pieces = PREVIEW_FRAMES[Math.min(ply, PREVIEW_FRAMES.length - 1)].pieces
-  return (
-    <div className={styles.miniBoard} role="img" aria-label="Bàn cờ minh họa thế khai cuộc">
-      {Array.from({ length: 64 }, (_, index) => {
-        const rowIndex = Math.floor(index / 8)
-        const colIndex = index % 8
-        const piece = pieces.find((item) => item.row === rowIndex && item.col === colIndex)
-        const dark = (rowIndex + colIndex) % 2 === 1
-        return (
-          <span key={`${rowIndex}-${colIndex}`} className={dark ? styles.miniDark : styles.miniLight}>
-            {piece && <span className={styles.miniPiece}><PieceArt side={piece.side} type={piece.type} /></span>}
-          </span>
-        )
-      })}
-    </div>
-  )
-}
-
 function Metric({ label, value, change, icon: Icon }) {
   return (
     <div className={styles.metric}>
@@ -113,80 +95,6 @@ function Metric({ label, value, change, icon: Icon }) {
       <span className={styles.metricText}><span>{label}</span><strong>{value}</strong></span>
       {change && <span className={styles.metricChange}>{change}</span>}
     </div>
-  )
-}
-
-function WelcomeScreen({ account, onNavigate, onAuth }) {
-  const firstName = account?.name?.trim()?.split(/\s+/)[0]
-  return (
-    <>
-      <PageTitle
-        eyebrow="KHU VỰC NGƯỜI CHƠI"
-        title={firstName ? `Chào ${firstName}.` : 'Một ván cờ nhé?'}
-        description="Chọn nhịp chơi phù hợp, xem lại các ván đấu và theo dõi phong độ của bạn."
-        actions={<DemoBadge />}
-      />
-      <section className={styles.heroPanel}>
-        <div className={styles.heroCopy}>
-          <span className={styles.heroKicker}><Swords size={15} /> PHÒNG CỜ CHESSARENA</span>
-          <h2>Mỗi nước đi,<br />một lựa chọn.</h2>
-          <p>Thi đấu cùng máy ngay bây giờ. Ghép trận xếp hạng đang ở chế độ mô phỏng.</p>
-          <button className={styles.primaryButton} type="button" onClick={() => onNavigate('play')}>
-            <Play size={17} fill="currentColor" /> Chơi cờ <ArrowRight size={16} />
-          </button>
-          {!account && (
-            <button className={styles.inlineLink} type="button" onClick={() => onAuth('register')}>
-              Tạo tài khoản để lưu hồ sơ <ArrowUpRight size={14} />
-            </button>
-          )}
-        </div>
-        <div className={styles.heroBoard}><MiniBoard /></div>
-        <div className={styles.heroCaption}><span><i /> Phòng luyện tập</span><span><Clock3 size={14} /> 10 phút</span></div>
-      </section>
-
-      <div className={styles.sectionHeading}>
-        <div><h2>Chọn cách chơi</h2><p>Mỗi chế độ có một nhịp riêng.</p></div>
-        <button className={styles.textButton} type="button" onClick={() => onNavigate('play')}>Xem mọi chế độ <ArrowRight size={15} /></button>
-      </div>
-      <section className={styles.modeStrip} aria-label="Chế độ chơi">
-        {MODES.map(({ key, title, detail, icon: Icon, tone }) => (
-          <button key={key} className={tone === 'lead' ? styles.modeLead : styles.modeItem} type="button" onClick={() => onNavigate('play', key)}>
-            <span className={styles.modeIcon}><Icon size={19} /></span>
-            <span><strong>{title}</strong><small>{detail}</small></span>
-            <ChevronRight className={styles.modeChevron} size={17} />
-          </button>
-        ))}
-      </section>
-
-      <section className={styles.overviewGrid}>
-        <div className={styles.formCard}>
-          <div className={styles.cardHeader}><div><h2>Phong độ gần đây</h2><p>Tháng này, mọi chế độ</p></div><DemoBadge /></div>
-          <div className={styles.performance}>
-            <div className={styles.donut} aria-label="Mô phỏng 12 ván thắng trên 18 ván"><span><strong>67%</strong><small>Tỉ lệ thắng</small></span></div>
-            <div className={styles.recordList}>
-              <span><i className={styles.winDot} /> Thắng <strong>12</strong></span>
-              <span><i className={styles.drawDot} /> Hòa <strong>3</strong></span>
-              <span><i className={styles.lossDot} /> Thua <strong>3</strong></span>
-            </div>
-          </div>
-          <p className={styles.finePrint}>Số liệu minh họa, sẽ thay thế khi có API thống kê.</p>
-        </div>
-        <div className={styles.recentPanel}>
-          <div className={styles.cardHeader}><div><h2>Ván đấu mẫu</h2><p>Lịch sử cá nhân chưa đồng bộ</p></div><History size={18} /></div>
-          <div className={styles.recentGame}>
-            <span className={styles.resultMark}><Check size={16} /></span>
-            <span className={styles.recentGameText}><strong>Thắng trước rook_88</strong><small>Blitz · 5 phút · 8 nước</small></span>
-            <span className={styles.resultRating}>+12</span>
-          </div>
-          <div className={styles.recentGame}>
-            <span className={styles.resultMark} data-draw="true"><span>=</span></span>
-            <span className={styles.recentGameText}><strong>Hòa với mai.an</strong><small>Rapid · 10 phút · 24 nước</small></span>
-            <span className={styles.resultRating} data-neutral="true">0</span>
-          </div>
-          <button className={styles.fullWidthLink} type="button" onClick={() => onNavigate('history')}>Mở lịch sử mô phỏng <ArrowRight size={15} /></button>
-        </div>
-      </section>
-    </>
   )
 }
 
@@ -198,11 +106,11 @@ function PlayScreen({ defaultMode, defaultBotLevel, onStart, onInvite }) {
   const selectedMode = MODES.find((item) => item.key === mode) ?? MODES[0]
   return (
     <>
-      <PageTitle eyebrow="CHỌN ĐỐI THỦ" title="Sẵn sàng nhập cuộc?" description="Chọn chế độ và nhịp thời gian. Ván đấu trong prototype đang chạy cục bộ." />
+      <PageTitle title="Chơi theo cách của bạn." description="Chọn đối thủ, thời gian và bắt đầu một ván cờ." />
       <div className={styles.playLayout}>
         <section className={styles.playSetup}>
           <fieldset className={styles.choiceField}>
-            <legend><span>01</span> Chế độ thi đấu</legend>
+            <legend>Chọn đối thủ</legend>
             <div className={styles.modeChoices}>
               {MODES.map(({ key, title, detail, icon: Icon }) => (
                 <button key={key} type="button" className={styles.modeChoice} data-selected={mode === key} aria-pressed={mode === key} onClick={() => setMode(key)}>
@@ -210,11 +118,11 @@ function PlayScreen({ defaultMode, defaultBotLevel, onStart, onInvite }) {
                 </button>
               ))}
             </div>
-            {mode === 'ranked' && <p className={styles.simulationHint}><Info size={15} /> Ghép đối thủ và điểm xếp hạng chỉ là mô phỏng. API chưa hỗ trợ thi đấu realtime.</p>}
+            {mode === 'ranked' && <p className={styles.simulationHint}><Info size={15} /> Xếp hạng đang là bản demo. Ván chơi thử sẽ đấu với máy và không tính điểm.</p>}
           </fieldset>
 
           <fieldset className={styles.choiceField}>
-            <legend><span>02</span> Thời gian mỗi ván</legend>
+            <legend><Clock3 size={17} /> Thời gian mỗi ván</legend>
             <div className={styles.speedChoices}>
               {SPEEDS.map((item) => (
                 <button key={item.key} type="button" className={styles.speedChoice} data-selected={speed === item.key} aria-pressed={speed === item.key} onClick={() => setSpeed(item.key)}>
@@ -222,14 +130,14 @@ function PlayScreen({ defaultMode, defaultBotLevel, onStart, onInvite }) {
                 </button>
               ))}
             </div>
-            <p className={styles.speedDetail}><Clock3 size={15} /> {selectedSpeed.detail}. Đồng hồ chạy cục bộ và không tính xếp hạng.</p>
+            <p className={styles.speedDetail}>{selectedSpeed.detail}.</p>
           </fieldset>
 
           <BotLevelPicker value={botLevel} onChange={setBotLevel} />
           <div className={styles.playCtas}>
             <button type="button" className={styles.primaryButton} onClick={() => mode === "friend" ? onInvite(speed, botLevel) : onStart(mode, speed, botLevel)}>
               {mode === 'practice' ? <Bot size={17} /> : mode === 'friend' ? <Handshake size={17} /> : <Search size={17} />}
-              {mode === 'practice' ? 'Luyện với máy' : mode === 'friend' ? 'Tạo phòng mời' : 'Tìm đối thủ'}
+              {mode === 'practice' ? 'Chơi với máy' : mode === 'friend' ? 'Tạo phòng mời demo' : 'Thử ghép trận demo'}
               <ArrowRight size={16} />
             </button>
             {mode === 'friend' && <button type="button" className={styles.secondaryButton} onClick={() => onStart("practice", speed, botLevel)}><Bot size={16} /> Chơi thử với bot</button>}
@@ -237,9 +145,9 @@ function PlayScreen({ defaultMode, defaultBotLevel, onStart, onInvite }) {
         </section>
 
         <aside className={styles.opponentPanel}>
-          <div className={styles.opponentTop}><div className={styles.opponentMark}><selectedMode.icon size={21} /></div><DemoBadge>{mode === "practice" ? "Engine cục bộ" : "Ghép trận demo"}</DemoBadge></div>
+          <div className={styles.opponentTop}><div className={styles.opponentMark}><selectedMode.icon size={21} /></div><DemoBadge>{mode === "practice" ? "Không tính điểm" : "Ghép trận demo"}</DemoBadge></div>
           <h2>{selectedMode.title}</h2>
-          <p>{mode === 'ranked' ? 'Đối thủ được chọn ngẫu nhiên để minh họa luồng ghép trận.' : mode === 'friend' ? 'Mời bạn bằng mã phòng trong phiên trải nghiệm.' : 'Luyện với Stockfish 19 Lite ngay trên trình duyệt. Chọn cấp để thay đổi mức tính toán của máy.'}</p>
+          <p>{mode === 'ranked' ? 'Đối thủ được chọn ngẫu nhiên để minh họa luồng ghép trận.' : mode === 'friend' ? 'Mời bạn bằng mã phòng trong phiên trải nghiệm.' : 'Thử các chiến thuật với máy. Chọn độ khó phù hợp và luyện tập theo nhịp của bạn.'}</p>
           <div className={styles.opponentStats}><span>Đối thủ dự kiến</span><strong>{mode === 'practice' ? 'Stockfish · ' + getBotLevel(botLevel).label : 'Stockfish (ván demo)'}</strong></div>
           <div className={styles.opponentStats}><span>Điểm xếp hạng</span><strong>{mode === 'ranked' ? 'Khoảng 1.600' : 'Không tính'}</strong></div>
           <p className={styles.finePrint}>{mode === "practice" ? "Stockfish mã nguồn mở. Ván luyện tập không cập nhật điểm xếp hạng." : "Đối thủ online chưa được nối. Ván thử nghiệm chạy bằng Stockfish."}</p>
@@ -426,7 +334,7 @@ export default function ChessArenaApp() {
   const [sound, setSound] = useState(true)
   const [boardTheme, setBoardTheme] = useState('forest')
   const [authMode, setAuthMode] = useState(() => /^\/forgot\//.test(window.location.pathname) ? 'reset' : null)
-  const [playMode, setPlayMode] = useState('ranked')
+  const [playMode, setPlayMode] = useState('practice')
   const [playSpeed, setPlaySpeed] = useState('blitz')
   const [playBotLevel, setPlayBotLevel] = useState('medium')
   const [queueMode, setQueueMode] = useState('ranked')
@@ -534,7 +442,7 @@ export default function ChessArenaApp() {
   }
 
   const playerPages = {
-    home: <WelcomeScreen account={account} onNavigate={navigate} onAuth={setAuthMode} />,
+    home: <ChessHome account={account} lastGame={lastGame} onNavigate={navigate} onStart={startSelectedGame} onReview={openReplay} onAuth={setAuthMode} />,
     play: <PlayScreen defaultMode={playMode} defaultBotLevel={playBotLevel} onStart={startSelectedGame} onInvite={(speed, level) => { setPlaySpeed(speed); setPlayBotLevel(getBotLevel(level).key); navigate('invite') }} />,
     leaderboard: <LeaderboardScreen />,
     friends: signedIn ? <FriendsScreen /> : <MembersOnly title="Đăng nhập để xem bạn bè" onSignIn={() => setAuthMode('login')} onBack={() => navigate('home')} />,
@@ -550,7 +458,7 @@ export default function ChessArenaApp() {
 
   return (
     <div className={styles.arena} data-theme={theme} data-board={boardTheme} data-screen={screen}>
-      <a className={styles.skipLink} href="#main-content">Nhảy tới nội dung</a>
+      <a className={styles.skipLink} href="#main-content" onClick={(event) => { event.preventDefault(); const main = document.getElementById('main-content'); main?.focus(); main?.scrollIntoView({ block: 'start' }) }}>Nhảy tới nội dung</a>
       <ConnectionNotice /><header className={styles.topbar}>
         <button type="button" className={styles.menuToggle} aria-label={mobileOpen ? 'Đóng điều hướng' : 'Mở điều hướng'} aria-expanded={mobileOpen} aria-controls="arena-navigation" onClick={() => setMobileOpen((value) => !value)}>{mobileOpen ? <X size={19} /> : <Menu size={19} />}</button>
         <button type="button" className={styles.brand} onClick={() => navigate('home')} aria-label="ChessArena, về tổng quan"><ChessMark /><span>Chess<span>Arena</span></span></button>
@@ -568,18 +476,18 @@ export default function ChessArenaApp() {
         {mobileOpen && <button type="button" className={styles.menuScrim} aria-label="Đóng menu điều hướng" onClick={() => setMobileOpen(false)} />}
         <aside className={`${styles.sidebar} ${mobileOpen ? styles.mobileOpen : ''}`} id="arena-navigation" onKeyDown={(event) => { if (event.key === 'Escape') setMobileOpen(false) }}>
           <div className={styles.sidebarGroup}>
-            <p className={styles.sidebarLabel}>{adminView ? 'QUẢN TRỊ' : 'MENU CHÍNH'}</p>
+            <p className={styles.sidebarLabel}>{adminView ? 'QUẢN TRỊ' : 'Khám phá'}</p>
             {(adminView ? ADMIN_NAV : playerNav).map(({ key, label, icon: Icon, badge }) => {
               const route = adminView ? `admin-${key}` : key
-              const selected = screen === route
+              const selected = screen === route || (route === 'play' && ['game', 'queue', 'queue-ready'].includes(screen))
               return <button type="button" key={key} className={styles.navItem} data-active={selected} aria-current={selected ? 'page' : undefined} onClick={() => navigate(route)}><Icon size={17} /><span>{label}</span>{badge && <small>{badge}</small>}</button>
             })}
           </div>
-          {!adminView && <div className={styles.sidebarGroup}><p className={styles.sidebarLabel}>CÁ NHÂN</p><button type="button" className={styles.navItem} data-active={screen === 'profile'} onClick={() => navigate('profile')}><UserRound size={17} /><span>Hồ sơ của tôi</span></button><button type="button" className={styles.navItem} data-active={screen === 'settings'} onClick={() => navigate('settings')}><Settings size={17} /><span>Cài đặt</span></button><button type="button" className={styles.navItem} data-active={screen === 'help'} onClick={() => navigate('help')}><CircleHelp size={17} /><span>Hướng dẫn</span></button></div>}
+          {!adminView && <div className={styles.sidebarGroup}><p className={styles.sidebarLabel}>Cá nhân</p><button type="button" className={styles.navItem} data-active={screen === 'profile'} onClick={() => navigate('profile')}><UserRound size={17} /><span>Hồ sơ của tôi</span></button><button type="button" className={styles.navItem} data-active={screen === 'settings'} onClick={() => navigate('settings')}><Settings size={17} /><span>Cài đặt</span></button><button type="button" className={styles.navItem} data-active={screen === 'help'} onClick={() => navigate('help')}><CircleHelp size={17} /><span>Hướng dẫn</span></button></div>}
           <div className={styles.sidebarBottom}>
             {signedIn && <button className={styles.sidebarInvite} type="button" onClick={() => navigate('play', 'friend')}><span><Users size={16} /></span><strong>Mời bạn chơi</strong><small>Phòng mời hiện là demo</small><ArrowUpRight size={15} /></button>}
             {(adminView || adminAccess === 'allowed') && <button className={styles.adminSwitch} type="button" onClick={() => navigate(adminView ? 'home' : 'admin-overview')}><ShieldCheck size={16} /> {adminView ? 'Về khu người chơi' : 'Quản trị'}</button>}
-            <div className={styles.sidebarUser}><span className={styles.sidebarAvatar}>{account?.name?.[0]?.toUpperCase() || <UserRound size={16} />}</span><span><strong>{account?.name || 'Khách trải nghiệm'}</strong><small>{account ? 'Đã kết nối tài khoản' : 'Đăng nhập để xem hồ sơ'}</small></span><button type="button" aria-label="Mở cài đặt" onClick={() => navigate('settings')}><MoreHorizontal size={17} /></button></div>
+            <div className={styles.sidebarUser}><span className={styles.sidebarAvatar}>{account?.name?.[0]?.toUpperCase() || <UserRound size={16} />}</span><span><strong>{account?.name || 'Khách'}</strong><small>{account ? 'Đã đăng nhập' : 'Chưa đăng nhập'}</small></span><button type="button" aria-label="Mở cài đặt" onClick={() => navigate('settings')}><MoreHorizontal size={17} /></button></div>
           </div>
         </aside>
 

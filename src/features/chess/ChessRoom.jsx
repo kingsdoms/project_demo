@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  ArrowDownUp, ArrowRight, Bot, CircleHelp, Flag, Handshake, History, LoaderCircle, MessageSquare, Plus, Send, Swords, Trophy, Users, Volume2, VolumeX, X,
+  ArrowDownUp, ArrowRight, Bot, CircleHelp, Clock3, Settings2, Flag, Handshake, History, LoaderCircle, MessageSquare, Plus, Send, Swords, Trophy, Users, Volume2, VolumeX, X,
 } from 'lucide-react'
 import chess, { GameMode } from '@/games/chess'
 import AccountMenu from '@/features/auth/AccountMenu'
@@ -293,7 +293,7 @@ export default function ChessRoom({ embedded = false, onExit, mode = GameMode.VS
         <div className={styles.intro}>
           {embedded && <button type="button" className={styles.backToArena} onClick={() => isOngoing && view.history.length ? setAction('exit') : onExit()}><ArrowRight size={16} /> Về ChessArena</button>}
           {!embedded && <div className={styles.introMark}><Swords size={22} /></div>}
-          <div className={styles.matchTitle}><h1>{embedded ? 'Ván luyện tập' : 'Phòng cờ vua'}</h1>{embedded && <span className={styles.matchMode}><Bot size={13} /> STOCKFISH · {selectedBotLevel.label.toUpperCase()} · {timeControl}</span>}</div>
+          <div className={styles.matchTitle}><h1>{embedded ? 'Chơi với máy' : 'Phòng cờ vua'}</h1>{embedded && <span className={styles.matchMode}><Clock3 size={13} /> {timeControl} · {selectedBotLevel.label}</span>}</div>
           <span className={styles.liveLabel}><span /> {result ? 'Đã kết thúc' : 'Đang chơi'}</span>
         </div>
 
@@ -304,7 +304,7 @@ export default function ChessRoom({ embedded = false, onExit, mode = GameMode.VS
               <ChessBoard view={view} flipped={flipped} onSquare={clickSquare} blocked={!view?.canAct || !engineAvailable || Boolean(view?.promotion)} />
             </div>
             <PlayerRow side={bottomSide} active={isOngoing && view.turn === bottomSide} mode={options.mode} humanSide={options.side} botLabel={"Stockfish · " + selectedBotLevel.label} clock={clocks?.[bottomSide]} captures={captured[bottomSide]} />
-            <p className={styles.localNotice}><Bot size={14} /> Stockfish 19 Lite · Chạy trên thiết bị · Không tính điểm</p>{options.mode !== GameMode.LOCAL && <details className={styles.engineAbout}><summary>Stockfish mã nguồn mở</summary><p>Stockfish.js 19 Lite, bản một luồng WebAssembly. Độ mạnh phụ thuộc cấp và tài nguyên thiết bị.</p><a href="/stockfish/COPYING.txt" target="_blank" rel="noreferrer">Giấy phép GPL-3.0</a><a href="/stockfish/source-v19.0.1.zip" download>Mã nguồn phiên bản đang dùng</a></details>}
+            <p className={styles.localNotice}><CircleHelp size={14} /> Chọn quân, rồi chọn ô đến. Có thể dùng phím mũi tên và Enter.</p>{options.mode !== GameMode.LOCAL && <details className={styles.engineAbout}><summary>Ván luyện tập không tính điểm · Thông tin Stockfish</summary><p>Stockfish.js 19 Lite, bản một luồng WebAssembly. Độ mạnh phụ thuộc cấp và tài nguyên thiết bị.</p><a href="/stockfish/COPYING.txt" target="_blank" rel="noreferrer">Giấy phép GPL-3.0</a><a href="/stockfish/source-v19.0.1.zip" download>Mã nguồn phiên bản đang dùng</a></details>}
           </section>
 
           <aside className={styles.sidebar} aria-label="Điều khiển ván cờ">
@@ -319,7 +319,7 @@ export default function ChessRoom({ embedded = false, onExit, mode = GameMode.VS
               </div>
             </div>
 
-            {options.mode !== GameMode.LOCAL && <><div className={styles.engineState} data-state={engineStatus?.state || "loading"} role={engineStatus?.state === "error" ? "alert" : "status"}>{engineStatus?.state === "loading" || engineStatus?.state === "thinking" ? <LoaderCircle size={17} className={styles.engineSpinner} /> : <Bot size={17} />}<span><strong>{engineStatus?.state === "error" ? "Không nạp được Stockfish" : "Stockfish · " + selectedBotLevel.label}</strong><small>{engineStatus?.message || "Đang nạp công cụ cờ…"}{!engineAvailable && " Đồng hồ đang tạm dừng."}</small></span>{engineStatus?.state === "error" && <button type="button" className={styles.secondaryButton} onClick={retryBot}>Thử lại</button>}</div><BotLevelPicker compact value={options.botLevel} onChange={(level) => requestGame({ ...options, botLevel: level })} disabled={!view} /></>}
+            {options.mode !== GameMode.LOCAL && <><div className={styles.engineState} data-state={engineStatus?.state || "loading"} role={engineStatus?.state === "error" ? "alert" : "status"}>{engineStatus?.state === "loading" || engineStatus?.state === "thinking" ? <LoaderCircle size={17} className={styles.engineSpinner} /> : <Bot size={17} />}<span><strong>{engineStatus?.state === "error" ? "Không nạp được Stockfish" : "Stockfish · " + selectedBotLevel.label}</strong><small>{engineStatus?.state === "ready" ? "Máy đã sẵn sàng" : engineStatus?.state === "thinking" ? "Đang chọn nước đi…" : engineStatus?.message || "Đang chuẩn bị đối thủ…"}{!engineAvailable && " Đồng hồ đang tạm dừng."}</small></span>{engineStatus?.state === "error" && <button type="button" className={styles.secondaryButton} onClick={retryBot}>Thử lại</button>}</div><details className={styles.botSettings}><summary><Settings2 size={16} /> Đổi độ khó <span>{selectedBotLevel.label}</span></summary><BotLevelPicker compact value={options.botLevel} onChange={(level) => requestGame({ ...options, botLevel: level })} disabled={!view} /></details></>}
 
             {!embedded && <section className={styles.settings} aria-label="Thiết lập ván cờ">
               <fieldset className={styles.fieldset}>
@@ -350,23 +350,19 @@ export default function ChessRoom({ embedded = false, onExit, mode = GameMode.VS
               )}
             </section>}
 
+            <div className={styles.tools}>
+              <button type="button" className={styles.primaryButton} onClick={() => requestGame(options)}><Plus size={19} /> Ván mới</button>
+              <button type="button" className={styles.flipButton} aria-label="Lật bàn cờ" title="Lật bàn cờ" aria-pressed={flipped} onClick={() => setFlipped((value) => !value)}><ArrowDownUp size={20} /></button>
+              <button type="button" className={styles.flipButton} aria-label={roomSound ? 'Tắt âm thanh' : 'Bật âm thanh'} aria-pressed={roomSound} onClick={() => setRoomSound((value) => !value)}>{roomSound ? <Volume2 size={19} /> : <VolumeX size={19} />}</button>
+            </div>
             <div className={styles.tabs} role="tablist" aria-label="Thông tin ván đấu">
               <button id="moves-tab" type="button" role="tab" aria-selected={activeTab === 'moves'} aria-controls="moves-panel" tabIndex={activeTab === 'moves' ? 0 : -1} onClick={() => setActiveTab('moves')} onKeyDown={(event) => { if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { setActiveTab('chat'); document.getElementById('chat-tab')?.focus() } }}><History size={15} /> Nước đi</button>
-              <button id="chat-tab" type="button" role="tab" aria-selected={activeTab === 'chat'} aria-controls="chat-panel" tabIndex={activeTab === 'chat' ? 0 : -1} onClick={() => setActiveTab('chat')} onKeyDown={(event) => { if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { setActiveTab('moves'); document.getElementById('moves-tab')?.focus() } }}><MessageSquare size={15} /> Ghi chú / Chat</button>
+              <button id="chat-tab" type="button" role="tab" aria-selected={activeTab === 'chat'} aria-controls="chat-panel" tabIndex={activeTab === 'chat' ? 0 : -1} onClick={() => setActiveTab('chat')} onKeyDown={(event) => { if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { setActiveTab('moves'); document.getElementById('moves-tab')?.focus() } }}><MessageSquare size={15} /> Ghi chú</button>
             </div>
             <div id="moves-panel" role="tabpanel" aria-labelledby="moves-tab" hidden={activeTab !== 'moves'}><MoveHistory history={view?.history} /></div>
             <div id="chat-panel" role="tabpanel" aria-labelledby="chat-tab" hidden={activeTab !== 'chat'}><LocalChat /></div>
             {isOngoing && <div className={styles.gameActions}><button type="button" className={styles.secondaryButton} onClick={() => setAction('draw')}><Handshake size={16} /> Đề nghị hòa</button><button type="button" className={styles.dangerButton} onClick={() => setAction('resign')}><Flag size={16} /> Đầu hàng</button></div>}
 
-            <div className={styles.tools}>
-              <button type="button" className={styles.primaryButton} onClick={() => requestGame(options)}>
-                <Plus size={19} /> Ván mới
-              </button>
-              <button type="button" className={styles.flipButton} aria-label="Lật bàn cờ" title="Lật bàn cờ" aria-pressed={flipped} onClick={() => setFlipped((value) => !value)}>
-                <ArrowDownUp size={20} />
-              </button>
-              <button type="button" className={styles.flipButton} aria-label={roomSound ? 'Tắt âm thanh' : 'Bật âm thanh'} aria-pressed={roomSound} onClick={() => setRoomSound((value) => !value)}>{roomSound ? <Volume2 size={19} /> : <VolumeX size={19} />}</button>
-            </div>
             {result && onReview && <button type="button" className={styles.secondaryButton} onClick={() => onReview(view.history, result)}><History size={16} /> Xem lại ván này</button>}
           </aside>
         </div>

@@ -132,3 +132,72 @@
   .sidebar { padding-top: var(--space-2); }
 }
 
+/* Keep the playing surface dominant and secondary settings tucked away. */
+.main { width: min(100%, 1190px); padding: 20px 30px 24px; }
+.intro { gap: 16px; margin-bottom: 12px; }
+.matchTitle { display: flex; align-items: center; flex-wrap: wrap; gap: 9px 16px; }
+.matchTitle h1 { margin: 0; font-size: 21px; letter-spacing: -.5px; }
+.matchMode { font-size: 11px; letter-spacing: 0; }
+.backToArena { flex-basis: auto; min-height: 44px; font-size: 12px; }
+.liveLabel { font-size: 11px; }
+.layout { grid-template-columns: minmax(0, 1fr) 310px; gap: 28px; }
+.playArea { width: min(100%, calc(100dvh - 290px)); max-width: 680px; }
+.boardFrame { border: 0; border-radius: 5px; box-shadow: 0 5px 18px #0002; }
+.player { min-height: 55px; padding-block: 7px; gap: 10px; }
+.playerAvatar { width: 36px; height: 36px; border: 0; border-radius: 5px; }
+.playerName strong { font-size: 13px; }
+.playerName > span { font-size: 10px; }
+.clock { min-width: 98px; padding: 4px 12px; border: 0; font: 750 29px/1.3 var(--font-sans); font-variant-numeric: tabular-nums; letter-spacing: 1px; }
+.clock[data-active='true'] { background: var(--color-board-square-light); color: #343b2b; }
+.clock[data-low='true'] { background: var(--color-feedback-error-bg); color: var(--color-feedback-error-text); }
+.playerTurn { font-size: 10px; }
+.localNotice { margin-top: 8px; font-size: 10px; line-height: 1.7; }
+.engineAbout { margin-top: 0; font-size: 10px; }
+.engineAbout summary { min-height: 36px; padding-block: 9px; color: var(--color-text-tertiary); }
+.sidebar { gap: 12px; padding-top: 8px; }
+.status { padding: 17px; border: 0; border-radius: 10px; }
+.statusIcon { width: 36px; height: 36px; border: 0; background: transparent; }
+.statusLabel { font-size: 10px; }
+.status strong { font-size: 17px; }
+.engineState { padding: 12px 15px; border: 0; border-radius: 8px; gap: 10px; }
+.engineState strong { font-size: 12px; }
+.engineState small { font-size: 10px; }
+.botSettings { overflow: hidden; border-radius: 8px; background: var(--color-surface-card); }
+.botSettings summary { display: flex; align-items: center; gap: 9px; min-height: 44px; padding: 10px 15px; font-size: 12px; cursor: pointer; }
+.botSettings summary > span { margin-left: auto; color: var(--color-text-link); font-size: 11px; }
+.botSettings summary::after { content: '+'; color: var(--color-text-secondary); }
+.botSettings[open] summary::after { content: '−'; }
+.tabs { padding: 0; gap: 0; border: 0; border-radius: 8px 8px 0 0; margin-bottom: -12px; }
+.tabs button { min-height: 44px; border-radius: 0; font-size: 12px; }
+.tabs button[aria-selected='true'] { background: transparent; color: var(--color-text-primary); box-shadow: inset 0 -3px 0 var(--color-text-link); }
+.history, .chat { border: 0; border-radius: 0 0 8px 8px; }
+.movesList { min-height: 145px; max-height: 225px; }
+.movesList th, .movesList td { padding-block: 11px; font-size: 12px; }
+.gameActions { gap: 8px; }
+.gameActions button { min-height: 44px; font-size: 11px; padding-inline: 8px; }
+.tools button { min-height: 46px; border-radius: 7px; }
+.tools .primaryButton { font-size: 14px; }
+@media (min-width: 768px) and (max-width: 1100px) {
+  .main { padding-inline: 22px; }
+  .layout { grid-template-columns: minmax(0, 1fr) 265px; gap: 18px; }
+  .playerTurn { display: none; }
+  .clock { min-width: 83px; font-size: 25px; }
+}
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .playArea { width: 100%; max-width: 560px; }
+  .sidebar { width: 100%; max-width: 560px; margin-inline: auto; }
+}
+@media (max-width: 767px) {
+  .main { padding: 10px 12px 28px; }
+  .intro { gap: 7px; margin-bottom: 3px; }
+  .matchTitle h1 { font-size: 17px; }
+  .backToArena { font-size: 11px; padding: 0; }
+  .matchMode { font-size: 10px; }
+  .liveLabel { display: none; }
+  .layout { gap: 14px; }
+  .clock { font-size: 26px; min-width: 94px; }
+  .playerTurn { display: none; }
+  .movesList { min-height: 130px; }
+}
+

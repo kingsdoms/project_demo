@@ -2,6 +2,12 @@
 
 Website cờ vua tiếng Việt bằng React/Vite: giao diện tối và sáng, khu người chơi, trang quản trị nối API thật, thông báo, liên kết Google và tích hợp API tài khoản.
 
+Giao diện phòng cờ mới (24/11/2026), áp dụng skill `frontend-design`: trang chủ
+chọn thời gian/độ khó và vào ván với máy trong một lần bấm; bàn cờ olive lớn,
+công cụ ván mới/lật bàn/âm thanh và lịch sử rõ ràng. Cài đặt độ khó thu gọn;
+mobile ưu tiên thao tác bắt đầu và bàn cờ toàn chiều ngang. Hướng thiết kế và
+kiểm tra: [frontend-redesign.md](docs/frontend-redesign.md).
+
 ## Chạy và kiểm tra
 
 ```sh
