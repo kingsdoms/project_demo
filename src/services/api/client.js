@@ -69,6 +69,29 @@ export function clearAuthSession() {
   }
 }
 
+// This only reads expiry metadata. Authentication always remains the server's job.
+function tokenExpiry(token) {
+  try {
+    const encoded = token.split('.')[1]
+    const payload = JSON.parse(globalThis.atob(encoded.replace(/-/g, '+').replace(/_/g, '/')))
+    return Number.isFinite(payload.exp) ? payload.exp : null
+  } catch { return null }
+}
+
+export async function ensureAccessToken({ forceRefresh = false, minValiditySeconds = 45 } = {}) {
+  const session = getAuthSession()
+  if (!session?.accessToken) {
+    throw new ApiError('Bạn cần đăng nhập để kết nối bàn cờ.', { status: 401 })
+  }
+  const expires = tokenExpiry(session.accessToken) ?? session.accessExp
+  if (forceRefresh || (expires != null && expires <= Date.now() / 1000 + minValiditySeconds)) {
+    const token = await refreshAccessToken(session)
+    if (!token) throw new ApiError('Phiên đã hết hạn. Hãy đăng nhập lại.', { status: 401 })
+    return token
+  }
+  return session.accessToken
+}
+
 async function readResponse(response) {
   if (response.status === 204) return null
 
@@ -150,7 +173,7 @@ async function refreshAccessToken(session) {
         if (!latest || latest.refreshToken !== session.refreshToken) {
           throw new ApiError('Phiên đăng nhập đã thay đổi. Hãy thực hiện lại thao tác.', { status: 401 })
         }
-        setAuthSession({ ...latest, accessToken })
+        setAuthSession({ ...latest, accessToken, accessExp: tokenExpiry(accessToken) })
         return accessToken
       } catch (error) {
         if (error instanceof ApiError && [401, 403].includes(error.status) && getAuthSession()?.refreshToken === session.refreshToken) {

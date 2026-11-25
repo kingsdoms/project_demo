@@ -10,6 +10,7 @@
     "test": "node --test",
     "preview": "vite preview",
     "check:ui": "node scripts/check-ui-ssr.mjs",
+    "check:chess-browser": "node scripts/check-chess-browser.mjs",
     "tokens:build": "node scripts/build-design-tokens.mjs --in src/styles/design-tokens --out src/styles/design-tokens.generated.css --check",
     "check:stockfish": "node scripts/check-stockfish.mjs",
     "check:security": "node scripts/security-audit.mjs",

@@ -7,6 +7,7 @@ import {
   apiRequest,
   clearAuthSession,
   getAuthSession,
+  ensureAccessToken,
   setAuthSession,
 } from './client.js'
 
@@ -143,4 +144,36 @@ test('API client reports an unsuccessful API envelope as a readable error', asyn
       error.status === 403 &&
       error.message === 'Tài khoản chưa được kích hoạt',
   )
+})
+
+test('socket authentication refreshes a nearly expired token first and records the new expiry', async () => {
+  const nextExpiry = Math.floor(Date.now() / 1000) + 3600
+  const jwt = `header.${globalThis.btoa(JSON.stringify({ exp: nextExpiry }))}.signature`
+  let refreshes = 0
+  globalThis.fetch = async (url, options) => {
+    assert.equal(url, `${API_BASE_URL}/auth/refresh-token`)
+    assert.equal(options.headers.Authorization, 'Bearer old-token')
+    assert.equal(options.body, JSON.stringify('refresh-token'))
+    refreshes++
+    return jsonResponse(200, { success: true, value: jwt })
+  }
+  setAuthSession({ access_token: 'old-token', access_exp: Math.floor(Date.now() / 1000) + 5, refresh_token: 'refresh-token' })
+  assert.equal(await ensureAccessToken(), jwt)
+  assert.equal(getAuthSession().accessExp, nextExpiry)
+  assert.equal(await ensureAccessToken(), jwt)
+  assert.equal(refreshes, 1)
+})
+
+test('forced socket refresh shares the existing REST refresh operation', async () => {
+  let refreshes = 0
+  globalThis.fetch = async () => { refreshes++; return jsonResponse(200, { success: true, value: 'next-token' }) }
+  setAuthSession({ access_token: 'old-token', refresh_token: 'refresh-token' })
+  assert.deepEqual(await Promise.all([ensureAccessToken({ forceRefresh: true }), ensureAccessToken({ forceRefresh: true })]), ['next-token', 'next-token'])
+  assert.equal(refreshes, 1)
+  assert.equal(getAuthSession().accessExp, null, 'an old expiry must not survive a token refresh')
+})
+
+test('socket authentication with no session asks for login without making a request', async () => {
+  globalThis.fetch = async () => { assert.fail('no HTTP call without a session') }
+  await assert.rejects(ensureAccessToken(), (error) => error.status === 401)
 })

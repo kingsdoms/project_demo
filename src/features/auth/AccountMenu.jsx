@@ -126,7 +126,7 @@ export default function AccountMenu({ onSignIn }) {
           </button>
         </div>
       </details>
-      <dialog ref={confirmRef} className={styles.confirmDialog} aria-labelledby="logout-title" onCancel={(event) => { if (busy) event.preventDefault() }}><h2 id="logout-title">Đăng xuất khỏi tab này?</h2><p>Bạn vẫn có thể luyện cờ với máy. Đăng nhập lại để xem hồ sơ tài khoản.</p><div className={styles.confirmActions}><button type="button" className={styles.retryButton} onClick={() => confirmRef.current?.close()} disabled={busy}>Ở lại</button><button type="button" className={styles.signOutButton} onClick={() => { confirmRef.current?.close(); signOut() }} disabled={busy}><LogOut size={16} /> Đăng xuất</button></div></dialog>
+      <dialog ref={confirmRef} className={styles.confirmDialog} aria-labelledby="logout-title" onCancel={(event) => { if (busy) event.preventDefault() }}><h2 id="logout-title">Đăng xuất khỏi tab này?</h2><p>Ván đang chơi sẽ mất kết nối. Hãy đăng nhập lại trong vòng 60 giây nếu muốn tiếp tục.</p><div className={styles.confirmActions}><button type="button" className={styles.retryButton} onClick={() => confirmRef.current?.close()} disabled={busy}>Ở lại</button><button type="button" className={styles.signOutButton} onClick={() => { confirmRef.current?.close(); signOut() }} disabled={busy}><LogOut size={16} /> Đăng xuất</button></div></dialog>
       {noticeMessage}
     </>
   )

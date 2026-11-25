@@ -1,28 +1,29 @@
 # ChessArena
 
-Website cờ vua tiếng Việt bằng React/Vite: giao diện tối và sáng, khu người chơi, trang quản trị nối API thật, thông báo, liên kết Google và tích hợp API tài khoản.
+Website cờ vua tiếng Việt bằng React/Vite: chơi trực tuyến qua REST/WebSocket, giao diện tối và sáng, trang quản trị nối API, thông báo, liên kết Google và tài khoản.
 
-Giao diện phòng cờ mới (24/11/2026), áp dụng skill `frontend-design`: trang chủ
-chọn thời gian/độ khó và vào ván với máy trong một lần bấm; bàn cờ olive lớn,
-công cụ ván mới/lật bàn/âm thanh và lịch sử rõ ràng. Cài đặt độ khó thu gọn;
-mobile ưu tiên thao tác bắt đầu và bàn cờ toàn chiều ngang. Hướng thiết kế và
-kiểm tra: [frontend-redesign.md](docs/frontend-redesign.md).
+Luồng cờ hiện tại dùng máy chủ làm nguồn luật, nước đi hợp lệ, đồng hồ và kết quả. Sảnh có ba chế độ: cờ tiêu chuẩn hai người (10 phút + 5 giây), luyện tập với bot của máy chủ (không đồng hồ), và mở rộng theo season với nhân vật, thẻ bài, thời tiết. Bàn cờ hỗ trợ bấm, kéo thả, bàn phím và tự xoay theo phe.
+
+Chi tiết triển khai, bằng chứng kiểm tra và các bước nghiệm thu trực tiếp: [online-client.md](docs/chess/online-client.md). Các tài liệu thiết kế trước ngày 25/11/2026 lưu lại quá trình thiết kế, không mô tả hợp đồng cờ online hiện tại.
 
 ## Chạy và kiểm tra
 
 ```sh
-npm install
+npm ci
 npm run dev
 npm test
 npm run lint
 npm run check:ui
-npm run check:stockfish
 npm run build
 ```
 
 Mở URL do Vite in ra. Đổi máy chủ bằng cách sao chép `.env.example` thành `.env.local`, sửa `VITE_API_BASE_URL` và khởi động lại Vite.
 
+API mặc định: `https://thesaurus-divinity-cosigner.ngrok-free.dev/api`. WebSocket được suy ra thành `wss://thesaurus-divinity-cosigner.ngrok-free.dev/api/chess/ws`; token gửi trong frame `AUTH` đầu tiên, không nằm trong URL. Danh sách bot, season và số liệu sảnh được lấy từ API; không cần đăng nhập để xem sảnh, cần đăng nhập để bắt đầu chơi.
+
 Build tự sinh CSS từ DTCG tokens. Có thể chạy riêng `npm run tokens:build`. Trình sinh nằm trong repo, không phụ thuộc đường dẫn skill cài trên máy. Giấy phép upstream: `scripts/vendor/ux-ui-agent-skills.LICENSE`.
+
+`npm run check:chess-browser` chạy các luồng tương tác desktop/mobile với REST và WebSocket giả lập; cần mở Vite trước và có Playwright (hoặc runtime kèm Codex) cùng Chromium/Edge. Script không đăng nhập máy chủ thật. Thêm `-- --live-public` để kiểm tra đọc API công khai từ trình duyệt, không gửi thông tin đăng nhập.
 
 `check:ui` render tĩnh các màn hình bằng React SSR, không mở trình duyệt và không gọi API. Kiểm tra này không xác minh bố cục hoặc thao tác trong trình duyệt.
 
@@ -42,17 +43,21 @@ Build tự sinh CSS từ DTCG tokens. Có thể chạy riêng `npm run tokens:bu
 
 Có thể giữ phiên theo tab trong sessionStorage hoặc chỉ giữ trong bộ nhớ đến khi tải lại. Các hợp đồng request được test bằng fetch giả lập. Chưa chạy toàn bộ luồng email/OTP, Google và xóa tài khoản với tài khoản thật.
 
-## Cục bộ và mô phỏng
+## Cờ trực tuyến
 
-Bàn cờ, engine, bot, đồng hồ theo lượt, kết quả và xem lại chạy trong trình duyệt. Đồng hồ dùng cho luyện tập, không xác thực thi đấu xếp hạng.
+Client chỉ gửi ý định; không tính luật cờ và không cập nhật quân trước khi server xác nhận. Mỗi `STATE`/`EVENTS` thay toàn bộ snapshot. `legal_moves` là nguồn duy nhất cho chọn quân và ô đích. Events phục vụ hoạt ảnh và lịch sử nước đi của phiên hiện tại; tải lại trang không có lịch sử cũ từ server.
 
-Ghép trận chuyển sang bot. Phòng mời, bạn bè, xếp hạng và thống kê thi đấu là demo. Chat là ghi chú cục bộ. Ván được mở xem lại nằm trong bộ nhớ phiên trang, mất khi tải lại.
+Mất kết nối thì tự thử lại với khoảng chờ tăng dần, tối đa 30 giây. Snapshot sau xác thực khôi phục bàn đang chơi. Khi nhận `REPLACED`, tab cũ dừng tự nối và hiện nút **Dùng ở đây**. Token sắp hết hạn được refresh trước khi mở socket.
+
+Phong cấp trước nước đi và sau kết nối lại, xin/nhận/từ chối hoà, xác nhận đầu hàng và hộp kết quả đều gửi theo giao thức server. Chế độ mở rộng có trang xem season, chọn nhân vật/thẻ với đếm lùi, đổi bài, kỹ năng theo hồi chiêu, thanh vòng và hiệu ứng trên ô/quân/trận. Mã nội dung chưa biết được hiển thị nguyên mã.
+
+Server chưa hỗ trợ tên/ảnh đối thủ, lịch sử trận, xếp hạng, khán giả, phòng mời, đấu lại, lựa chọn thời gian hay bot mở rộng. Giao diện không tạo màn demo cho các chức năng này. Engine và Stockfish cục bộ còn trong repo phục vụ phần debug/kiểm thử cũ, không chạy trong luồng cờ online mặc định.
 
 ## Điều hướng
 
-- Người chơi: #home, #play, #game, #history, #replay, #friends, #leaderboard, #profile, #settings, #help.
-- Luồng trận: #invite, #queue, #queue-ready.
-- Quản trị: #admin-overview, #admin-users, #admin-roles, #admin-notifications, #admin-blacklist, #admin-journals, #admin-commands, #admin-system (#admin-login cũ tự chuyển về #admin-overview).
+- Người chơi: #home, #play, #profile, #settings, #help.
+- Luồng trận: ván/hàng chờ do trạng thái WebSocket quyết định. #game hoặc #queue khi chưa có ván/hàng chờ hiện sảnh.
+- Quản trị: #admin-overview, #admin-users, #admin-roles, #admin-notifications, #admin-blacklist, #admin-journals, #admin-commands, #admin-system.
 - Thông tin: #terms, #privacy. Route khác có màn 404.
 
 Back/Forward dùng hash route. Màn hình debug cũ còn ở `?debug` trong môi trường phát triển.
@@ -66,7 +71,9 @@ Mọi thao tác ghi yêu cầu xác minh TOTP trong 10 phút gần nhất: lần
 ## Tệp chính
 
 - `src/app/ChessArenaApp.jsx`: shell, màn hình và điều hướng.
-- `src/features/chess/`: phòng chơi, SVG, clock và replay.
+- `src/features/chess/online/`: sảnh, phòng online, bàn cờ theo snapshot, đồng hồ và các bảng season.
+- `src/services/chess/`: REST cờ và vòng đời WebSocket, hàng chờ, reconnect, đồng bộ snapshot/events.
+- `src/features/chess/ChessBoard.jsx`: SVG quân dùng chung; các màn cờ cũ nằm cùng thư mục, không thuộc luồng mặc định.
 - `src/features/auth/`: biểu mẫu, menu và cài đặt tài khoản.
 - `src/components/ui/SelectMenu.jsx`: bộ chọn hỗ trợ bàn phím.
 - `src/styles/design-tokens/`: nguồn DTCG.
@@ -74,17 +81,19 @@ Mọi thao tác ghi yêu cầu xác minh TOTP trong 10 phút gần nhất: lần
 - `src/features/notifications/`: trung tâm thông báo; `src/components/ui/Toaster.jsx`: toast.
 - `src/features/admin/`: bảng điều khiển quản trị (AdminConsole) và các trang.
 - `src/services/api/admin.js`: tra cứu và thao tác ghi quản trị (yêu cầu TOTP), kiểm tra quyền và cô lập phiên.
-- `src/games/chess/`: engine, controller, bot.
+- `src/games/chess/`: engine, controller và bot cục bộ cho debug/kiểm thử cũ.
 - `scripts/check-ui-ssr.mjs`: kiểm tra render tĩnh.
-- `docs/ChessArena-design.md`: sitemap, luồng và bàn giao.
+- `docs/chess/online-client.md`: hợp đồng tích hợp, kiểm chứng và checklist nghiệm thu cờ online.
 
-Cần dịch vụ realtime, lưu ván, đồng hồ máy chủ, điểm, bạn bè, thao tác quản trị ghi và kiểm thử quyền ADMIN thật trước khi vận hành. Cần kiểm tra đầy đủ bàn phím và trình đọc màn hình; spot check desktop/mobile và render tĩnh không thay thế bước này.
+Các kiểm tra tự động và fixture không thay thế nghiệm thu ván thật bằng hai tài khoản. Chưa xác minh toàn bộ luồng WebSocket có đăng nhập, email/OTP, Google, quyền ADMIN ghi và trình đọc màn hình trên máy chủ thực tế; xem phạm vi cụ thể trong tài liệu bàn giao.
 
 ## Font và Stockfish
 
-Font tự host trong `public/fonts/` (giấy phép SIL OFL 1.1): Inter cho nội dung, Montserrat đậm cho tiêu đề; cả hai hỗ trợ đầy đủ dấu tiếng Việt và được tách theo subset. Bot mặc định là Stockfish.js 19 Lite WebAssembly trong Worker với sáu cấp từ Mới bắt đầu đến Bậc thầy. Mỗi cấp dùng Skill Level, depth và thời gian riêng, không gán Elo giả.
+Font tự host trong `public/fonts/` (giấy phép SIL OFL 1.1): Inter cho nội dung, Montserrat đậm cho tiêu đề; cả hai hỗ trợ đầy đủ dấu tiếng Việt và được tách theo subset. Bản Stockfish.js 19 Lite WebAssembly và sáu cấp cũ vẫn được giữ để tương thích debug, kèm giấy phép và mã nguồn; đây không phải bot mặc định của luồng online. Đối thủ luyện tập hiện được chọn từ `/chess/bots` và chạy trên máy chủ.
 
 Xem `docs/Stockfish-fonts.md` cho cấu hình, vòng đời và giới hạn; nguồn, NNUE, GPL, AUTHORS và checksum ở `public/stockfish/`.
+
+`npm run check:stockfish` kiểm tra phần Stockfish cũ riêng, không kiểm tra bot của máy chủ.
 
 ## Kiểm thử bảo mật và tải
 
